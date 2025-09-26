@@ -1,0 +1,589 @@
+/* J-TECH 디자인 시스템 - 컴포넌트 라이브러리 */
+
+/* 기본 스타일 불러오기 */
+@import url('./base.css');
+
+/* === 버튼 컴포넌트 === */
+
+.jt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-width-1) solid transparent;
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--duration-150) var(--ease-out);
+  min-height: var(--size-md);
+}
+
+.jt-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 버튼 크기 변형 */
+.jt-btn--sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  min-height: var(--size-sm);
+}
+
+.jt-btn--lg {
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-size-base);
+  min-height: var(--size-lg);
+}
+
+.jt-btn--xl {
+  padding: var(--space-5) var(--space-8);
+  font-size: var(--font-size-lg);
+  min-height: var(--size-xl);
+}
+
+/* 버튼 스타일 변형 */
+.jt-btn--primary {
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.jt-btn--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.jt-btn--secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-gray-100);
+  border-color: var(--color-border);
+}
+
+.jt-btn--secondary:hover:not(:disabled) {
+  background-color: var(--color-gray-200);
+}
+
+.jt-btn--outline {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.jt-btn--outline:hover:not(:disabled) {
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+}
+
+.jt-btn--ghost {
+  color: var(--color-text-secondary);
+}
+
+.jt-btn--ghost:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background-color: var(--color-gray-100);
+}
+
+/* === 입력 필드 컴포넌트 === */
+
+.jt-input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.jt-input__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.jt-input__label--required::after {
+  content: '*';
+  color: var(--color-error);
+  margin-left: var(--space-1);
+}
+
+.jt-input__field {
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width-1) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  transition: all var(--duration-150) var(--ease-out);
+}
+
+.jt-input__field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.jt-input__field--error {
+  border-color: var(--color-error);
+}
+
+.jt-input__field--error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.jt-input__help {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.jt-input__error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+}
+
+/* 입력 필드 크기 변형 */
+.jt-input__field--sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.jt-input__field--lg {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-base);
+}
+
+/* === 카드 컴포넌트 === */
+
+.jt-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background);
+  border: var(--border-width-1) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.jt-card__header {
+  padding: var(--space-6);
+  border-bottom: var(--border-width-1) solid var(--color-border);
+  background-color: var(--color-background-secondary);
+}
+
+.jt-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.jt-card__subtitle {
+  margin: var(--space-1) 0 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.jt-card__body {
+  padding: var(--space-6);
+  flex: 1;
+}
+
+.jt-card__footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: var(--border-width-1) solid var(--color-border);
+  background-color: var(--color-background-secondary);
+}
+
+/* === 테이블 컴포넌트 === */
+
+.jt-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.jt-table__header {
+  background-color: var(--color-gray-50);
+}
+
+.jt-table__header-cell {
+  padding: var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  border-bottom: var(--border-width-1) solid var(--color-border);
+}
+
+.jt-table__cell {
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  border-bottom: var(--border-width-1) solid var(--color-border-light);
+}
+
+.jt-table__row:last-child .jt-table__cell {
+  border-bottom: none;
+}
+
+.jt-table__row:hover {
+  background-color: var(--color-gray-50);
+}
+
+/* === 알림 컴포넌트 === */
+
+.jt-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-1) solid;
+}
+
+.jt-alert__icon {
+  flex-shrink: 0;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  margin-top: var(--space-1);
+}
+
+.jt-alert__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.jt-alert__title {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.jt-alert__description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+/* 알림 스타일 변형 */
+.jt-alert--success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-success);
+  color: #065f46;
+}
+
+.jt-alert--warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-warning);
+  color: #92400e;
+}
+
+.jt-alert--error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
+  color: #991b1b;
+}
+
+.jt-alert--info {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-info);
+  color: #1e40af;
+}
+
+/* === 배지 컴포넌트 === */
+
+.jt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+}
+
+.jt-badge--primary {
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+}
+
+.jt-badge--secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-gray-200);
+}
+
+.jt-badge--success {
+  color: var(--color-text-inverse);
+  background-color: var(--color-success);
+}
+
+.jt-badge--warning {
+  color: var(--color-text-inverse);
+  background-color: var(--color-warning);
+}
+
+.jt-badge--error {
+  color: var(--color-text-inverse);
+  background-color: var(--color-error);
+}
+
+/* === 로딩 스피너 === */
+
+.jt-spinner {
+  display: inline-block;
+  width: var(--space-6);
+  height: var(--space-6);
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: var(--border-radius-full);
+  animation: spin 1s linear infinite;
+}
+
+.jt-spinner--sm {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+.jt-spinner--lg {
+  width: var(--space-8);
+  height: var(--space-8);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === 모달 컴포넌트 === */
+
+.jt-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.jt-modal__backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal-backdrop);
+}
+
+.jt-modal__content {
+  position: relative;
+  z-index: var(--z-modal);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: auto;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.jt-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: var(--border-width-1) solid var(--color-border);
+}
+
+.jt-modal__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.jt-modal__close {
+  padding: var(--space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color var(--duration-150) var(--ease-out);
+}
+
+.jt-modal__close:hover {
+  color: var(--color-text-primary);
+}
+
+.jt-modal__body {
+  padding: var(--space-6);
+}
+
+.jt-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-top: var(--border-width-1) solid var(--color-border);
+}
+
+/* === 탭 컴포넌트 === */
+
+.jt-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.jt-tabs__list {
+  display: flex;
+  border-bottom: var(--border-width-1) solid var(--color-border);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jt-tabs__item {
+  margin: 0;
+}
+
+.jt-tabs__button {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--duration-150) var(--ease-out);
+}
+
+.jt-tabs__button:hover {
+  color: var(--color-text-primary);
+}
+
+.jt-tabs__button--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.jt-tabs__content {
+  padding: var(--space-6) 0;
+}
+
+/* === 유틸리티 컴포넌트 === */
+
+/* 구분선 */
+.jt-divider {
+  margin: var(--space-6) 0;
+  border: none;
+  border-top: var(--border-width-1) solid var(--color-border);
+}
+
+/* 컨테이너 */
+.jt-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.jt-container--sm {
+  max-width: 640px;
+}
+
+.jt-container--lg {
+  max-width: 1440px;
+}
+
+/* 플렉스 레이아웃 */
+.jt-flex {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.jt-flex--col {
+  flex-direction: column;
+}
+
+.jt-flex--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.jt-flex--between {
+  justify-content: space-between;
+}
+
+.jt-flex--around {
+  justify-content: space-around;
+}
+
+/* 그리드 레이아웃 */
+.jt-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.jt-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.jt-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.jt-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* 반응형 그리드 */
+@media (max-width: 768px) {
+  .jt-grid--2,
+  .jt-grid--3,
+  .jt-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === 접근성 향상 === */
+
+.jt-btn:focus-visible,
+.jt-input__field:focus-visible,
+.jt-tabs__button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .jt-btn--outline {
+    border-width: var(--border-width-2);
+  }
+  
+  .jt-input__field {
+    border-width: var(--border-width-2);
+  }
+  
+  .jt-card,
+  .jt-table,
+  .jt-modal__content {
+    border-width: var(--border-width-2);
+  }
+}

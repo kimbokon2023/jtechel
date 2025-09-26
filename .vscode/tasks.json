@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "commitMsg",
+      "type": "promptString",
+      "description": "Commit message (Enter to use timestamped default)",
+      "default": ""
+    }
+  ],
+  "tasks": [
+    {
+      "label": "Git: Quick Commit",
+      "type": "shell",
+      "command": ".\\osel\\quick_commit.bat ${input:commitMsg}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
+

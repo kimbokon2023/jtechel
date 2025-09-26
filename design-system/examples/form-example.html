@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-TECH 디자인 시스템 - 폼 예제</title>
+    <link rel="stylesheet" href="../components.css">
+    <style>
+        /* 데모용 추가 스타일 */
+        .demo-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-text-primary);
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header class="mb-6">
+            <h1>J-TECH 디자인 시스템 폼 예제</h1>
+            <p class="text-secondary">엘리베이터 업무 관리를 위한 사용자 친화적 폼 디자인</p>
+        </header>
+
+        <!-- 고객 정보 입력 폼 -->
+        <section class="demo-section">
+            <h2 class="demo-title">고객 정보 입력</h2>
+            <div class="jt-card">
+                <div class="jt-card__header">
+                    <h3 class="jt-card__title">신규 고객 등록</h3>
+                    <p class="jt-card__subtitle">필수 정보를 입력해주세요</p>
+                </div>
+                <div class="jt-card__body">
+                    <form class="jt-grid jt-grid--2">
+                        <div class="jt-input">
+                            <label class="jt-input__label jt-input__label--required">고객명</label>
+                            <input type="text" class="jt-input__field" placeholder="고객명을 입력하세요" required>
+                            <span class="jt-input__help">한글 또는 영문으로 입력하세요</span>
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label jt-input__label--required">연락처</label>
+                            <input type="tel" class="jt-input__field" placeholder="010-0000-0000" required>
+                            <span class="jt-input__help">하이픈(-) 포함하여 입력하세요</span>
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label">이메일</label>
+                            <input type="email" class="jt-input__field" placeholder="example@email.com">
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label jt-input__label--required">지역</label>
+                            <select class="jt-input__field" required>
+                                <option value="">지역을 선택하세요</option>
+                                <option value="seoul">서울특별시</option>
+                                <option value="busan">부산광역시</option>
+                                <option value="daegu">대구광역시</option>
+                                <option value="incheon">인천광역시</option>
+                                <option value="gwangju">광주광역시</option>
+                                <option value="daejeon">대전광역시</option>
+                                <option value="ulsan">울산광역시</option>
+                                <option value="gyeonggi">경기도</option>
+                            </select>
+                        </div>
+
+                        <div class="jt-input" style="grid-column: 1 / -1;">
+                            <label class="jt-input__label jt-input__label--required">주소</label>
+                            <input type="text" class="jt-input__field" placeholder="상세 주소를 입력하세요" required>
+                        </div>
+
+                        <div class="jt-input" style="grid-column: 1 / -1;">
+                            <label class="jt-input__label">특이사항</label>
+                            <textarea class="jt-input__field" rows="3" placeholder="특별히 기억해야 할 사항이 있다면 입력하세요"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="jt-card__footer">
+                    <div class="jt-flex jt-flex--between">
+                        <button type="button" class="jt-btn jt-btn--ghost">취소</button>
+                        <div class="jt-flex">
+                            <button type="button" class="jt-btn jt-btn--secondary">임시저장</button>
+                            <button type="submit" class="jt-btn jt-btn--primary">등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 작업 주문 폼 -->
+        <section class="demo-section">
+            <h2 class="demo-title">작업 주문서 작성</h2>
+            <div class="jt-card">
+                <div class="jt-card__header">
+                    <h3 class="jt-card__title">엘리베이터 작업 주문</h3>
+                    <p class="jt-card__subtitle">작업 내용을 상세히 입력해주세요</p>
+                </div>
+                <div class="jt-card__body">
+                    <form class="jt-flex jt-flex--col">
+                        <div class="jt-grid jt-grid--3">
+                            <div class="jt-input">
+                                <label class="jt-input__label jt-input__label--required">작업 유형</label>
+                                <select class="jt-input__field" required>
+                                    <option value="">작업 유형 선택</option>
+                                    <option value="installation">신규 설치</option>
+                                    <option value="maintenance">정기 점검</option>
+                                    <option value="repair">고장 수리</option>
+                                    <option value="upgrade">개선 공사</option>
+                                </select>
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label jt-input__label--required">우선순위</label>
+                                <select class="jt-input__field" required>
+                                    <option value="">우선순위 선택</option>
+                                    <option value="urgent">긴급</option>
+                                    <option value="high">높음</option>
+                                    <option value="normal">보통</option>
+                                    <option value="low">낮음</option>
+                                </select>
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label jt-input__label--required">예상 완료일</label>
+                                <input type="date" class="jt-input__field" required>
+                            </div>
+                        </div>
+
+                        <div class="jt-grid jt-grid--2">
+                            <div class="jt-input">
+                                <label class="jt-input__label">엘리베이터 위치</label>
+                                <input type="text" class="jt-input__field" placeholder="건물명, 층수 등">
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label">예상 비용</label>
+                                <input type="number" class="jt-input__field" placeholder="0" min="0">
+                                <span class="jt-input__help">단위: 원</span>
+                            </div>
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label jt-input__label--required">작업 내용</label>
+                            <textarea class="jt-input__field" rows="5" placeholder="구체적인 작업 내용을 입력하세요" required></textarea>
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label">첨부 파일</label>
+                            <input type="file" class="jt-input__field" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                            <span class="jt-input__help">이미지, PDF, 문서 파일을 첨부할 수 있습니다</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="jt-card__footer">
+                    <div class="jt-flex jt-flex--between">
+                        <div class="jt-alert jt-alert--info" style="flex: 1; margin-right: 1rem;">
+                            <div class="jt-alert__icon">ⓘ</div>
+                            <div class="jt-alert__content">
+                                <div class="jt-alert__description">모든 필수 항목을 입력해주세요</div>
+                            </div>
+                        </div>
+                        <div class="jt-flex">
+                            <button type="button" class="jt-btn jt-btn--secondary">미리보기</button>
+                            <button type="submit" class="jt-btn jt-btn--primary">작업 주문</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 검색 및 필터 폼 -->
+        <section class="demo-section">
+            <h2 class="demo-title">작업 내역 검색</h2>
+            <div class="jt-card">
+                <div class="jt-card__body">
+                    <form class="jt-flex jt-flex--col">
+                        <div class="jt-grid jt-grid--4">
+                            <div class="jt-input">
+                                <label class="jt-input__label">검색어</label>
+                                <input type="text" class="jt-input__field jt-input__field--sm" placeholder="고객명, 작업내용 등">
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label">작업 상태</label>
+                                <select class="jt-input__field jt-input__field--sm">
+                                    <option value="">전체</option>
+                                    <option value="pending">대기중</option>
+                                    <option value="in-progress">진행중</option>
+                                    <option value="completed">완료</option>
+                                    <option value="cancelled">취소</option>
+                                </select>
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label">시작일</label>
+                                <input type="date" class="jt-input__field jt-input__field--sm">
+                            </div>
+
+                            <div class="jt-input">
+                                <label class="jt-input__label">종료일</label>
+                                <input type="date" class="jt-input__field jt-input__field--sm">
+                            </div>
+                        </div>
+
+                        <div class="jt-flex jt-flex--center" style="margin-top: 1rem;">
+                            <button type="button" class="jt-btn jt-btn--ghost">초기화</button>
+                            <button type="submit" class="jt-btn jt-btn--primary">
+                                <span>검색</span>
+                                <span>🔍</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 폼 검증 예제 -->
+        <section class="demo-section">
+            <h2 class="demo-title">폼 검증 상태</h2>
+            <div class="jt-grid jt-grid--2">
+                <div class="jt-card">
+                    <div class="jt-card__header">
+                        <h3 class="jt-card__title">오류 상태</h3>
+                    </div>
+                    <div class="jt-card__body">
+                        <div class="jt-input">
+                            <label class="jt-input__label jt-input__label--required">필수 입력 필드</label>
+                            <input type="text" class="jt-input__field jt-input__field--error" value="">
+                            <span class="jt-input__error">이 필드는 필수 입력 항목입니다</span>
+                        </div>
+
+                        <div class="jt-input">
+                            <label class="jt-input__label">이메일 형식</label>
+                            <input type="email" class="jt-input__field jt-input__field--error" value="invalid-email">
+                            <span class="jt-input__error">올바른 이메일 형식이 아닙니다</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="jt-card">
+                    <div class="jt-card__header">
+                        <h3 class="jt-card__title">성공 알림</h3>
+                    </div>
+                    <div class="jt-card__body">
+                        <div class="jt-alert jt-alert--success">
+                            <div class="jt-alert__icon">✓</div>
+                            <div class="jt-alert__content">
+                                <div class="jt-alert__title">저장 완료</div>
+                                <div class="jt-alert__description">고객 정보가 성공적으로 등록되었습니다.</div>
+                            </div>
+                        </div>
+
+                        <div class="jt-alert jt-alert--warning">
+                            <div class="jt-alert__icon">⚠</div>
+                            <div class="jt-alert__content">
+                                <div class="jt-alert__title">주의</div>
+                                <div class="jt-alert__description">일부 선택사항이 비어있습니다.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 간단한 폼 상호작용 예제
+        document.addEventListener('DOMContentLoaded', function() {
+            // 전화번호 자동 포매팅
+            const phoneInputs = document.querySelectorAll('input[type="tel"]');
+            phoneInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 3 && value.length <= 7) {
+                        value = value.replace(/(\d{3})(\d{1,4})/, '$1-$2');
+                    } else if (value.length > 7) {
+                        value = value.replace(/(\d{3})(\d{4})(\d{1,4})/, '$1-$2-$3');
+                    }
+                    e.target.value = value;
+                });
+            });
+
+            // 실시간 폼 검증 예제
+            const requiredInputs = document.querySelectorAll('input[required]');
+            requiredInputs.forEach(input => {
+                input.addEventListener('blur', function(e) {
+                    if (!e.target.value.trim()) {
+                        e.target.classList.add('jt-input__field--error');
+                    } else {
+                        e.target.classList.remove('jt-input__field--error');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

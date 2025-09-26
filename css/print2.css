@@ -1,0 +1,25 @@
+@CHARSET "UTF-8";
+@media print {
+    #Head {display:none;}
+    div.manage{display:none;}
+    div.bottom{display:none;}
+    div.segmental{margin-top:0px;}
+    div.composition{margin-top:0px;}
+}
+
+@media print{@page {size: portrait}}
+
+@page {
+    size: portrait;
+    page-break-after: always; 
+    counter-increment: page;
+
+    @top-center {
+        content: "Headline, yo!"
+    }
+
+    @bottom-right {
+        counter-increment: page;
+        content: "Page " counter(page);
+    }
+}

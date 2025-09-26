@@ -1,0 +1,25 @@
+[
+  {
+    "key": "ctrl+alt+q",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Git: Quick Commit"
+  },
+  {
+    "key": "ctrl+enter",
+    "command": "scm.acceptInput",
+    "when": "scmProvider"
+  },
+  {
+    "key": "ctrl+alt+s",
+    "command": "git.stageAll"
+  },
+  {
+    "key": "ctrl+alt+c",
+    "command": "git.commitAllWithInput"
+  },
+  {
+    "key": "ctrl+alt+p",
+    "command": "git.push"
+  }
+]
+

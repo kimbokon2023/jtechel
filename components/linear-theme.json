@@ -1,0 +1,338 @@
+{
+  "name": "Linear Theme",
+  "description": "Design system extracted from Linear.app website",
+  "version": "1.0.0",
+  "source": "https://linear.app",
+  "extractedAt": "2025-01-13",
+  
+  "colors": {
+    "brand": {
+      "primary": "#7170ff",
+      "primaryHover": "#8989f0",
+      "primaryTint": "#f1f1ff"
+    },
+    "semantic": {
+      "white": "#fff",
+      "black": "#000",
+      "blue": "#4ea7fc", 
+      "red": "#eb5757",
+      "green": "#4cb782",
+      "orange": "#fc7840",
+      "yellow": "#f2c94c",
+      "indigo": "#5e6ad2"
+    },
+    "text": {
+      "primary": "#282a30",
+      "secondary": "#3c4149", 
+      "tertiary": "#6f6e77",
+      "quaternary": "#86848d"
+    },
+    "background": {
+      "primary": "#fff",
+      "secondary": "#f9f8f9",
+      "tertiary": "#f4f2f4",
+      "quaternary": "#eeedef",
+      "marketing": "#010102",
+      "translucent": "rgba(0,0,0,.02)",
+      "quinary": "#e9e8ea"
+    },
+    "border": {
+      "primary": "#e9e8ea",
+      "secondary": "#e4e2e4", 
+      "tertiary": "#dcdbdd",
+      "translucent": "rgba(0,0,0,.05)"
+    },
+    "link": {
+      "primary": "#7070ff",
+      "hover": "var(--color-text-primary)"
+    },
+    "focus": {
+      "ring": "#5e6ad2",
+      "ringWidth": "2px",
+      "ringOffset": "2px"
+    }
+  },
+
+  "typography": {
+    "fontFamilies": {
+      "regular": "\"Inter Variable\", \"SF Pro Display\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif",
+      "serif": "\"Tiempos Headline\", ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif",
+      "monospace": "\"Berkeley Mono\", ui-monospace, \"SF Mono\", \"Menlo\", monospace",
+      "emoji": "\"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Segoe UI\", \"Twemoji Mozilla\", \"Noto Color Emoji\", \"Android Emoji\""
+    },
+    "fontWeights": {
+      "light": 300,
+      "normal": 400,
+      "medium": 510,
+      "semibold": 590,
+      "bold": 680
+    },
+    "fontSizes": {
+      "tiny": "0.625rem",
+      "micro": "0.75rem", 
+      "mini": "0.8125rem",
+      "small": "0.875rem",
+      "regular": "0.9375rem",
+      "large": "1.125rem",
+      "title3": "1.25rem",
+      "title2": "1.5rem", 
+      "title1": "2.25rem"
+    },
+    "headings": {
+      "h1": {
+        "fontSize": "4rem",
+        "fontWeight": 510,
+        "lineHeight": "1.06",
+        "letterSpacing": "-0.022em"
+      },
+      "h2": {
+        "fontSize": "3.5rem",
+        "fontWeight": 538, 
+        "lineHeight": "1.1",
+        "letterSpacing": "-0.022em"
+      },
+      "h3": {
+        "fontSize": "1.3125rem",
+        "fontWeight": 510,
+        "lineHeight": "1.33",
+        "letterSpacing": "-0.012em"
+      },
+      "h4": {
+        "fontSize": "0.875rem",
+        "fontWeight": 510,
+        "lineHeight": "1.5",
+        "letterSpacing": "-0.013em"
+      }
+    },
+    "body": {
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "lineHeight": "1.5",
+      "letterSpacing": "normal"
+    }
+  },
+
+  "spacing": {
+    "system": {
+      "xs": "4px",
+      "sm": "8px", 
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "2xl": "48px",
+      "3xl": "64px"
+    },
+    "layout": {
+      "pageMaxWidth": "1024px",
+      "proseMaxWidth": "624px",
+      "headerHeight": "64px",
+      "pagePaddingInline": "24px",
+      "pagePaddingBlock": "64px"
+    }
+  },
+
+  "borderRadius": {
+    "none": "0px",
+    "sm": "4px",
+    "default": "6px",
+    "md": "8px", 
+    "lg": "12px",
+    "xl": "16px",
+    "2xl": "24px",
+    "3xl": "32px",
+    "full": "9999px",
+    "circle": "50%"
+  },
+
+  "shadows": {
+    "none": "0px 0px 0px transparent",
+    "tiny": "0px 1px 1px 0px rgba(0,0,0,.09)",
+    "low": "0px 2px 4px rgba(0,0,0,.1)", 
+    "medium": "0px 4px 24px rgba(0,0,0,.2)",
+    "high": "0px 7px 32px rgba(0,0,0,.35)",
+    "stack": "0px -1px 1px 0px rgba(0,0,0,.11) inset, 0px 8px 2px 0px transparent, 0px 5px 2px 0px rgba(0,0,0,.01), 0px 3px 2px 0px rgba(0,0,0,.04), 0px 1px 1px 0px rgba(0,0,0,.07), 0px 0px 1px 0px rgba(0,0,0,.08)"
+  },
+
+  "transitions": {
+    "duration": {
+      "none": "0s",
+      "fast": "0.1s", 
+      "normal": "0.25s",
+      "slow": "0.4s"
+    },
+    "easing": {
+      "linear": "linear",
+      "easeIn": "cubic-bezier(0.55, 0.085, 0.68, 0.53)",
+      "easeOut": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      "easeInOut": "cubic-bezier(0.455, 0.03, 0.515, 0.955)"
+    }
+  },
+
+  "zIndex": {
+    "hide": -1,
+    "base": 0,
+    "docked": 10,
+    "dropdown": 1000,
+    "sticky": 1100,
+    "banner": 1200,
+    "overlay": 1300,
+    "modal": 1400,
+    "popover": 1500,
+    "skipLink": 1600,
+    "toast": 1700,
+    "tooltip": 1800
+  },
+
+  "components": {
+    "button": {
+      "primary": {
+        "backgroundColor": "var(--color-brand-primary)",
+        "color": "white",
+        "border": "1px solid transparent",
+        "borderRadius": "8px",
+        "padding": "8px 16px",
+        "fontSize": "0.8125rem",
+        "fontWeight": 510,
+        "transition": "all 0.16s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        "cursor": "pointer",
+        "hover": {
+          "backgroundColor": "var(--color-brand-primary-hover)"
+        }
+      },
+      "secondary": {
+        "backgroundColor": "rgb(230, 230, 230)",
+        "color": "rgb(8, 9, 10)",
+        "border": "1px solid rgb(230, 230, 230)",
+        "borderRadius": "8px",
+        "padding": "8px 16px", 
+        "fontSize": "0.8125rem",
+        "fontWeight": 510,
+        "cursor": "pointer"
+      }
+    },
+    "navigation": {
+      "height": "64px",
+      "backgroundColor": "transparent",
+      "backdropFilter": "blur(20px)",
+      "borderBottom": "1px solid var(--color-border-translucent)",
+      "padding": "0 24px",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "space-between"
+    },
+    "card": {
+      "backgroundColor": "var(--color-bg-primary)",
+      "border": "1px solid var(--color-border-primary)",
+      "borderRadius": "12px",
+      "padding": "24px",
+      "boxShadow": "var(--shadow-low)"
+    },
+    "input": {
+      "backgroundColor": "var(--color-bg-primary)",
+      "border": "1px solid var(--color-border-primary)",
+      "borderRadius": "8px", 
+      "padding": "12px 16px",
+      "fontSize": "0.9375rem",
+      "lineHeight": "1.5",
+      "focus": {
+        "borderColor": "var(--color-brand-primary)",
+        "outline": "2px solid var(--color-focus-ring)",
+        "outlineOffset": "2px"
+      }
+    }
+  },
+
+  "breakpoints": {
+    "sm": "640px",
+    "md": "768px", 
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+
+  "layout": {
+    "container": {
+      "maxWidth": "1024px",
+      "padding": "0 24px",
+      "margin": "0 auto"
+    },
+    "grid": {
+      "columns": 12,
+      "gap": "24px"
+    }
+  },
+
+  "accessibility": {
+    "focusRing": {
+      "color": "var(--color-focus-ring)",
+      "width": "2px",
+      "offset": "2px",
+      "style": "solid"
+    },
+    "minTapTarget": "44px",
+    "colorContrast": {
+      "aa": "4.5:1",
+      "aaa": "7:1"
+    }
+  },
+
+  "customProperties": {
+    "cssVariables": {
+      "--linear-brand-primary": "#7170ff",
+      "--linear-brand-primary-hover": "#8989f0", 
+      "--linear-brand-primary-tint": "#f1f1ff",
+      "--linear-text-primary": "#282a30",
+      "--linear-text-secondary": "#3c4149",
+      "--linear-text-tertiary": "#6f6e77",
+      "--linear-bg-primary": "#fff",
+      "--linear-bg-secondary": "#f9f8f9",
+      "--linear-border-primary": "#e9e8ea",
+      "--linear-radius-sm": "4px",
+      "--linear-radius-md": "8px",
+      "--linear-radius-lg": "12px",
+      "--linear-spacing-sm": "8px",
+      "--linear-spacing-md": "16px", 
+      "--linear-spacing-lg": "24px",
+      "--linear-shadow-low": "0px 2px 4px rgba(0,0,0,.1)",
+      "--linear-transition-fast": "0.1s",
+      "--linear-transition-normal": "0.25s"
+    }
+  },
+
+  "darkMode": {
+    "colors": {
+      "text": {
+        "primary": "#f7f8f8",
+        "secondary": "#b4b6bb",
+        "tertiary": "#8a8f98",
+        "quaternary": "#6f7481"
+      },
+      "background": {
+        "primary": "#101012",
+        "secondary": "#1a1a1d",
+        "tertiary": "#26262a"
+      },
+      "border": {
+        "primary": "#3a3a3f",
+        "secondary": "#2e2e33",
+        "tertiary": "#404049"
+      }
+    },
+    "scrollbar": {
+      "color": "hsla(0,0%,100%,.1)",
+      "colorHover": "hsla(0,0%,100%,.2)",
+      "colorActive": "hsla(0,0%,100%,.4)"
+    }
+  },
+
+  "usage": {
+    "description": "Linear design system theme for modern web applications",
+    "installation": "Import this JSON file and apply the CSS custom properties to your project root",
+    "frameworks": ["React", "Vue", "Angular", "Vanilla CSS", "Tailwind CSS"],
+    "examples": {
+      "css": ":root { --color-brand-primary: var(--linear-brand-primary); }",
+      "tailwind": "Configure in tailwind.config.js theme.extend section",
+      "reactCSS": "Apply as CSS-in-JS object or CSS custom properties"
+    }
+  }
+}

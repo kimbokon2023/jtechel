@@ -1,0 +1,56 @@
+#aa {
+	float:left;
+	width:600px;
+	height:40px;
+}
+.aa1{
+	float:left;
+	font-size:18px;
+	font-weight:bold;
+	width:500px;
+	height:40px;	
+}
+.aa2{
+	float:left;
+	width:60px;
+}
+.aa3{
+	float:left;
+	width:50px;
+	margin-left:20px;
+}
+
+#cc {
+	float:left;
+	width:1000px;
+	height:600px;
+}
+.c1 {
+	float:left;
+	font-size:14px;
+	width:200px;
+	height:30px;
+	border:solid 1px grey; 
+	padding:3px;
+}
+
+.c2 {
+	float:left;
+	font-size:14px;
+	color:blue;
+	font-weight:bold;
+	width:100px;
+	height:30px;
+	margin-left:5px;
+		padding:3px;
+}
+
+.c3 {
+	float:left;
+	font-size:16px;
+	color:blue;
+	font-weight:bold;
+	width:50px;	
+	height:20px;
+    text-align:center;
+}

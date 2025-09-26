@@ -1,0 +1,40 @@
+name: Deploy to Gabia via FTP
+
+on:
+  push:
+    branches: ["main"]   # main 브랜치에 push될 때만 배포
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ftp-deploy
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Cafe24 via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:      ${{ secrets.FTP_SERVER }}
+          username:    ${{ secrets.FTP_USERNAME }}
+          password:    ${{ secrets.FTP_PASSWORD }}
+          port:        ${{ secrets.FTP_PORT }}
+          protocol:    ftp
+          server-dir:  ${{ secrets.FTP_REMOTE_DIR }}/
+          local-dir:   ./        # jtechel 전체 업로드
+          exclude: |
+            **/lib/**
+            **/.git*
+            **/.github/**
+            **/.vscode/**
+            **/node_modules/**
+            **/tests/**
+            **/*.md
+            **/*.yml
+            **/*.yaml
+            **/*.lock
+            **/.DS_Store
+            **/README*
