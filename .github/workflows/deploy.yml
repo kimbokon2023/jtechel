@@ -1,4 +1,4 @@
-name: Deploy to Gabia via FTP
+name: Deploy to j-techel.co.kr via FTP
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Cafe24 via FTP
+      - name: Deploy to j-techel.co.kr via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server:      ${{ secrets.FTP_SERVER }}
