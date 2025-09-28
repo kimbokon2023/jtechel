@@ -1,0 +1,70 @@
+# 0) 기본: 전부 무시
+*
+
+# 1) 디렉터리 탐색 허용(중요)
+!*/
+
+# 2) 레포/CI에 필요한 파일 허용
+!.gitignore
+!.gitattributes
+!README.md
+!.github/
+!.github/workflows/
+!.github/workflows/deploy.yml
+!*.yml
+!*.yaml
+
+# 3) 소스/정적파일 허용(확장자)
+!*.php
+!*.js
+!*.css
+!*.json
+!*.ini
+!*.html
+!*.htm
+!*.map          # 필요 시만
+!*.png
+!*.jpg
+!*.jpeg
+!*.gif
+!*.svg
+!*.ico
+!*.webp
+!*.woff
+!*.woff2
+!*.ttf
+!*.eot
+!*.otf
+
+# 4) 서버 설정 파일(배포 루트인 www/ 안의 것만 허용)
+!www/.htaccess
+!www/.user.ini
+!www/php.ini
+
+# 5) 빈 폴더 보존용 .gitkeep 허용
+!.gitkeep
+!www/.gitkeep
+!www/jtech/.gitkeep
+!www/mywork/.gitkeep
+!www/game/.gitkeep
+!www/os/.gitkeep
+
+# 6) (빌드용) 패키지 매니저 파일이 www에 있다면 허용
+!www/package.json
+!www/package-lock.json
+!www/pnpm-lock.yaml
+!www/yarn.lock
+
+# 7) 반드시 무시할 폴더/파일(맨 아래에 위치: 우선순위 ↑)
+lib/
+.vscode/
+.claude/
+.cursor/
+.idea/
+.history/
+.cache/
+node_modules/
+vendor/          # *서버에서 composer를 못 돌리면 이 줄은 제거하고 Actions에서 빌드 후 업로드하세요
+uploads/
+storage/
+_mirror_*.git/

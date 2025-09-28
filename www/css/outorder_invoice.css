@@ -1,0 +1,426 @@
+/* @end */
+.img{
+     position: absolute;
+    background-image: url(http://8440.co.kr/img/order_sheet1.jpg);                                                               
+    width: 1300px;
+    height: 1840px;
+    /* background-size: cover; */
+}
+/* .img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+} */
+.img .content{
+     position: absolute;
+	 top:0px;
+	 left:0px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 3px 5px;
+  text-align: center;
+  font-weight:bold;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 1px 1px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: DodgerBlue;} /* DodgerBlue */ 
+.button5 {background-color: Tomato;} 
+.button6 {background-color: Orange;} 
+.button7 {background-color: Gray;} 
+.button8 {background-color: MediumSeaGreen;} /* MediumSeaGreen */
+
+#outlineprint {     /* 화면출력 전체사이즈  */ 
+	width:1300px;
+	height:1840px;
+	float:left;
+}
+
+
+#row1 #col1{     /* 화면 출력 1행 1열 */  
+	width:300px;
+	height:50px;
+	float:left;
+	margin-left:30px;
+	margin-top:280px; 
+    font-size:35px;	
+	text-align:center;			
+}
+#row1 #col2{     /* 화면 출력 1행 2열 */  
+	width:500px;			
+	height:50px;
+	float:left;
+	margin-left:300px;
+	margin-top:280px;  
+    font-size:30px;		
+	text-align:center;				
+}
+
+
+
+#row2 {     /* 화면 출력 2행  */ 
+	width:250px;
+	height:50px;
+	float:left;
+	margin-left:200px;	
+	margin-top:20px;  	
+    font-size:25px;	
+	text-align:left;	
+}
+#row3 {     /* 화면 출력 3행  */ 
+	width:500px;
+	height:50px;
+	float:left;
+	margin-left:200px;
+	margin-top:5px; 
+    font-size:22px;	
+	text-align:left;		
+}
+#row4 {     /* 화면 출력 4행  */ 
+	width:1500px;
+	height:40px;
+	float:left;
+	margin-left:10px;
+	margin-top:210px; 
+    font-size:25px;	
+	text-align:center;	
+}
+
+#space1 {
+	width:100px;
+	height:55px;
+	margin-left:10px;
+	margin-top:310px;	
+}	
+
+#row4 #col1{     /* 화면 출력 4행 1열 */  
+	width:50px;
+	height:48px;
+	float:left;
+	margin-left:55px;	
+	text-align:center;	
+    font-size:22px;		
+}
+#row4 #col2{     /* 화면 출력 4행 2열 */  
+	width:145px;	
+	float:left;
+	text-align:left;	
+}
+#row4 #col3{     /* 화면 출력 4행 3열 */  
+	width:180px;
+	float:left;
+	text-align:left;	
+    font-size:20px;			
+}
+#row4 #col4{     /* 화면 출력 4행 4열 */  
+	width:250px;
+	float:left;
+	text-align:left;
+    font-size:20px;			
+}
+#row4 #col5{    
+	width:65px;
+	float:left;
+	text-align:center;
+	font-size:20px;			
+}
+#row4 #col6{    
+	width:65px;
+	float:left;
+	text-align:center;
+	font-size:20px;			
+}
+#row4 #col7{    
+	width:140px;
+	float:left;
+	text-align:left;
+    font-size:20px;			
+}
+#row4 #col8{    
+	width:300px;
+	float:left;
+	text-align:left;
+    font-size:20px;		
+}
+
+#row5 {     /* 화면 출력 4행  */ 
+	width:1500px;
+	height:55px;
+	float:left;
+	margin-left:150px;
+	margin-top:540px; 
+    font-size:25px;	
+	text-align:left;	
+}
+
+#row5 #col1{     /* 화면 출력 5행 1열 */  
+	width:1400px;
+	height:55px;
+	float:left;
+	margin-left:60px;	
+}
+
+#drawimg {
+	float:left;
+	width:700px;
+    height:100px;
+}
+#draw{
+	float:left;
+	width:1px;
+    height:1px;
+    font-size:10px;	
+}
+#drawbottom11 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;
+	text-align:center;	
+	font-weight:bold;
+}
+#drawbottom22 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+	
+}
+#drawbottom33 {
+	float:left;
+	width:240px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+	
+}
+#drawbottom1 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+}
+#drawbottom2 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;
+}
+#drawbottom3 {
+	float:left;
+	width:240px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;
+}
+#display_result {
+	float:left;	
+	width:1500px;	
+	height:500px;	
+    color:black;
+	font-size:12px;
+	font-weight:bold;	
+    text-align:left;
+}
+
+#display_result #ares1 { 
+	float:left;	
+	width:50px;	
+	height:30px;	
+	margin-left:50px;	
+	text-align:center;
+	border-bottom:solid 1px #444444;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #ares2 {
+	float:left;	
+	width:120px;	
+	height:30px;	
+	border-bottom:solid 1px #444444;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #ares3 {
+	float:left;	
+	width:850px;	
+	height:30px;	
+	border-bottom:solid 1px #575748;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #res1 {
+	float:left;	
+	width:40px;	
+	height:130px;	
+	text-align:center;
+	margin-left:60px;		
+	border-bottom:solid 1px #575748;		
+    font-size:16px;	
+	font-weight:bold;		
+}
+#display_result #res2 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #res3 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #firstoutline {
+	float:left;	
+	width:140px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+}
+#display_result #fres1 {
+	float:left;	
+	width:140px;
+	height:60px;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #fres2 {
+	float:left;	
+	width:140px;
+	height:70px;	
+    font-size:16px;	
+	font-weight:bold;		
+}
+/* 파일저장부분의 CSS */
+#display_result #printres1 {
+	float:left;	
+	width:40px;	
+	height:130px;	
+	text-align:center;
+	margin-left:60px;		
+	border-bottom:solid 1px #575748;		
+    font-size:16px;	
+	font-weight:bold;		
+}
+#display_result #printres2 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #printres3 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #firstoutline {
+	float:left;	
+	width:160px;	
+	height:130px;		
+    margin-left:20px;
+	border-bottom:solid 1px #575748;		
+}
+#display_result #fprintres1 {
+	float:left;	
+	width:145px;
+	height:60px;	
+    font-size:19px;	
+    margin-left:20px;	
+	font-weight:bold;		
+}
+#display_result #fprintres2 {
+	float:left;	
+	width:145px;
+	height:68px;	
+    margin-left:20px;	
+    font-size:16px;	
+	font-weight:bold;		
+}
+
+
+
+#display_result #outline {
+	float:left;	
+	width:700px;	
+	height:130px;	
+}
+#display_result #outline #res4 {
+	float:left;	
+	height:100px;	
+}
+
+#display_result #outline #res5 {
+	float:left;	
+	width:230px;	
+	height:30px;	
+	border-bottom:solid 1px #575748;	
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#display_result #outline #res6 {
+	float:left;	
+	width:230px;	
+	height:30px;	
+	text-align:right;
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#display_result #outline #res7 {
+	float:left;	
+	width:240px;	
+	height:30px;	
+	text-align:right;
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#containers {     
+    width:1100px;
+	height:730px;
+	float:left;
+} 
+

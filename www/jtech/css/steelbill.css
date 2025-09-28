@@ -1,0 +1,196 @@
+/* @end */
+.img{
+    position: absolute;
+    background-image: url(http://8440.co.kr/woosung/img/steelbill.jpg);                                                               
+    width: 1250px;
+    height: 1800px;
+    /* background-size: cover; */
+}
+
+/* .img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+} */
+
+.img .content{
+     position: absolute;
+	 top:0px;
+	 left:0px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 3px 5px;
+  text-align: center;
+  font-weight:bold;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 1px 1px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: DodgerBlue;} /* DodgerBlue */ 
+.button5 {background-color: Tomato;} /* Black */
+.button6 {background-color: Orange;} /* Black */
+.button7 {background-color: Gray;} /* Black */
+.button8 {background-color: MediumSeaGreen;} /* MediumSeaGreen */
+
+#outlineprint {     /* 화면출력 전체사이즈  */ 
+	width:1300px;
+	height:1840px;
+	float:left;
+}
+
+#row1 {     /* 년도 월 출력 1행  */ 
+	width:200px;
+	height:50px;
+	float:left;
+	margin-left:380px;
+	margin-top:158px; 
+    font-size:30px;	
+	text-align:center;
+}
+
+#row2 {     /* 화면 출력 2행 공사명 */ 
+	width:320px;
+	height:45px;
+	float:left;
+	margin-left:160px;
+	margin-top:175px; 
+    font-size:25px;	
+	text-align:left;
+}
+
+
+#row3 {   /* 화면 출력 3행 합계금액 */ 
+	width: 420px;
+	height: 45px;
+	float: left;
+	margin-left: 180px;
+	margin-top: 75px; 
+    font-size: 22px;	
+	text-align: left;
+}
+
+#row4 {     /* 화면 출력 4행   공백 */ 
+	margin-top:150px;  
+}
+
+#row5{     /*  세부내역 */ 
+	width:1195px;
+	height:35px;
+	float:left;
+	margin-left:10px;
+	margin-top:13px; 
+    font-size:18px;	
+	text-align:center;	
+}
+
+#row5 #col1{     
+	width:110px;	
+	float:left;
+	margin-left:40px;	    
+	text-align:center;	    
+}
+
+#row5 #col2{     
+	width:260px;	
+	float:left;
+	margin-left:10px;	
+	font-size:15px;			
+	text-align:left;	    
+}
+
+#row5 #col3{     
+	width:80px;	
+	float:left;		
+	text-align:right;		
+}
+
+#row5 #col4{     
+	width:110px;	
+	float:left;	    	    
+	text-align:right;			
+}
+#row5 #col5{     
+	width:120px;	
+	float:left;	
+	text-align:right;			
+}
+#row5 #col6{     
+	width:130px;	
+	float:left;		
+	text-align:right;			
+}
+#row5 #col7{     
+	width:170px;	
+	float:left;		
+	text-align:right;			
+}
+#row5 #col8{     
+	width:100px;	
+	float:left;		
+	text-align:left;	
+	margin-left:20px;
+}
+
+#row6 {     /* 화면 출력  공백 */ 
+	margin-top:-30px;  
+}
+
+#row7{     /*  세부내역 */ 
+	width:1195px;
+	height:35px;
+	float:left;
+	margin-left:10px;	
+    font-size:18px;	
+	text-align:center;	
+}
+
+#row7 #col1{     
+	width:120px;	
+	float:left;
+	margin-left:610px;	    
+	text-align:right;	    
+}
+
+#row7 #col2{     
+	width:130px;	
+	float:left;
+	margin-left:10px;		
+	text-align:right;	    
+}
+
+#row7 #col3{     
+	width:170px;	
+	float:left;		
+	text-align:right;		
+}
+
+
+
+#drawimg {
+	float:left;
+	width:700px;
+    height:100px;
+}
+#draw{
+	float:left;
+	width:1px;
+    height:1px;
+    font-size:10px;	
+}

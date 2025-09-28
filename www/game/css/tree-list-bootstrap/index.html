@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.4.1/flatly/bootstrap.min.css">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="dist/css/bstreeview.min.css" rel="stylesheet">
+  <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+  <style>
+    body { background: #fafafa; font-family: 'Roboto Condensed'; }
+    .container { margin: 150px auto; }
+  </style>
+  <title>Bootstrap Tree List Plugin Example</title>
+</head>
+
+<body><div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="https://www.jqueryscript.net/other/tree-list-bootstrap.html">Download This Plugin</a></li>
+<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul><div id="carbon-block"></div>
+
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+  <div class="container">
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+			<h1>Bootstrap Tree List Plugin Example</h1>
+        </div>
+      </div>
+        <div class="col-md-4 pt-5">
+          <div id="tree">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+
+  <script src="dist/js/bstreeview.min.js">
+  </script>
+  <script>
+ $(function() {
+      var json = [{
+        text: "경원메탈",
+        icon: "fa fa-building",
+        seq: 99999,
+        nodes: [{
+            text: "H/Door일반",
+            icon: "fa fa-users",
+            nodes: [{
+                icon: "fa fa-user-friends",
+                text: "규격 OP 900x2100",
+                seq: 11231,
+                nodes: [{
+                  icon: "fa fa-user-friends",
+                  text: "납기일 00 제조일 00 정산일 00",
+                  seq: 11231,
+                }, {
+                  icon: "fa fa-user-friends",
+                  text: "영업1-2팀",
+                  seq: 2123123,
+                }]
+              },
+
+              {
+                icon: "fa fa-user-friends",
+                text: "영업2팀",
+                seq: 9999,
+              }
+            ]
+          },
+          {
+            icon: "fa fa-users",
+            text: "기술부"
+          },
+          {
+            icon: "fa fa-users",
+            text: "경영지원팀"
+          },
+        ]
+      }, {
+        text: "회사2",
+        icon: "fa fa-building",
+        seq: 999999,
+        nodes: [{
+            icon: "fa fa-users",
+            text: "팀1"
+          },
+          {
+            icon: "fa fa-users",
+            text: "팀2"
+          },
+        ]
+      }];
+
+      console.log(json);
+
+      $('#tree').bstreeview({
+        //indent: 2,
+        expandIcon: 'fa fa-angle-down',
+        collapseIcon: 'fa fa-angle-right',
+        data: JSON.stringify(json)
+      });
+    });
+
+
+
+</script>
+</body>
+</html>

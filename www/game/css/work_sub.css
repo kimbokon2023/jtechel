@@ -1,0 +1,579 @@
+#list_top_title {
+	height:35px;
+	width:1800px;
+	padding:8px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:5px;
+	margin-bottom:2px;
+	font-size:13px;
+}
+
+#list_top_title li {
+	display:inline;
+}
+
+#list_top_title #list_title1 {
+	margin-left:5px;
+}
+
+#list_top_title #list_title2 {
+	margin-left:30px;
+}
+
+#list_top_title #list_title3 {
+	margin-left:40px;
+}
+
+#list_top_title #list_title4 {   /*현장명*/
+	margin-left:70px;
+	margin-right:100px;
+}
+
+
+#list_top_title #list_title5 {   
+	margin-left:20px;
+}
+#list_top_title #list_title6 {   /*도면작성일*/
+	margin-left:5px;
+}
+#list_top_title #list_title7 {   /*재질*/
+	margin-left:100px;
+}
+#list_top_title #list_title8 {  /* 원청 */
+	margin-left:60px;
+}
+#list_top_title #list_title9 {    /* 발주처 */
+	margin-left:80px;
+}
+#list_top_title #list_title10 {
+	margin-left:50px;
+}
+#list_top_title #list_title11 {
+	margin-left:70px;
+}
+
+#list_top_title #list_title12 {
+	margin-left:130px;
+}
+#list_top_title #list_title13 {    /*설계*/
+	margin-left:40px;
+}
+#list_top_title #list_title14 {   /*청구*/
+	margin-left:52px;
+}
+
+
+#outlist_top_title {
+	height:50px;
+	padding:4px;  
+	margin:2px;
+	padding-top:5px;
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	font-weight:bold;
+}
+
+#outlist_top_title li {
+	display:inline-block;
+}
+
+#outlist_top_title #outlist_title1 {
+	width:40px;
+	text-align:left;
+}
+
+#outlist_top_title #outlist_title2 {
+	width:320px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title3 {
+	width:120px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title4 {
+	width:100px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title5 {
+	width:100px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title6 {
+	width:100px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title7 {
+	width:130px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title11 {
+	margin-left:-10px;
+}
+
+#list_content {
+	height:600px;
+	width:100%;
+}
+
+#list_content_new {
+	height:800px;
+	width:100%;
+}
+
+#subject_item {
+	width:1800px;
+	height:22px;
+	margin:3px;
+	padding:4px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#subject_item #subject_item1{
+	float:left;
+	width:50px;
+	text-align:center;
+}
+
+#subject_item #subject_item2{
+	float:left;
+	width:70px;
+    margin-left:10px;		
+	text-align:center;	
+}
+
+#subject_item #subject_item3{
+
+	float:left;
+	width:70px;
+    margin-left:10px;		
+	text-align:center;
+}
+
+#subject_item #subject_item4{
+	float:left;
+	overflow:hidden;	
+	width:200px;
+    margin-left:10px;		
+	text-align:left;
+}
+
+#subject_item #subject_item5{ 
+	float:left;
+	width:80px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#subject_item #subject_item6{
+	float:left;
+	width:80px;
+    margin-left:5px;		
+	text-align:center;
+}
+#subject_item #subject_item7{
+	float:left;
+	width:200px;
+	overflow:hidden;	
+    margin-left:2px;		
+	text-align:center;
+}
+#subject_item #subject_item8{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item9{
+	float:left;
+	width:80px;
+    margin-left:5px;		
+	text-align:center;
+}
+#subject_item #subject_item10{
+	float:left;
+	width:80px;
+    margin-left:5px;		
+	text-align:center;
+}
+#subject_item #subject_item11{
+	float:left;
+	width:150px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item12{
+	float:left;
+	overflow:hidden;
+	width:260px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item13{
+	float:left;
+	width:80px;
+    margin-left:10px;		
+	text-align:left;	
+}
+#subject_item #subject_item14{
+	float:left;
+	width:80px;
+    margin-left:5px;		
+	text-align:center;	
+}
+#subject_item #subject_item15{
+	float:left;
+	overflow:hidden;	
+	width:30px;
+    margin-left:5px;		
+	text-align:center;	
+}
+#subject_item #subject_item21{
+	float:left;
+	overflow:hidden;	
+	width:45px;
+    margin-left:-1px;	
+	text-align:center;
+}
+
+#sub_item {
+	width:1300px;
+	height:22px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:11px;
+	font-weight:normal;
+}
+
+#sub_item1{
+	float:left;
+	width:40px;
+	text-align:left;	
+}
+
+#sub_item2{
+	float:left;
+	width:320px;
+	text-align:left;	
+	
+}
+
+#sub_item3{
+	float:left;
+	width:130px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item4{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item5{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item6{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+#sub_item7{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+#sub_item8{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#list_item {
+	height:20px;
+	margin-top:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#list_item #list_item1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#list_item #list_item2{
+	float:left;
+	width:560px;
+}
+
+#list_item #list_item3{
+	float:left;
+	width:65px;
+	text-align:center;
+}
+
+#list_item #list_item4{
+	float:left;
+	width:80px;
+	text-align:center;
+}
+
+#list_item #list_item5{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+
+#output_top_title {
+	width:1000px;
+	height:30px;
+	padding:2px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:2px;
+	margin-bottom:1px;
+	font-size:11px;	
+	font-weight:normal;	
+}
+
+#output_title1 {
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#output_title2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+
+#output_title3 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title33 {      /* 접수상태 타이틀 */
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:1px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title7 {           /* 현장명 */
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title8 {     /* 수신처  */
+	width:120px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;	
+}
+ #output_title9 {   /* 주소 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#output_title10 {  /* 연락처 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:15px;
+    float:left;
+	text-align:center;
+}
+#output_title12 {  /* 비고 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+#output_title13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+#list_content_copy {
+	height:600px;
+	width:1000px;
+}
+
+#outlist_item {
+	overflow:hidden;
+	width:1070px;
+	height:23px;
+	margin:3px;
+	padding:5px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:10px;	
+	font-weight:normal;		
+}
+
+#outlist_item1 {
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;	
+}
+
+#outlist_item2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#outlist_item3 {
+	width:70px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+
+#outlist_item33  {      /* 접수상태 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		 
+}
+
+#outlist_item4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item7 {
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#outlist_item8 {     /* 수신처 타이틀 */
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+ #outlist_item9 {   /* 수신처 주소 */
+	width:200px;
+	overflow:hidden;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+#outlist_item10 {  /* 연락처 */
+	width:90px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#outlist_item11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+}
+#outlist_item12 {  /* 비고 */
+	width:400px;
+    overflow:hidden;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:left;
+}
+#outlist_item13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+
+

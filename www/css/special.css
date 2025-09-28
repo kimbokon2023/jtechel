@@ -1,0 +1,23 @@
+
+a {
+	text-decoration:none;
+}
+
+a:hover {
+	font-family:"돋움";
+	font-size:12px;
+	font-weight:normal;
+	color:blue;
+}
+
+a:visited, a:link, a:active {
+	font-family:"돋움";
+	font-size:12px;
+	font-weight:normal;
+	color:blue;
+}
+
+
+ input:disbaled {color:black;}
+ input:disbaled {background-color:#FAF4CO;}
+  

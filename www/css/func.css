@@ -1,0 +1,14 @@
+
+#col1 {
+	float:left;
+	width:350px;
+	text-align:left;
+	padding:5px;	
+}
+
+#col2 {
+	float:left;
+	width:100px;
+	text-align:center;
+	padding:5px;
+}

@@ -1,0 +1,41 @@
+header * {
+	color : white;
+}
+
+a {
+	 text-decoration : none;
+}
+
+.main {
+    display: block;
+}
+
+
+/*기간 표시하는 부분의 CSS */
+
+#showdate {
+	display: inline-block;
+	position: relative;
+}
+		
+#showframe {
+	display: none;
+	position: absolute;
+	width: 500px;
+	z-index: 1000;
+}
+
+/*기간 표시하는 부분의 CSS */
+#showspecialdate {
+	display: inline-block;
+	position: relative;
+}
+		
+#showspecialframe {
+    display: none;
+    position: absolute;
+    width: 350px;
+    z-index: 1000;
+    left: 50%; /* 부모 요소를 기준으로 왼쪽에서 50%의 위치에 배치 */
+    transform: translateX(-50%); /* 요소의 너비를 기준으로 왼쪽으로 50% 이동시켜 가운데 정렬 */
+}

@@ -1,0 +1,486 @@
+/* Linear Theme CSS Variables */
+/* Based on Linear.app design system */
+
+:root {
+  /* Brand Colors */
+  --linear-brand-primary: #7170ff;
+  --linear-brand-primary-hover: #8989f0;
+  --linear-brand-primary-tint: #f1f1ff;
+
+  /* Semantic Colors */
+  --linear-color-white: #fff;
+  --linear-color-black: #000;
+  --linear-color-blue: #4ea7fc;
+  --linear-color-red: #eb5757;
+  --linear-color-green: #4cb782;
+  --linear-color-orange: #fc7840;
+  --linear-color-yellow: #f2c94c;
+  --linear-color-indigo: #5e6ad2;
+
+  /* Text Colors */
+  --linear-text-primary: #282a30;
+  --linear-text-secondary: #3c4149;
+  --linear-text-tertiary: #6f6e77;
+  --linear-text-quaternary: #86848d;
+
+  /* Background Colors */
+  --linear-bg-primary: #fff;
+  --linear-bg-secondary: #f9f8f9;
+  --linear-bg-tertiary: #f4f2f4;
+  --linear-bg-quaternary: #eeedef;
+  --linear-bg-marketing: #010102;
+  --linear-bg-translucent: rgba(0, 0, 0, 0.02);
+  --linear-bg-quinary: #e9e8ea;
+
+  /* Border Colors */
+  --linear-border-primary: #e9e8ea;
+  --linear-border-secondary: #e4e2e4;
+  --linear-border-tertiary: #dcdbdd;
+  --linear-border-translucent: rgba(0, 0, 0, 0.05);
+
+  /* Link Colors */
+  --linear-link-primary: #7070ff;
+  --linear-link-hover: var(--linear-text-primary);
+
+  /* Focus Colors */
+  --linear-focus-ring: #5e6ad2;
+  --linear-focus-ring-width: 2px;
+  --linear-focus-ring-offset: 2px;
+
+  /* Typography */
+  --linear-font-regular: "Inter Variable", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --linear-font-serif: "Tiempos Headline", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --linear-font-monospace: "Berkeley Mono", ui-monospace, "SF Mono", "Menlo", monospace;
+  
+  --linear-font-weight-light: 300;
+  --linear-font-weight-normal: 400;
+  --linear-font-weight-medium: 510;
+  --linear-font-weight-semibold: 590;
+  --linear-font-weight-bold: 680;
+
+  /* Font Sizes */
+  --linear-text-tiny: 0.625rem;
+  --linear-text-micro: 0.75rem;
+  --linear-text-mini: 0.8125rem;
+  --linear-text-small: 0.875rem;
+  --linear-text-regular: 0.9375rem;
+  --linear-text-large: 1.125rem;
+  --linear-text-title3: 1.25rem;
+  --linear-text-title2: 1.5rem;
+  --linear-text-title1: 2.25rem;
+  
+  /* Spacing */
+  --linear-spacing-xs: 4px;
+  --linear-spacing-sm: 8px;
+  --linear-spacing-md: 16px;
+  --linear-spacing-lg: 24px;
+  --linear-spacing-xl: 32px;
+  --linear-spacing-2xl: 48px;
+  --linear-spacing-3xl: 64px;
+
+  /* Layout */
+  --linear-page-max-width: 1024px;
+  --linear-prose-max-width: 624px;
+  --linear-header-height: 64px;
+  --linear-page-padding-inline: 24px;
+  --linear-page-padding-block: 64px;
+
+  /* Border Radius */
+  --linear-radius-none: 0px;
+  --linear-radius-sm: 4px;
+  --linear-radius-default: 6px;
+  --linear-radius-md: 8px;
+  --linear-radius-lg: 12px;
+  --linear-radius-xl: 16px;
+  --linear-radius-2xl: 24px;
+  --linear-radius-3xl: 32px;
+  --linear-radius-full: 9999px;
+  --linear-radius-circle: 50%;
+
+  /* Shadows */
+  --linear-shadow-none: 0px 0px 0px transparent;
+  --linear-shadow-tiny: 0px 1px 1px 0px rgba(0, 0, 0, 0.09);
+  --linear-shadow-low: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  --linear-shadow-medium: 0px 4px 24px rgba(0, 0, 0, 0.2);
+  --linear-shadow-high: 0px 7px 32px rgba(0, 0, 0, 0.35);
+
+  /* Transitions */
+  --linear-transition-fast: 0.1s;
+  --linear-transition-normal: 0.25s;
+  --linear-transition-slow: 0.4s;
+  
+  --linear-ease-in: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  --linear-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --linear-ease-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  /* Z-Index */
+  --linear-z-hide: -1;
+  --linear-z-base: 0;
+  --linear-z-docked: 10;
+  --linear-z-dropdown: 1000;
+  --linear-z-sticky: 1100;
+  --linear-z-banner: 1200;
+  --linear-z-overlay: 1300;
+  --linear-z-modal: 1400;
+  --linear-z-popover: 1500;
+  --linear-z-skip-link: 1600;
+  --linear-z-toast: 1700;
+  --linear-z-tooltip: 1800;
+
+  /* Stack Shadow (from JSON) */
+  --linear-shadow-stack: 0px -1px 1px 0px rgba(0,0,0,.11) inset, 0px 8px 2px 0px transparent, 0px 5px 2px 0px rgba(0,0,0,.01), 0px 3px 2px 0px rgba(0,0,0,.04), 0px 1px 1px 0px rgba(0,0,0,.07), 0px 0px 1px 0px rgba(0,0,0,.08);
+
+  /* Accessibility */
+  --linear-min-tap-target: 44px;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  /* Dark Mode Colors */
+  --linear-text-primary: #f7f8f8;
+  --linear-text-secondary: #b4b6bb;
+  --linear-text-tertiary: #8a8f98;
+  --linear-text-quaternary: #6f7481;
+
+  --linear-bg-primary: #101012;
+  --linear-bg-secondary: #1a1a1d;
+  --linear-bg-tertiary: #26262a;
+  --linear-bg-quaternary: #2e2e33;
+  --linear-bg-marketing: #0a0a0b;
+  --linear-bg-translucent: rgba(255, 255, 255, 0.02);
+  --linear-bg-quinary: #3a3a3f;
+
+  --linear-border-primary: #3a3a3f;
+  --linear-border-secondary: #2e2e33;
+  --linear-border-tertiary: #404049;
+  --linear-border-translucent: rgba(255, 255, 255, 0.05);
+
+  --linear-link-primary: #8989f0;
+  --linear-link-hover: var(--linear-text-primary);
+
+  /* Dark Mode Shadows */
+  --linear-shadow-none: 0px 0px 0px transparent;
+  --linear-shadow-tiny: 0px 1px 1px 0px rgba(0, 0, 0, 0.3);
+  --linear-shadow-low: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  --linear-shadow-medium: 0px 4px 24px rgba(0, 0, 0, 0.6);
+  --linear-shadow-high: 0px 7px 32px rgba(0, 0, 0, 0.8);
+
+  /* Dark Mode Brand Colors (slightly adjusted for dark backgrounds) */
+  --linear-brand-primary: #8989f0;
+  --linear-brand-primary-hover: #9d9df2;
+  --linear-brand-primary-tint: #1a1a2e;
+
+  /* Semantic colors for dark mode */
+  --linear-color-red: #ff6b6b;
+  --linear-color-green: #51cf66;
+  --linear-color-orange: #ff922b;
+  --linear-color-yellow: #ffd43b;
+  --linear-color-blue: #74c0fc;
+  --linear-color-indigo: #845ef7;
+
+  /* Dark Mode Scrollbar */
+  --linear-scrollbar-color: hsla(0,0%,100%,.1);
+  --linear-scrollbar-color-hover: hsla(0,0%,100%,.2);
+  --linear-scrollbar-color-active: hsla(0,0%,100%,.4);
+}
+
+/* Auto Dark Mode (falls back to system preference) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --linear-text-primary: #f7f8f8;
+    --linear-text-secondary: #b4b6bb;
+    --linear-text-tertiary: #8a8f98;
+    --linear-text-quaternary: #6f7481;
+
+    --linear-bg-primary: #101012;
+    --linear-bg-secondary: #1a1a1d;
+    --linear-bg-tertiary: #26262a;
+    --linear-bg-quaternary: #2e2e33;
+    --linear-bg-marketing: #0a0a0b;
+    --linear-bg-translucent: rgba(255, 255, 255, 0.02);
+    --linear-bg-quinary: #3a3a3f;
+
+    --linear-border-primary: #3a3a3f;
+    --linear-border-secondary: #2e2e33;
+    --linear-border-tertiary: #404049;
+    --linear-border-translucent: rgba(255, 255, 255, 0.05);
+
+    --linear-link-primary: #8989f0;
+    --linear-link-hover: var(--linear-text-primary);
+
+    --linear-shadow-none: 0px 0px 0px transparent;
+    --linear-shadow-tiny: 0px 1px 1px 0px rgba(0, 0, 0, 0.3);
+    --linear-shadow-low: 0px 2px 4px rgba(0, 0, 0, 0.4);
+    --linear-shadow-medium: 0px 4px 24px rgba(0, 0, 0, 0.6);
+    --linear-shadow-high: 0px 7px 32px rgba(0, 0, 0, 0.8);
+
+    --linear-brand-primary: #8989f0;
+    --linear-brand-primary-hover: #9d9df2;
+    --linear-brand-primary-tint: #1a1a2e;
+
+    --linear-color-red: #ff6b6b;
+    --linear-color-green: #51cf66;
+    --linear-color-orange: #ff922b;
+    --linear-color-yellow: #ffd43b;
+    --linear-color-blue: #74c0fc;
+    --linear-color-indigo: #845ef7;
+
+    /* Auto Dark Mode Scrollbar */
+    --linear-scrollbar-color: hsla(0,0%,100%,.1);
+    --linear-scrollbar-color-hover: hsla(0,0%,100%,.2);
+    --linear-scrollbar-color-active: hsla(0,0%,100%,.4);
+  }
+}
+
+/* Light Mode Explicit */
+[data-theme="light"] {
+  /* Light Mode Colors (explicit override) */
+  --linear-text-primary: #282a30;
+  --linear-text-secondary: #3c4149;
+  --linear-text-tertiary: #6f6e77;
+  --linear-text-quaternary: #86848d;
+
+  --linear-bg-primary: #fff;
+  --linear-bg-secondary: #f9f8f9;
+  --linear-bg-tertiary: #f4f2f4;
+  --linear-bg-quaternary: #eeedef;
+  --linear-bg-marketing: #010102;
+  --linear-bg-translucent: rgba(0, 0, 0, 0.02);
+  --linear-bg-quinary: #e9e8ea;
+
+  --linear-border-primary: #e9e8ea;
+  --linear-border-secondary: #e4e2e4;
+  --linear-border-tertiary: #dcdbdd;
+  --linear-border-translucent: rgba(0, 0, 0, 0.05);
+
+  --linear-link-primary: #7070ff;
+  --linear-link-hover: var(--linear-text-primary);
+
+  --linear-shadow-none: 0px 0px 0px transparent;
+  --linear-shadow-tiny: 0px 1px 1px 0px rgba(0, 0, 0, 0.09);
+  --linear-shadow-low: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  --linear-shadow-medium: 0px 4px 24px rgba(0, 0, 0, 0.2);
+  --linear-shadow-high: 0px 7px 32px rgba(0, 0, 0, 0.35);
+
+  --linear-brand-primary: #7170ff;
+  --linear-brand-primary-hover: #8989f0;
+  --linear-brand-primary-tint: #f1f1ff;
+
+  --linear-color-red: #eb5757;
+  --linear-color-green: #4cb782;
+  --linear-color-orange: #fc7840;
+  --linear-color-yellow: #f2c94c;
+  --linear-color-blue: #4ea7fc;
+  --linear-color-indigo: #5e6ad2;
+}
+
+/* Base Styles */
+body {
+  font-family: var(--linear-font-regular);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: var(--linear-text-primary);
+  background-color: var(--linear-bg-primary);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--linear-font-weight-medium);
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: var(--linear-font-weight-medium);
+  line-height: 1.06;
+  letter-spacing: -0.022em;
+}
+
+h2 {
+  font-size: 3.5rem;
+  font-weight: 538;
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+}
+
+h3 {
+  font-size: 1.3125rem;
+  font-weight: var(--linear-font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: -0.012em;
+}
+
+h4 {
+  font-size: var(--linear-text-small);
+  font-weight: var(--linear-font-weight-medium);
+  line-height: 1.5;
+  letter-spacing: -0.013em;
+}
+
+/* Component Styles */
+.linear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--linear-radius-md);
+  font-size: var(--linear-text-mini);
+  font-weight: var(--linear-font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--linear-transition-fast) var(--linear-ease-out);
+  border: 1px solid transparent;
+  min-height: var(--linear-min-tap-target);
+}
+
+.linear-btn-primary {
+  background-color: var(--linear-brand-primary);
+  color: var(--linear-color-white);
+}
+
+.linear-btn-primary:hover {
+  background-color: var(--linear-brand-primary-hover);
+}
+
+.linear-btn-secondary {
+  background-color: var(--linear-bg-tertiary);
+  color: var(--linear-text-primary);
+  border-color: var(--linear-border-primary);
+}
+
+.linear-btn-secondary:hover {
+  background-color: var(--linear-bg-quaternary);
+}
+
+.linear-card {
+  background-color: var(--linear-bg-primary);
+  border: 1px solid var(--linear-border-primary);
+  border-radius: var(--linear-radius-lg);
+  padding: var(--linear-spacing-lg);
+  box-shadow: var(--linear-shadow-low);
+}
+
+.linear-input {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--linear-bg-primary);
+  border: 1px solid var(--linear-border-primary);
+  border-radius: var(--linear-radius-md);
+  font-size: var(--linear-text-regular);
+  line-height: 1.5;
+  color: var(--linear-text-primary);
+  transition: all var(--linear-transition-fast) var(--linear-ease-out);
+}
+
+.linear-input:focus {
+  outline: var(--linear-focus-ring-width) solid var(--linear-focus-ring);
+  outline-offset: var(--linear-focus-ring-offset);
+  border-color: var(--linear-brand-primary);
+}
+
+.linear-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--linear-header-height);
+  padding: 0 var(--linear-page-padding-inline);
+  background-color: transparent;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--linear-border-translucent);
+}
+
+.linear-container {
+  max-width: var(--linear-page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--linear-page-padding-inline);
+}
+
+.linear-prose {
+  max-width: var(--linear-prose-max-width);
+  margin: 0 auto;
+}
+
+/* Utility Classes */
+.linear-text-primary { color: var(--linear-text-primary); }
+.linear-text-secondary { color: var(--linear-text-secondary); }
+.linear-text-tertiary { color: var(--linear-text-tertiary); }
+
+.linear-bg-primary { background-color: var(--linear-bg-primary); }
+.linear-bg-secondary { background-color: var(--linear-bg-secondary); }
+.linear-bg-tertiary { background-color: var(--linear-bg-tertiary); }
+
+.linear-border { border: 1px solid var(--linear-border-primary); }
+.linear-border-secondary { border: 1px solid var(--linear-border-secondary); }
+
+.linear-rounded-sm { border-radius: var(--linear-radius-sm); }
+.linear-rounded-md { border-radius: var(--linear-radius-md); }
+.linear-rounded-lg { border-radius: var(--linear-radius-lg); }
+.linear-rounded-full { border-radius: var(--linear-radius-full); }
+
+.linear-shadow-low { box-shadow: var(--linear-shadow-low); }
+.linear-shadow-medium { box-shadow: var(--linear-shadow-medium); }
+.linear-shadow-high { box-shadow: var(--linear-shadow-high); }
+
+.linear-space-xs { gap: var(--linear-spacing-xs); }
+.linear-space-sm { gap: var(--linear-spacing-sm); }
+.linear-space-md { gap: var(--linear-spacing-md); }
+.linear-space-lg { gap: var(--linear-spacing-lg); }
+.linear-space-xl { gap: var(--linear-spacing-xl); }
+
+/* Responsive Design */
+/* Dark Mode Scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: var(--linear-scrollbar-color);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--linear-scrollbar-color-hover);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:active {
+  background-color: var(--linear-scrollbar-color-active);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  :root:not([data-theme]) ::-webkit-scrollbar-thumb {
+    background-color: var(--linear-scrollbar-color);
+    border-radius: 4px;
+  }
+
+  :root:not([data-theme]) ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--linear-scrollbar-color-hover);
+  }
+
+  :root:not([data-theme]) ::-webkit-scrollbar-thumb:active {
+    background-color: var(--linear-scrollbar-color-active);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --linear-page-padding-inline: 16px;
+    --linear-page-padding-block: 32px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+}

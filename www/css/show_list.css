@@ -1,0 +1,152 @@
+#tab {    
+	width:1400px;
+	float:left;
+	margin-left:5px;
+}
+#tab1 {    
+	width:150px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-top:5px;
+}
+#tab2 {    
+	width:120px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+	text-align:right;	
+}
+#tab3 {    
+	width:100px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+	text-align:left;
+}
+#tab4 {    
+	width:110px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+    text-align:right;
+}
+#tab5 {    
+	width:80px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+    text-align:left;	
+}
+#tab6 {    
+	width:130px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+    text-align:right;
+}
+#tab7 {    
+	width:100px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+    text-align:left;	
+}
+#tab8 {    
+	width:80px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+    text-align:right;	
+}
+#tab9 {    
+	width:260px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+#tab10 {    
+	width:60px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+
+#tab11 {    
+	width:10px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+
+#manse1 {    
+	width:130px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+
+#bracketX {    
+	width:50px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+#bracketY {    
+	width:50px;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	float:left;
+	margin-left:2px;
+	margin-top:5px;
+}
+#brX {    
+	width:40px;
+	height:30px;
+	float:left;
+	margin-left:2px;
+}
+#brY {    
+	width:40px;
+	height:30px;
+	float:left;
+	margin-left:2px;
+}

@@ -1,0 +1,223 @@
+/* @end */
+.img{
+    position: absolute;
+    background-image: url(http://j-techel.co.kr/os/img/sheet.jpg);                                                               
+    width: 1300px;
+    height: 1840px;
+    /* background-size: cover; */
+}
+
+/* .img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+} */
+
+.img .content{
+     position: absolute;
+	 top:0px;
+	 left:0px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 3px 5px;
+  text-align: center;
+  font-weight:bold;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 1px 1px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: DodgerBlue;} /* DodgerBlue */ 
+.button5 {background-color: Tomato;} /* Black */
+.button6 {background-color: Orange;} /* Black */
+.button7 {background-color: Gray;} /* Black */
+.button8 {background-color: MediumSeaGreen;} /* MediumSeaGreen */
+
+#outlineprint {     /* 화면출력 전체사이즈  */ 
+	width:1300px;
+	height:1840px;
+	float:left;
+}
+
+#row1 {     /* 화면 출력 1행  */ 
+	width:450px;
+	height:50px;
+	float:left;
+	margin-left:290px;
+	margin-top:190px; 
+    font-size:30px;	
+}
+
+#row2 {     /* 화면 출력 1행  */ 
+	width:300px;
+	height:50px;
+	float:left;
+	margin-left:110px;
+	margin-top:55px; 
+    font-size:30px;	
+	text-align:right;
+}
+
+
+#row3 {     /* 화면 출력 3행   현장명 */ 
+	width:600px;
+	height:50px;
+	float:left;
+	margin-left:280px;
+	margin-top:140px; 
+    font-size:25px;	
+	text-align:left;
+}
+
+
+#row4 {     /* 화면 출력 4행   공사명 */ 
+	width:800px;
+	height:25px;
+	float:left;
+	margin-left:280px;
+	margin-top:-3px; 
+    font-size:25px;	
+	text-align:left;	
+}
+
+
+#row5 {     /* 화면 출력 5행   공사일정 */ 
+	width:600px;
+	height:40px;
+	float:left;
+	margin-left:300px;
+	margin-top:20px; 
+    font-size:25px;	
+	text-align:left;
+}
+
+
+#row6 {     /* 화면 출력 6행   공사인원 */ 
+	width:600px;
+	height:50px;
+	float:left;
+	margin-left:300px;
+	margin-top:3px; 
+    font-size:25px;	
+	text-align:left;
+}
+
+#row6-1 {     /* 화면 출력 6행 공백 */ 
+	width:1150px;
+	height:30px;
+	float:left;
+	margin-left:10px;
+	margin-top:58px; 
+    font-size:25px;	
+	text-align:center;	
+}
+
+#row7{     /*  세부내역 */ 
+	width:1150px;
+	height:35px;
+	float:left;
+	margin-left:10px;
+	margin-top:0px; 
+    font-size:24px;	
+	text-align:center;	
+}
+
+#row7 #col1{     
+	width:50px;	
+	float:left;
+	margin-left:80px;		
+}
+
+#row7 #col2{     
+	width:330px;	
+	float:left;
+	margin-left:10px;	
+	text-align:left;	    
+}
+
+#row7 #col3{     
+	width:110px;	
+	float:left;		
+	text-align:center;		
+}
+
+#row7 #col4{     
+	width:100px;	
+	float:left;	    	
+}
+#row7 #col5{     
+	width:110px;	
+	float:left;	
+	text-align:right;	
+	margin-right:10px;		
+}
+#row7 #col6{     
+	width:130px;	
+	float:left;
+	text-align:right;		
+	margin-right:10px;			
+}
+#row7 #col7{     
+	width:180px;	
+	float:left;	
+	margin-left:10px;		
+	text-align:left;	
+}
+
+
+#row8{     /*  total 금액 */ 
+	width:800px;
+	height:35px;
+	float:left;
+	margin-left:140px;
+	margin-top:0px; 
+    font-size:25px;	
+	text-align:right;	
+}
+
+#row9{     /*  비고란 */ 
+	width:1000px;
+	height:35px;
+	float:left;
+	margin-left:170px;
+	margin-top:30px; 
+    font-size:25px;	
+	text-align:left;	
+}
+
+
+#space1 {
+	width:100px;
+	height:40px;
+	margin-left:10px;
+	margin-top:310px;	
+}	
+
+
+#drawimg {
+	float:left;
+	width:700px;
+    height:100px;
+}
+#draw{
+	float:left;
+	width:1px;
+    height:1px;
+    font-size:10px;	
+}

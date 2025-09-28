@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-TECH 디자인 시스템 - 대시보드 예제</title>
+    <link rel="stylesheet" href="../components.css">
+    <style>
+        /* 데모용 추가 스타일 */
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .stat-change--positive { color: var(--color-success); }
+        .stat-change--negative { color: var(--color-error); }
+        
+        .chart-placeholder {
+            background: var(--color-gray-100);
+            border: 2px dashed var(--color-border);
+            border-radius: var(--border-radius-md);
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-muted);
+            font-size: 1.125rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- 대시보드 헤더 -->
+        <div class="dashboard-header">
+            <div class="jt-flex jt-flex--between items-center">
+                <div>
+                    <h1 style="margin: 0; font-size: 2rem;">J-TECH 업무 대시보드</h1>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">엘리베이터 업무 현황을 한눈에 확인하세요</p>
+                </div>
+                <div class="jt-flex">
+                    <button class="jt-btn jt-btn--outline" style="color: white; border-color: white;">
+                        <span>📊</span>
+                        <span>보고서</span>
+                    </button>
+                    <button class="jt-btn jt-btn--outline" style="color: white; border-color: white;">
+                        <span>⚙️</span>
+                        <span>설정</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number text-primary">142</div>
+                <div class="stat-label">총 작업 주문</div>
+                <div class="stat-change stat-change--positive">+12% 전월 대비</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number text-warning">38</div>
+                <div class="stat-label">진행중 작업</div>
+                <div class="stat-change stat-change--positive">+5% 전주 대비</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number text-success">98</div>
+                <div class="stat-label">완료된 작업</div>
+                <div class="stat-change stat-change--positive">+18% 전월 대비</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number text-error">6</div>
+                <div class="stat-label">긴급 요청</div>
+                <div class="stat-change stat-change--negative">-2 전일 대비</div>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 그리드 -->
+        <div class="jt-grid jt-grid--3" style="gap: 2rem; grid-template-columns: 2fr 1fr;">
+            <!-- 작업 현황 테이블 -->
+            <div class="jt-card" style="grid-column: 1 / 3;">
+                <div class="jt-card__header">
+                    <div class="jt-flex jt-flex--between items-center">
+                        <div>
+                            <h3 class="jt-card__title">최근 작업 현황</h3>
+                            <p class="jt-card__subtitle">진행중인 작업들의 실시간 상태</p>
+                        </div>
+                        <div class="jt-tabs">
+                            <ul class="jt-tabs__list">
+                                <li class="jt-tabs__item">
+                                    <button class="jt-tabs__button jt-tabs__button--active">전체</button>
+                                </li>
+                                <li class="jt-tabs__item">
+                                    <button class="jt-tabs__button">긴급</button>
+                                </li>
+                                <li class="jt-tabs__item">
+                                    <button class="jt-tabs__button">완료</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="jt-card__body" style="padding: 0;">
+                    <table class="jt-table">
+                        <thead class="jt-table__header">
+                            <tr>
+                                <th class="jt-table__header-cell">주문번호</th>
+                                <th class="jt-table__header-cell">고객명</th>
+                                <th class="jt-table__header-cell">작업유형</th>
+                                <th class="jt-table__header-cell">담당자</th>
+                                <th class="jt-table__header-cell">상태</th>
+                                <th class="jt-table__header-cell">우선순위</th>
+                                <th class="jt-table__header-cell">예상완료</th>
+                                <th class="jt-table__header-cell">작업</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="jt-table__row">
+                                <td class="jt-table__cell">#2024-001</td>
+                                <td class="jt-table__cell">
+                                    <div class="font-medium">김철수</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">010-1234-5678</div>
+                                </td>
+                                <td class="jt-table__cell">정기점검</td>
+                                <td class="jt-table__cell">이영희</td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--warning">진행중</span>
+                                </td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--error">긴급</span>
+                                </td>
+                                <td class="jt-table__cell">2024-01-20</td>
+                                <td class="jt-table__cell">
+                                    <button class="jt-btn jt-btn--ghost jt-btn--sm">상세보기</button>
+                                </td>
+                            </tr>
+                            <tr class="jt-table__row">
+                                <td class="jt-table__cell">#2024-002</td>
+                                <td class="jt-table__cell">
+                                    <div class="font-medium">박영수</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">010-5678-9012</div>
+                                </td>
+                                <td class="jt-table__cell">고장수리</td>
+                                <td class="jt-table__cell">최민수</td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--success">완료</span>
+                                </td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--secondary">보통</span>
+                                </td>
+                                <td class="jt-table__cell">2024-01-18</td>
+                                <td class="jt-table__cell">
+                                    <button class="jt-btn jt-btn--ghost jt-btn--sm">보고서</button>
+                                </td>
+                            </tr>
+                            <tr class="jt-table__row">
+                                <td class="jt-table__cell">#2024-003</td>
+                                <td class="jt-table__cell">
+                                    <div class="font-medium">정현주</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">010-3456-7890</div>
+                                </td>
+                                <td class="jt-table__cell">신규설치</td>
+                                <td class="jt-table__cell">김태호</td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--secondary">대기중</span>
+                                </td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--primary">높음</span>
+                                </td>
+                                <td class="jt-table__cell">2024-01-25</td>
+                                <td class="jt-table__cell">
+                                    <button class="jt-btn jt-btn--ghost jt-btn--sm">시작</button>
+                                </td>
+                            </tr>
+                            <tr class="jt-table__row">
+                                <td class="jt-table__cell">#2024-004</td>
+                                <td class="jt-table__cell">
+                                    <div class="font-medium">한미영</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">010-7890-1234</div>
+                                </td>
+                                <td class="jt-table__cell">개선공사</td>
+                                <td class="jt-table__cell">박순철</td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--warning">진행중</span>
+                                </td>
+                                <td class="jt-table__cell">
+                                    <span class="jt-badge jt-badge--secondary">보통</span>
+                                </td>
+                                <td class="jt-table__cell">2024-01-22</td>
+                                <td class="jt-table__cell">
+                                    <button class="jt-btn jt-btn--ghost jt-btn--sm">상세보기</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="jt-card__footer">
+                    <div class="jt-flex jt-flex--between items-center">
+                        <div class="text-muted">전체 142개 중 4개 표시</div>
+                        <div class="jt-flex">
+                            <button class="jt-btn jt-btn--ghost jt-btn--sm">이전</button>
+                            <button class="jt-btn jt-btn--secondary jt-btn--sm">1</button>
+                            <button class="jt-btn jt-btn--ghost jt-btn--sm">2</button>
+                            <button class="jt-btn jt-btn--ghost jt-btn--sm">3</button>
+                            <button class="jt-btn jt-btn--ghost jt-btn--sm">다음</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 사이드바 위젯들 -->
+            <div class="jt-flex jt-flex--col" style="gap: 2rem;">
+                <!-- 빠른 작업 -->
+                <div class="jt-card">
+                    <div class="jt-card__header">
+                        <h3 class="jt-card__title">빠른 작업</h3>
+                        <p class="jt-card__subtitle">자주 사용하는 기능</p>
+                    </div>
+                    <div class="jt-card__body">
+                        <div class="jt-flex jt-flex--col" style="gap: 0.75rem;">
+                            <button class="jt-btn jt-btn--outline" style="justify-content: flex-start;">
+                                <span>👤</span>
+                                <span>새 고객 등록</span>
+                            </button>
+                            <button class="jt-btn jt-btn--outline" style="justify-content: flex-start;">
+                                <span>📝</span>
+                                <span>작업 주문 생성</span>
+                            </button>
+                            <button class="jt-btn jt-btn--outline" style="justify-content: flex-start;">
+                                <span>🔧</span>
+                                <span>점검 일정 관리</span>
+                            </button>
+                            <button class="jt-btn jt-btn--outline" style="justify-content: flex-start;">
+                                <span>📊</span>
+                                <span>월간 리포트</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 팀 현황 -->
+                <div class="jt-card">
+                    <div class="jt-card__header">
+                        <h3 class="jt-card__title">팀 현황</h3>
+                        <p class="jt-card__subtitle">담당자별 작업 상태</p>
+                    </div>
+                    <div class="jt-card__body">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="jt-flex jt-flex--between items-center">
+                                <div>
+                                    <div class="font-medium">이영희</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">시니어 기술자</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium text-warning">5</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">진행중</div>
+                                </div>
+                            </div>
+                            <div class="jt-flex jt-flex--between items-center">
+                                <div>
+                                    <div class="font-medium">최민수</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">주니어 기술자</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium text-warning">3</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">진행중</div>
+                                </div>
+                            </div>
+                            <div class="jt-flex jt-flex--between items-center">
+                                <div>
+                                    <div class="font-medium">김태호</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">시니어 기술자</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium text-warning">4</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">진행중</div>
+                                </div>
+                            </div>
+                            <div class="jt-flex jt-flex--between items-center">
+                                <div>
+                                    <div class="font-medium">박순철</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">전문 기술자</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium text-warning">2</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">진행중</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 최근 알림 -->
+                <div class="jt-card">
+                    <div class="jt-card__header">
+                        <h3 class="jt-card__title">최근 알림</h3>
+                        <p class="jt-card__subtitle">중요 업데이트</p>
+                    </div>
+                    <div class="jt-card__body">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="jt-alert jt-alert--warning" style="padding: 0.75rem;">
+                                <div class="jt-alert__icon">⚠</div>
+                                <div class="jt-alert__content">
+                                    <div class="jt-alert__description" style="font-size: 0.75rem;">
+                                        긴급 작업 #2024-001 지연 위험
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="jt-alert jt-alert--success" style="padding: 0.75rem;">
+                                <div class="jt-alert__icon">✓</div>
+                                <div class="jt-alert__content">
+                                    <div class="jt-alert__description" style="font-size: 0.75rem;">
+                                        작업 #2024-002 성공적으로 완료
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="jt-alert jt-alert--info" style="padding: 0.75rem;">
+                                <div class="jt-alert__icon">ⓘ</div>
+                                <div class="jt-alert__content">
+                                    <div class="jt-alert__description" style="font-size: 0.75rem;">
+                                        새로운 고객 등록 요청 3건
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div class="jt-grid jt-grid--2" style="gap: 2rem; margin-top: 2rem;">
+            <div class="jt-card">
+                <div class="jt-card__header">
+                    <h3 class="jt-card__title">월별 작업 현황</h3>
+                    <p class="jt-card__subtitle">최근 6개월 작업 추이</p>
+                </div>
+                <div class="jt-card__body">
+                    <div class="chart-placeholder">
+                        📈 차트 영역<br>
+                        <small>Chart.js 또는 다른 차트 라이브러리 연동</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jt-card">
+                <div class="jt-card__header">
+                    <h3 class="jt-card__title">작업 유형별 분포</h3>
+                    <p class="jt-card__subtitle">이번 달 작업 유형 비율</p>
+                </div>
+                <div class="jt-card__body">
+                    <div class="chart-placeholder">
+                        🥧 원형 차트<br>
+                        <small>작업 유형별 비율 표시</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 간단한 대시보드 인터랙션
+        document.addEventListener('DOMContentLoaded', function() {
+            // 탭 전환
+            const tabButtons = document.querySelectorAll('.jt-tabs__button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 모든 탭 비활성화
+                    tabButtons.forEach(btn => btn.classList.remove('jt-tabs__button--active'));
+                    // 클릭된 탭 활성화
+                    this.classList.add('jt-tabs__button--active');
+                    
+                    // 실제로는 여기서 테이블 데이터를 필터링해야 함
+                    console.log('탭 전환:', this.textContent);
+                });
+            });
+
+            // 페이지네이션 (데모용)
+            const paginationButtons = document.querySelectorAll('.jt-card__footer .jt-btn');
+            paginationButtons.forEach(button => {
+                if (button.textContent.trim() !== '이전' && button.textContent.trim() !== '다음') {
+                    button.addEventListener('click', function() {
+                        // 페이지 버튼 스타일 변경
+                        paginationButtons.forEach(btn => {
+                            if (btn !== this && !['이전', '다음'].includes(btn.textContent.trim())) {
+                                btn.classList.remove('jt-btn--secondary');
+                                btn.classList.add('jt-btn--ghost');
+                            }
+                        });
+                        this.classList.remove('jt-btn--ghost');
+                        this.classList.add('jt-btn--secondary');
+                    });
+                }
+            });
+
+            // 빠른 작업 버튼 클릭
+            const quickActionButtons = document.querySelectorAll('.jt-card .jt-btn--outline');
+            quickActionButtons.forEach((button, index) => {
+                if (index < 4) { // 빠른 작업 섹션의 버튼들만
+                    button.addEventListener('click', function() {
+                        alert(`"${this.textContent.trim()}" 기능을 실행합니다.`);
+                    });
+                }
+            });
+
+            // 실시간 시계 (헤더에)
+            const updateTime = () => {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ko-KR');
+                const headerSubtitle = document.querySelector('.dashboard-header p');
+                if (headerSubtitle) {
+                    headerSubtitle.textContent = `엘리베이터 업무 현황을 한눈에 확인하세요 | ${timeString}`;
+                }
+            };
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+    </script>
+</body>
+</html>

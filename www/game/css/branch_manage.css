@@ -1,0 +1,261 @@
+/* 지점 관리 페이지 스타일 */
+
+/* 메인 카드 스타일 */
+.card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    padding: 1.2rem;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* 테이블 스타일 */
+#branchTable {
+    font-size: 14px;
+}
+
+#branchTable thead th {
+    background-color: #343a40;
+    color: white;
+    font-weight: 500;
+    border: none;
+    padding: 12px 10px;
+    white-space: nowrap;
+}
+
+#branchTable tbody tr {
+    transition: all 0.2s;
+}
+
+#branchTable tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#branchTable tbody td {
+    vertical-align: middle;
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* 버튼 스타일 */
+.btn {
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    margin: 0 2px;
+}
+
+/* 검색 영역 스타일 */
+.form-select, .form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.15);
+}
+
+/* 모달 스타일 */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header {
+    border-radius: 10px 10px 0 0;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* 폼 필드 스타일 */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-label .text-danger {
+    font-size: 1.1em;
+}
+
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* 배지 스타일 */
+.badge {
+    padding: 0.35em 0.65em;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    margin-top: 1.5rem;
+}
+
+.page-link {
+    color: #0d6efd;
+    border-radius: 5px;
+    margin: 0 2px;
+    transition: all 0.3s;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    #branchTable {
+        font-size: 12px;
+    }
+    
+    #branchTable thead th,
+    #branchTable tbody td {
+        padding: 8px 5px;
+    }
+    
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    /* 모바일에서 일부 컬럼 숨기기 */
+    #branchTable th:nth-child(6),
+    #branchTable td:nth-child(6),
+    #branchTable th:nth-child(7),
+    #branchTable td:nth-child(7) {
+        display: none;
+    }
+}
+
+/* 로딩 애니메이션 */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0,0,0,.1);
+    border-radius: 50%;
+    border-top-color: #0d6efd;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 툴팁 스타일 */
+[title] {
+    position: relative;
+}
+
+/* 스크롤바 스타일 */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 빈 상태 메시지 */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}
+
+/* 상태별 행 스타일 */
+tr.inactive-row {
+    opacity: 0.6;
+    background-color: #f8f9fa;
+}
+
+/* 액션 버튼 그룹 */
+.btn-group-action {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+/* 입력 그룹 스타일 */
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* 정렬 순서 표시 */
+.sort-order-badge {
+    display: inline-block;
+    background: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}

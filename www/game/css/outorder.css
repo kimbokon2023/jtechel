@@ -1,0 +1,2089 @@
+ 
+#work_col1 {     /* 견적금액 / 세금계산서 영역 */ 
+    margin-top:5px;
+	width:300px;
+	height:1000px;
+	float:left;
+	margin-left:30px;
+}
+#work_col2 {     /* 공사내역 */ 
+    margin-top:10px;
+	width:1000px;
+	height:900px;
+	float:left;
+	margin-left:10px;
+}
+#work_sero2 {
+	width:1800px;
+ /*position: relative; top: 50px; left: 10px;*/ 
+}
+
+#estimate_title {
+	margin-top:5px;
+	height:30px;
+	/* border-bottom:solid 1px #cccccc; */
+}
+
+#work_title {
+	margin-top:5px;
+	margin-left:30px;
+	min-height:40px;
+	
+/*border-bottom:solid 1px #cccccc; */
+}
+
+#estimate_text2 {                  /* 공사진행현황 오른쪽 입력 폼 CSS */
+	margin-top:10px;
+    width:1800px; 
+	height:770px;
+	border:solid 1px #cccccc;
+}
+
+#estimate_text2 .sero1{
+	width:90px; 
+	height:25px;	
+	float:left;
+	text-align:left;
+	margin-left:10px;
+	margin-right:5px;
+	margin-top:5px;		
+}
+#estimate_text2 .sero2 {
+	width:110px;
+	height:28px; 
+	float:left;
+	text-align:right;
+	margin-right:2px;	
+	margin-top:2px;	
+}
+#estimate_text2 .sero3 {
+	width:140px;
+	height:25px; 
+	float:left;
+	text-align:right;
+	margin-right:5px;	
+	margin-top:6px;		
+}
+#estimate_text2 .sero4 {
+	width:60px;
+	height:25px; 
+	float:left;
+	text-align:left; 
+	margin-top:2px;
+	margin-right:5px;		
+}
+#estimate_text2 .sero5 {
+	width:250px;
+	height:25px; 
+	float:left;
+	text-align: left;
+	margin-top:6px;
+	margin-left:10px;		
+}
+#estimate_text2 .sero6 {
+	width:90px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:10px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero6_1 {
+	width:80px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:50px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero6_2 {
+	width:50px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:50px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero6_3 {
+	width:100px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:50px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero6_4 {
+	width:130px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:5px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero7 {
+	width:70px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:10px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero8 {
+	width:100px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:10px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero9 {
+	width:200px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:50px;	
+	margin-top:5px;		
+}
+#estimate_text2 .sero10{
+	width:120px; 
+	height:25px;	
+	float:left;
+	text-align:right;
+	margin-right:5px;
+	margin-top:5px;		
+}
+#estimate_text2 .sero1_11{
+	width:170px; 
+	height:35px; 
+	float:left;
+	margin-left:10px;
+}
+#estimate_text2 .outputmemo{
+	width:300px; 
+	height:100px; 
+	float:left;
+	margin-left:10px;
+}
+#estimate_text2 .clearwidth{  /* 오른쪽 공백 제거 */
+	width:750px; 
+	height:5px;
+	float:left;
+}
+#estimate_text2 .clearwidth2{  /* 오른쪽 공백 제거 */
+	width:750px; 
+	height:12px;
+	float:left;
+}
+#estimate_text2 .sero1_111{   /* 우측 기성청구 이미지 */
+	width:210px; 
+	height:30px; 
+	float:left;
+	margin-left:10px;
+	margin-top:20px;
+}
+#estimate_text2 .sero1_111_space{   /* 우측 기성청구 이미지 공백 */
+	width:500px; 
+	height:30px; 
+	float:left;
+	margin-left:10px;
+	margin-top:20px;
+}
+#estimate_text2 .sero1_1{
+	width:120px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .sero1_2{
+    width:70px; 
+	height:20px; 
+	float:left;
+	margin-left:-70px;		
+}
+#estimate_text2 .sero1_3{
+    width:70px; 
+	height:20px; 
+	float:left;
+	margin-left:100px;		
+}
+
+#estimate_text2 .sero1_1{
+    width:70px; 
+	height:20px; 
+	float:left;
+	margin-left:60px;		
+}
+
+
+#estimate_text2 .sero_as_step{
+    width:500px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+
+#estimate_text2 .sero1111{
+    width:300px; 
+	height:21px; 
+	float:left;
+	color:brown;
+	margin-left:70px;		
+	font-size:20px;
+	
+    margin-top:5px;	
+}
+#estimate_text2 .sero111{
+    width:100px; 
+	height:20px; 
+	float:left;
+	color:brown;
+	margin-left:80px;		
+	font-size:22px;
+	
+}
+
+#estimate_text2 #pdf_file {
+	width:200px;
+	height:35px; 
+	float:left;
+	text-align:right;
+	margin-right:2px;	
+	margin-top:2px;	
+}
+
+#estimate_text2 #pdffile_name {
+	width:350px;
+	height:35px; 
+	float:left;
+	text-align:left;
+	margin-right:2px;	
+	margin-top:-2px;	
+}
+
+
+#estimate_text2 .nero1{
+    width:340px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .nero2{
+    width:150px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .nero3{
+    width:200px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .nero4{
+    width:250px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .nero5{
+    width:130px; 
+	height:20px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .nero44{  /* 출고리스트 전체 */
+        overflow:hidden;
+        height:auto;
+    width:750px; 
+	float:left;
+	margin-left:5px;		
+}
+#estimate_text2 .nero10{
+    width:70px; 
+	height:auto; 
+	margin-left:10px;		
+}
+
+#estimate_text2 .aa{
+    width:780px; 
+	height:25px;
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .aa1{
+    width:60px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .aa2{
+    width:100px; 
+	float:left;
+	margin-left:10px;		
+}
+#estimate_text2 .aa3{
+    width:80px; 
+	float:left;
+	margin-left:10px;	
+    text-align:left;		
+}
+#estimate_text2 .aa4{
+    width:460px; 
+	float:left;
+	margin-left:10px;	
+    text-align:left;		
+}
+#bb{
+    width:780px; 
+    height:auto;
+	float:left;
+	margin-left:10px;		
+}
+#bb1{
+    width:60px; 
+	float:left;
+	margin-left:10px;		
+}
+#bb2{
+    width:100px; 
+	float:left;
+	margin-left:10px;		
+}
+#bb3{
+    width:80px; 
+	float:left;
+	margin-left:10px;	
+    text-align:left;	
+}
+#bb4{
+    width:460px; 
+	float:left;
+	margin-left:10px;	
+    text-align:left;	
+}
+
+#estimate_text2 .displayoutput {   /* 출고리스트 */
+	    width:700px; 
+	
+}
+
+#content #col2 {
+	width:1200px;
+	float:left;
+	margin-left:15px;
+}
+
+#firstpage_col {
+	width:900px;
+	height:150px;
+	float:left;
+	margin-left:15px;
+	margin-top:10px;
+}
+
+#firstpage_col_as {
+	width:950px;
+	height:100px;
+	float:left;
+	margin-left:15px;
+	margin-top:10px;
+}
+
+#dis_board{
+	float:left;	
+	margin-top:15px;
+	margin-left:30px;	
+	width:600px;
+	height:30px;	
+	font-size:17px;
+	color:black;
+}
+#dis_board2{
+	float:left;	
+	margin-top:10px;
+	margin-left:30px;	
+	margin-bottom:20px;	
+	width:1600px; 
+	height:30px;	
+	font-size:16px;
+	
+	color:black;	
+}
+
+#title_top{
+    float:left;
+	margin-top:15px;
+	width:250px;
+	height:40px;	
+
+}
+
+
+#title{
+	margin-top:15px;
+	width:300px;
+	height:40px;	
+
+}
+#title1{    
+	margin-left:300px;	
+	
+	
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title11{    
+	margin-left:200px;
+	width:700px;
+	
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title11 #col1{    
+	color:black;
+	
+	width:50px;
+}
+
+#title11 #col2{    
+	color:red;
+	
+	width:80px;
+}
+
+#title2{    
+	margin-left:360px;
+	
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title2_sub{    
+   	width:620px;		
+}
+
+/* list css */
+
+#list_search {
+     overflow:hidden;	
+    height:60px;	
+	width:1750px;
+	padding-top:8px;
+}
+
+#list_search #list_search1 {
+	float:left;
+	margin-top:2px;
+	width:210px;
+}
+
+#list_search #list_search2 {
+	float:left;
+	margin-top:2px;
+	width:600px;
+}
+#list_search #list_search22 {
+	float:left;
+	margin-left:290px;
+	margin-top:4px;
+}
+
+#list_search #list_search3 {
+	float:left;
+	margin-left:5px;
+	margin-top:1px;
+}
+
+#list_search #list_search3 select {
+	width:80px;
+	height:21px;
+	border:solid 1px #cccccc;
+}
+
+#list_search #list_search4 {
+	float:left;
+	margin-left:3px;
+}
+
+#list_search #list_search4 input {
+	width:120px;
+	height:18px;
+	border:solid 1px #cccccc;
+}
+
+#list_search #list_search5 {
+	float:left;
+	margin-left:5px;
+	margin-top:1px;
+}
+
+#list_search #list_search6 {
+	float:left;
+	
+	margin-left:50px;
+	margin-top:4px;
+	margin-left:20px;
+	font-size:13px;
+	color:red;
+}
+
+#list_search #list_search7 {
+	float:left;
+	margin-left:50px;
+	margin-top:4px;
+	margin-left:20px;
+	font-size:13px;
+	color:blue;
+}
+
+#list_search #list_search8 {
+	float:left;
+	margin-left:50px;
+	margin-top:4px;
+	margin-left:20px;
+	font-size:13px;
+	color:brown;
+}
+#list_search #list_search9 {
+	float:left;
+	margin-left:50px;
+	margin-top:4px;
+	margin-left:20px;
+	font-size:13px;
+	color:grey;
+}
+#list_search #list_search10 {
+	float:left;
+	margin-left:50px;
+	margin-top:4px;
+	margin-left:20px;
+	font-size:13px;
+	color:purple;
+}
+
+#list_search #list_search11 {
+	float:left;
+	margin-left:30px;
+	margin-top:4px;
+}
+
+#list_search #list_search12 {
+	float:left;
+	margin-left:30px;
+	margin-top:4px;
+}
+
+#list_top_title {
+	height:38px;
+	width:1850px;
+	padding:10px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:3px;
+	margin-bottom:2px;
+	font-size:13px;
+}
+
+#list_top_title li {
+	display:inline;
+}
+
+#list_top_title #list_title1 {
+	margin-left:-25px;
+}
+
+#list_top_title #list_title2 {
+	margin-left:35px;
+}
+
+#list_top_title #list_title3 {
+	margin-left:40px;
+}
+#list_top_title #list_title33 {
+	margin-left:10px;
+}
+
+#list_top_title #list_title4 {   /*현장명*/
+	margin-left:70px;
+}
+
+
+#list_top_title #list_title5 {   
+	margin-left:20px;
+}
+#list_top_title #list_title6 {   /*납기일*/
+	margin-left:10px;
+}
+#list_top_title #list_title66 {   /*발주일*/
+	margin-left:20px;
+}
+#list_top_title #list_title7 {   /*재질*/
+	margin-left:100px;
+}
+#list_top_title #list_title8 {  /* 원청 */
+	margin-left:60px;
+}
+#list_top_title #list_title9 {    /* 발주처 */
+	margin-left:220px;
+}
+#list_top_title #list_title10 {
+	margin-left:50px;
+}
+#list_top_title #list_title11 {    /*  부품 추가 발주 내역 */
+	margin-left:130px;
+	
+    color:green;
+	text-align:center;
+}
+
+#list_top_title #list_title12 {   /*비고*/
+	margin-left:60px;
+}
+#list_top_title #list_title13 {    /*출고일*/
+	margin-left:15px;
+}
+#list_top_title #list_title14 {   /*청구*/
+	margin-left:15px;
+}
+#list_top_title #list_title15 {    /*비고2*/
+	margin-left:80px;
+}
+#list_top_title #list_title16 {    /*타입*/
+	margin-left:110px;
+	color:blue;	
+}
+#list_top_title #list_title17 {    /*car insize*/
+	margin-left:130px;
+	color:red;
+	
+}
+#list_top_title #list_title18 {    /*운반비 내역*/
+	margin-left:20px;
+	color:purple;
+	
+}
+
+#list_top_title #list_title19 {    /*본천장 수량*/
+	margin-left:100px;
+	color:brown;
+	
+}
+#list_top_title #list_title20 {    /*L/C 수량*/
+	margin-left:130px;
+	color:black;
+	
+}
+#list_top_title #list_title21 {    /*기타*/
+	margin-left:30px;
+	color:black;
+	
+}
+
+#list_top_title #list_title22 {    /*  공기청정기   */
+	margin-left:5px;
+	color:red;
+	
+}
+#list_top_title #list_title23 {    /* 발주처1   */
+	margin-left:1050px;
+	color:black;	
+}
+#list_top_title #list_title24 {    /* 주문일1   */
+	margin-left:15px;
+	color:grey;	
+}
+#list_top_title #list_title25 {    /* 입고일1   */
+	margin-left:5px;
+	color:grey;	
+}
+#list_top_title #list_title26 {    /* 발주처2   */
+	margin-left:35px;
+	color:black;	
+}
+#list_top_title #list_title27 {    /* 주문일2   */
+	margin-left:15px;
+	color:grey;	
+}
+#list_top_title #list_title28 {    /* 입고일2   */
+	margin-left:5px;
+	color:grey;	
+}
+#list_top_title #list_title29 {    /* 발주처3   */
+	margin-left:44px;
+	color:black;	
+}
+#list_top_title #list_title30 {    /* 주문일3   */
+	margin-left:15px;
+	color:grey;	
+}
+#list_top_title #list_title31 {    /* 입고일3   */
+	margin-left:5px;
+	color:grey;	
+}
+
+#outlist_top_title {
+	height:30px;
+	padding:4px;  
+	margin:2px;
+	padding-top:5px;
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	
+}
+
+#outlist_top_title li {
+	display:inline-block;
+}
+
+#outlist_top_title #outlist_title1 {
+	width:40px;
+	text-align:left;
+}
+
+#outlist_top_title #outlist_title2 {
+	width:320px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title3 {
+	width:120px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title4 {
+	width:100px;
+	text-align:center;
+}
+
+#outlist_top_title #outlist_title5 {
+	width:100px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title6 {
+	width:90px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title7 {
+	width:130px;
+	text-align:center;
+}
+#outlist_top_title #outlist_title11 {
+	margin-left:-10px;
+}
+
+#list_content {
+	height:600px;
+	width:100%;
+}
+
+#list_content_new {
+	height:800px;
+	width:100%;
+}
+
+#subject_item {
+	width:1920px;
+	height:30px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:12px;
+}
+
+#subject_item #subject_item1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#subject_item #subject_item2{
+	float:left;
+	width:100px;
+    margin-left:5px;		
+	text-align:center;	
+}
+
+#subject_item #subject_item3{
+
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#subject_item #subject_item4{
+	float:left;
+	overflow:hidden;	
+	width:300px;
+    margin-left:5px;		
+	text-align:left;
+}
+
+#subject_item #subject_item5{ 
+	float:left;
+	width:80px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#subject_item #subject_item6{
+	float:left;
+	width:55px;
+    margin-left:2px;		
+	text-align:center;
+}
+#subject_item #subject_item7{
+	float:left;
+	width:200px;
+	overflow:hidden;	
+    margin-left:2px;		
+	text-align:center;
+}
+#subject_item #subject_item8{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item9{  /* 비고 */
+	float:left;
+	width:125px;
+    margin-left:5px;		
+	text-align:left;
+}
+#subject_item #subject_item10{
+	float:left;
+	width:80px;
+    margin-left:5px;		
+	text-align:center;
+}
+#subject_item #subject_item11{
+	float:left;
+	width:120px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item12{
+	float:left;
+	overflow:hidden;
+	width:100px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item13{
+	float:left;
+	width:80px;
+    margin-left:10px;		
+	text-align:left;	
+}
+#subject_item #subject_item14{
+	float:left;
+	width:45px;
+    margin-left:0px;		
+	text-align:center;	
+}
+#subject_item #subject_item15{
+	float:left;
+	overflow:hidden;	
+	width:30px;
+    margin-left:-5px;		
+	text-align:center;	
+}
+
+#subject_item #subject_item16{
+	float:left;
+	width:250px;
+    margin-left:2px;		
+	text-align:left;
+}
+#subject_item #subject_item17{
+	float:left;
+	overflow:hidden;	
+	width:200px;
+    margin-left:2px;		
+	text-align:left;
+}
+
+#subject_item #subject_item21{
+	float:left;
+	overflow:hidden;	
+	width:50px;
+    margin-left:100px;	
+	text-align:center;
+}
+
+#subject_item #subject_item22{
+	float:left;
+	overflow:hidden;	
+	width:50px;
+    margin-left:10px;	
+	text-align:center;
+}
+#subject_item #subject_item23{
+	float:left;
+	overflow:hidden;	
+	width:37px;
+    margin-left:-8px;	
+	text-align:center;
+}
+
+#subject_item #subject_item24{
+	float:left;
+	overflow:hidden;	
+	width:37px;
+    margin-left:1px;	
+	text-align:center;
+}
+#subject_item #subject_item25{
+	float:left;
+	overflow:hidden;	
+	width:75px;
+    margin-left:35px;	
+	text-align:left;
+}
+
+#sub_item {
+	width:1300px;
+	height:22px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:11px;
+	font-weight:normal;
+}
+
+#sub_item1{
+	float:left;
+	width:40px;
+	text-align:left;	
+}
+
+#sub_item2{
+	float:left;
+	width:320px;
+	text-align:left;	
+	
+}
+
+#sub_item3{
+	float:left;
+	width:130px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item4{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item5{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#sub_item6{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+#sub_item7{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+#sub_item8{
+	float:left;
+	width:100px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#assubject_item {
+	height:18px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#assubject_item #assubject_item1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#assubject_item #assubject_item2{
+	float:left;
+	width:300px;
+}
+
+#assubject_item #assubject_item3{
+
+	float:left;
+	width:110px;
+    margin-left:2px;		
+	text-align:center;
+}
+
+#assubject_item #assubject_item4{
+	float:left;
+	width:90px;
+    margin-left:-10px;		
+	text-align:center;
+}
+
+#assubject_item #assubject_item5{
+	float:left;
+	width:80px;
+    margin-left:2px;	
+    color:brown;	
+			
+	text-align:center;
+}
+
+#assubject_item #assubject_item6{
+	float:left;
+	width:90px;
+    margin-left:0px;		
+	text-align:center;
+}
+#assubject_item #assubject_item7{
+	float:left;
+	width:90px;
+    margin-left:-5px;		
+	text-align:center;
+}
+#assubject_item #assubject_item8{
+	float:left;
+	width:50px;
+    margin-left:2px;		
+	text-align:center;
+}
+#assubject_item #assubject_item9{
+	float:left;
+	width:100px;
+    margin-left:12px;		
+	text-align:right;
+}
+#assubject_item #assubject_item10{
+	float:left;
+	width:100px;
+    margin-left:5px;		
+		
+	text-align:center;
+}
+#assubject_item #assubject_item11{
+	float:left;
+	width:80px;
+    margin-left:10px;		
+		
+	color:green;
+	text-align:center;
+}
+
+
+
+#index_aslist {
+	overflow:hidden;
+	height:18px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#index_aslist #index_aslist1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#index_aslist #index_aslist2{
+	float:left;
+	width:300px;
+}
+
+#index_aslist #index_aslist3{
+
+	float:left;
+	width:110px;
+    margin-left:-10px;		
+	text-align:center;
+}
+
+#index_aslist #index_aslist4{
+	float:left;
+	width:100px;
+    margin-left:5px;		
+		
+	text-align:center;
+}
+
+#index_aslist #index_aslist5{
+	float:left;
+	width:80px;
+    margin-left:2px;	
+    color:brown;	
+			
+	text-align:right;
+}
+
+#index_aslist #index_aslist6{
+	float:left;
+	width:90px;
+    margin-left:0px;		
+	text-align:right;
+}
+#index_aslist #index_aslist7{
+	float:left;
+	width:90px;
+    margin-left:0px;		
+	text-align:center;
+}
+#index_aslist #index_aslist8{
+	float:left;
+	width:50px;
+    margin-left:2px;		
+	text-align:right;
+}
+#index_aslist #index_aslist9{
+	float:left;
+	width:100px;
+    margin-left:12px;		
+	text-align:right;
+}
+
+#index_aslist #index_aslist11{
+	float:left;
+	width:80px;
+    margin-left:10px;		
+		
+	color:green;
+	text-align:center;
+}
+
+
+#list_item {
+	height:20px;
+	margin-top:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#list_item #list_item1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#list_item #list_item2{
+	float:left;
+	width:560px;
+}
+
+#list_item #list_item3{
+	float:left;
+	width:65px;
+	text-align:center;
+}
+
+#list_item #list_item4{
+	float:left;
+	width:80px;
+	text-align:center;
+}
+
+#list_item #list_item5{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#page_button {
+	margin-top:20px;
+}
+
+#page_num {
+	float:left;
+	width:80%;
+	margin-top:10px;
+	text-align:center;
+}
+
+#button {
+	float:left;
+	width:18%;
+	text-align:right;
+}
+
+/* write_form css */
+
+#write_form_title {
+	margin-top:20px;
+	width:99%;
+	height:20px;
+	text-align:center;
+	padding-top:7px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+}
+
+#write_form {
+	margin-top:10px;
+	height:80px;
+	overflow:auto;
+}
+
+#write_form #write_row1 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row2 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row3 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row4 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row5 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row6 {
+    width:99%; 
+	height:25px; 
+	margin:2px 0 2px 0; 
+}
+
+#work_write_form {
+	margin-top:10px;
+	height:150px;
+	overflow:auto;
+}
+
+#work_write_form #work_write_row1 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row2 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row3 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row4 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row5 {
+     width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row6 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+.write_line {
+    width:99%; 
+	border-bottom:solid 1px #cccccc;
+}
+
+#write_form .col1 {
+	float:left;
+	width:120px;
+	text-align:center;
+	padding:5px;
+	background-color:#eeeeee;
+}
+
+#write_form #write_row3 .col1 {
+	height:126px;
+	padding-top:120px;
+}
+
+#write_form .col2 {
+	float:left;
+	margin-left: 8px;
+	margin-top:2px;
+}
+
+#write_row1 .col2 {
+	margin-top:6px;
+}
+
+#write_form #write_row1 .col3 {
+	float:left;
+	margin-top:4px;
+	margin-left:100px;
+}
+
+#write_row2 .col2 input {
+	width:650px;
+	height:17px;
+	border:solid 1px #cccccc;
+}
+
+#write_row3 .col2 textarea {
+    margin-top:1px;
+	border:solid 1px #cccccc;
+}
+
+#write_row4 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_row5 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_row6 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_button {
+	margin-top:15px;
+	width:1000px;
+	text-align:right;
+}
+
+#write_button_renew {
+	margin-top:5px;
+	width:1400px;
+	text-align:right;
+}
+#write_button_renew2 {
+	margin-top:2px;
+	margin-left:2px;
+	width:1400px;
+	text-align:left;
+}
+
+.delete_ok {
+	margin:0 0 3px 10px;
+}
+
+/* view.php css */
+
+#view_comment {
+	margin:10px 0 0 10px;
+}
+
+#view_title {
+	height:18px;
+	padding:10px 8px 8px 8px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-bottom:5px;
+}
+
+#view_title1 {
+	float:left;
+	width:70%;
+}
+
+#view_title2 {
+	float:left;
+	width:28%;
+	text-align:right;
+}
+
+#view_content {
+	width:98%;
+	min-height:200px;
+	padding:15px 0 15px 8px;
+	overflow:hidden;
+	line-height:150%;
+	border-bottom:solid 1px #cccccc;
+	margin-bottom:15px;
+}
+
+#work_view_content {
+	width:90%;
+	height:40px;
+	line-height:100%;
+	overflow:auto;
+    float:left;	
+}
+
+
+#view_button {
+	width:98%;
+	text-align:right;
+	margin-bottom:15px;
+}
+
+#work_view_button {
+	width:55%;
+	height:60px;
+	text-align:right;
+	margin-bottom:10px;
+	margin-top:10px;
+}
+
+
+/* ripple_work css */
+
+#ripple_work {
+	width:90%;
+	float:left;
+}
+
+#ripple_work_writer_title {
+	height:26px;
+	padding-top:10px; 
+}
+
+#ripple_writer_title ul {
+	margin-left:5px;
+}
+
+#ripple_writer_title li {
+	display:inline;
+}
+
+#work_writer_title1 {
+	margin-left:12px;
+	
+}
+
+#work_writer_title2 {
+	margin-left:20px;
+}
+
+#work_writer_title3 {
+	margin-left:540px;
+}
+
+#ripple_work_content {
+	padding:10px;
+	margin-left:5px;
+	line-height:150%;
+}
+
+.hor_work_line_ripple {
+	width:80%;
+	height:1px;
+	margin-bottom:10px;
+	border-bottom:solid 3px #efefef;
+}
+
+
+#ripple_work_box {
+	width:99%;
+	height:100px;
+	padding:8px;
+	margin-left:3px;
+	margin-bottom:15px;
+	background-color:#efefef;
+}
+
+#ripple_work_box1 {
+	float:left;
+	margin:5px;
+}
+
+#ripple_work_box2 {
+	float:left;
+	margin:5px;
+}
+
+#ripple_work_box2 textarea {
+	border:solid 1px #cccccc;
+}
+#ripple_work_box3 {
+	float:left;
+	margin:5px 0 0 10px;
+}
+#ripple_work_writer_title {
+	height:26px;
+	padding-top:10px; 
+}
+#ripple_work_writer_title ul {
+	margin-left:5px;
+}
+
+#ripple_work_writer_title li {
+	display:inline;
+}
+#writer_work_title1 {
+	margin-left:10px;
+	
+}
+
+#writer_work_title2 {
+	margin-left:20px;
+}
+
+/* @group Blink */
+.blink {
+	-webkit-animation: blink 1.75s linear infinite;
+	-moz-animation: blink 1.75s linear infinite;
+	-ms-animation: blink 1.75s linear infinite;
+	-o-animation: blink 1.75s linear infinite;
+	 animation: blink 1.75s linear infinite;
+}
+@-webkit-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-o-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+
+/* @end */
+.img{
+    position: relative;
+    background-image: url(http://5130.co.kr/img/aslist.jpg);                                                               
+    height: 800px;
+    width: 1200px;
+    /* background-size: cover; */
+}
+.img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+}
+.img .content{
+     position: absolute;
+	 top:10px;
+	 left:10px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+/* @end 출고예정리스트 출력에 필요한 이미지 읽어오기 */
+.printlist_img{
+    position: relative;
+    background-image: url(http://8440.co.kr/img/printlist_img.jpg);                                                               
+    height: 720px;
+    width: 1150px;
+    /* background-size: cover; */
+}
+.printlist_img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+}
+.printlist_img .content{
+     position: absolute;
+	 top:10px;
+	 left:10px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+
+#output_top_title {
+	width:1000px;
+	height:30px;
+	padding:2px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:2px;
+	margin-bottom:1px;
+	font-size:11px;	
+	font-weight:normal;	
+}
+
+#output_title1 {
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#output_title2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+
+#output_title3 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title33 {      /* 접수상태 타이틀 */
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:1px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title7 {           /* 현장명 */
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title8 {     /* 수신처  */
+	width:120px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;	
+}
+ #output_title9 {   /* 주소 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#output_title10 {  /* 연락처 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:15px;
+    float:left;
+	text-align:center;
+}
+#output_title12 {  /* 비고 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+#output_title13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+#list_content_copy {
+	height:600px;
+	width:1000px;
+}
+
+#outlist_item {
+	overflow:hidden;
+	width:1070px;
+	height:23px;
+	margin:3px;
+	padding:5px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:10px;	
+	font-weight:normal;		
+}
+
+#outlist_item1 {
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;	
+}
+
+#outlist_item2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#outlist_item3 {
+	width:70px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+
+#outlist_item33  {      /* 접수상태 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		 
+}
+
+#outlist_item4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item7 {
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#outlist_item8 {     /* 수신처 타이틀 */
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+ #outlist_item9 {   /* 수신처 주소 */
+	width:200px;
+	overflow:hidden;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+#outlist_item10 {  /* 연락처 */
+	width:90px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#outlist_item11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+}
+#outlist_item12 {  /* 비고 */
+	width:400px;
+    overflow:hidden;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:left;
+}
+#outlist_item13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+
+#index_firtcol{    
+	margin-top: 2px;
+	margin-left:20px;	
+}
+
+#print_area {	   /* 출고예정리스트 출력화면 */
+	width:1150px;
+	height:750px;
+    overflow:hidden;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;	
+}
+
+#print_list {	   /* 출고예정리스트 출력화면 */
+	width:1150px;
+	height:750px;
+    overflow:hidden;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;	
+}
+
+.print1 {
+	width:300px;
+	height:50px;	
+	margin-top:65px;
+	margin-left:900px;
+    float:left;
+	text-align:left;	
+	font-size:20px;
+	
+	
+}
+.up_space {  /* 윗 공간  */
+	width:80px;
+	height:35px;	
+    float:left;
+	text-align:center;	
+	font-size:20px;
+	
+	
+}
+
+.print2 {     /* 번호 */
+	width:80px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:center;	
+	font-size:20px;
+	
+	
+}
+.print3 {    /* 출고예정일 */
+    overflow:hidden;
+	width:120px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:center;	
+	font-size:15px;
+	
+	
+}
+.print4 {    /* 현장명 */
+    overflow:hidden;
+	width:140px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:left;	
+	font-size:15px;
+	font-weight:normal;
+	
+}
+.print5 {    /* 시공팀 */
+    overflow:hidden;
+	width:110px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+	font-size:18px;
+	
+	
+}
+.print6 {    /* 재질 */
+    overflow:hidden;
+	width:220px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;	
+	font-size:14px;
+	font-weight:normal;
+	
+}
+.print7 {    /* 출고내역 */
+    overflow:hidden;
+	width:250px;
+	height:44px;	
+	margin-top:5px;
+	margin-left:15px;
+    float:left;
+	text-align:left;	
+	font-size:16px;
+	
+	
+}
+
+.box1 {
+	width:1700px;
+	height:110px;	
+    float:left;	
+}
+
+.box1 .box_col1 {
+	width:700px;
+	height:110px;
+	float:left;
+}
+
+.box1 .box_col2 {
+	width:650px;
+	height:110px;
+	float:left;
+}
+
+.box1 .box_col3 {
+	width:350px;
+	height:100px;
+	float:left;
+}
+.box1 .box_col1 .row1{
+	width:40px; 
+	height:25px;	
+	float:left;
+	text-align:left;
+	margin-left:15px;
+	margin-top:5px;		
+}
+
+.box1 .box_col1 .row2{
+	width:600px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:10px;	
+	margin-top:5px;		
+}
+
+.box1 .box_col2 .row1{
+	width:120px; 
+	height:25px;	
+	float:left;
+	text-align:right;
+	margin-right:5px;
+	margin-top:5px;		
+}
+
+.box1 .box_col2 .row2{
+	width:200px;
+	height:25px; 
+	float:left;
+	text-align:left;
+	margin-right:5px;	
+	margin-left:50px;	
+	margin-top:5px;		
+}
+
+.input_item1 {	   /* 품목입력창 */
+	width:130px;
+	margin-top:0px;
+	margin-left:0px;
+    float:left;	
+}
+.input_item2 {	 
+	width:250px;
+	margin-top:0px;
+	margin-left:0px;
+    float:left;	
+}
+.input_item3 {	 
+	width:60px;
+	margin-top:0px;
+	margin-left:0px;
+    float:left;	
+}
+
+#button1 {
+    width:100px;
+	margin-top:0px;
+	margin-left:0px;
+    float:left;		
+	
+}

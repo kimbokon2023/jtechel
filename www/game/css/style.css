@@ -1,0 +1,11 @@
+header * {
+	color : white;
+}
+
+a {
+	 text-decoration : none;
+}
+
+.main {
+    display: block;
+}

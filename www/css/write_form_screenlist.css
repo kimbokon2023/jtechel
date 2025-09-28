@@ -1,0 +1,617 @@
+/* @end */
+.img{
+     position: absolute;
+    background-image: url(http://5130.co.kr/img/screenorder.jpg);                                                               
+    height: 1450px;
+    width: 1150px;
+    /* background-size: cover; */
+}
+.notes {
+  background-attachment: local;
+  background-image:
+    linear-gradient(to right, white 10px, transparent 10px),
+    linear-gradient(to left, white 10px, transparent 10px),
+  /*  repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px); */
+  line-height: 23px;
+  padding: 2px 3px;
+  color:red;
+  font-size:26px;
+  font-weight:bold;
+}
+
+/* .img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+} */
+.img .content{
+     position: absolute;
+	 top:0px;
+	 left:0px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 3px 5px;
+  text-align: center;
+  font-weight:bold;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 1px 1px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: DodgerBlue;} /* DodgerBlue */ 
+.button5 {background-color: Tomato;} /* Black */
+.button6 {background-color: Orange;} /* Black */
+.button7 {background-color: Gray;} /* Black */
+.button8 {background-color: MediumSeaGreen;} /* MediumSeaGreen */
+
+
+#outlineprint {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint1 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint2 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint3 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint4 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint5 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint6 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint7 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint8 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint9 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint10 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint11 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint12 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint13 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+#outlineprint14 {     /* 화면출력 전체사이즈  */ 
+	width:1170px;
+	height:1582px;
+	float:left;
+}
+
+
+
+#row1 {     /* 화면 출력 1행  */ 
+	width:1100px;
+	height:40px;
+	float:left;
+	margin-left:50px;
+	margin-top:20px; 
+    font-size:15px;	
+}
+
+#row2 {     /* 화면 출력 2행  */ 
+	width:1100px;
+	height:55px;
+	float:left;
+} 
+#row2 #col1{     /* 화면 출력 2행 1열 */ 
+	width:280px;
+	height:40px;
+	margin-left:190px;
+	margin-top:0px;	
+	float:left;
+    font-size:23px;	
+	font-weight:bold;
+}
+#row2 #col2{     /* 화면 출력 2행 2열 */ 
+	width:400px;
+	height:40px; 
+	margin-left:230px;
+	margin-top:0px;	
+	float:left;
+	font-size:23px;	 
+	font-weight:bold;
+}
+#row3 {     /* 화면 출력 3행  */ 
+	width:1100px;
+	height:55px;
+	float:left;
+} 
+#row3 #col1{     /* 화면 출력 3행 1열 */  
+	width:280px;
+	height:40px;
+	margin-left:190px;
+	margin-top:0px;	
+	float:left;
+    font-size:23px;	
+	font-weight:bold;
+}
+#row3 #col2{     /* 화면 출력 3행 2열 */ 
+	width:400px;
+	height:40px;
+	margin-left:230px;
+	margin-top:0px;	
+	float:left;
+	font-size:23px;	 
+	font-weight:bold; 
+}
+#row4 {     /* 화면 출력 4행  */ 
+	width:1100px;
+	height:55px;
+	float:left;
+} 
+#row4 #col1{     /* 화면 출력 4행 1열 */  
+	width:280px;
+	height:40px;
+	margin-left:190px;
+	margin-top:5px;	
+	float:left;
+    font-size:23px;	
+	font-weight:bold;
+}
+#row4 #col2{     /* 화면 출력 4행 2열 */ 
+	width:400px;
+	height:40px;
+	margin-left:230px;
+	margin-top:0px;	
+	float:left;
+	font-size:20px;	 
+	font-weight:bold; 
+}
+
+#row5 {     /* 화면 출력 5행  */ 
+	width:1100px;
+	height:55px;
+	float:left;
+    font-size:22px;	 
+	font-weight:bold; 
+	margin-left:200px;	
+	margin-top:5px;		
+} 
+
+#drawimg {
+	float:left;
+	width:700px;
+    height:100px;
+}
+#draw{
+	float:left;
+	width:1px;
+    height:1px;
+    font-size:10px;	
+}
+#drawbottom11 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;
+	text-align:center;	
+	font-weight:bold;
+}
+#drawbottom22 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+	
+}
+#drawbottom33 {
+	float:left;
+	width:240px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+	
+}
+#drawbottom1 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;	
+}
+#drawbottom2 {
+	float:left;
+	width:230px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;
+}
+#drawbottom3 {
+	float:left;
+	width:240px;
+    height:30px;
+    font-size:15px;	
+	font-weight:bold;	
+	text-align:center;
+}
+#display_result {
+	float:left;	
+	width:1500px;	
+	height:500px;	
+    color:black;
+	font-size:12px;
+	font-weight:bold;	
+    text-align:left;
+}
+
+#display_result #ares1 { 
+	float:left;	
+	width:50px;	
+	height:30px;	
+	margin-left:50px;	
+	text-align:center;
+	border-bottom:solid 1px #444444;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #ares2 {
+	float:left;	
+	width:120px;	
+	height:30px;	
+	border-bottom:solid 1px #444444;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #ares3 {
+	float:left;	
+	width:850px;	
+	height:30px;	
+	border-bottom:solid 1px #575748;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #res1 {
+	float:left;	
+	width:40px;	
+	height:180px;	
+	text-align:center;
+	margin-left:60px;		
+	border-bottom:solid 1px #575748;		
+    font-size:16px;	
+	font-weight:bold;		
+}
+#display_result #res2 {
+	float:left;	
+	width:130px;	
+	height:180px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #res2 #no1{
+	float:left;	
+	width:115px;	
+	height:60px;	
+    font-size:16px;	
+	font-weight:bold;		
+}
+#display_result #res2 #no2{
+	float:left;	
+	width:115px;	
+	height:70px;		
+    font-size:15px;	
+	color:blue;
+	font-weight:bold;		
+}
+
+#display_result #res3 {
+	float:left;	
+	width:130px;	
+	height:180px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #firstoutline {
+	float:left;	
+	width:140px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+}
+#display_result #fres1 {
+	float:left;	
+	width:140px;
+	height:60px;	
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #fres2 {
+	float:left;	
+	width:140px;
+	height:70px;	
+    font-size:16px;	
+	color:blue;
+	font-weight:bold;		
+}
+/* 파일저장부분의 CSS */
+#display_result #printres1 {
+	float:left;	
+	width:40px;	
+	height:130px;	
+	text-align:center;
+	margin-left:60px;		
+	border-bottom:solid 1px #575748;		
+    font-size:16px;	
+	font-weight:bold;		
+}
+#display_result #printres2 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+#display_result #printres3 {
+	float:left;	
+	width:130px;	
+	height:130px;	
+	border-bottom:solid 1px #575748;		
+    font-size:20px;	
+	font-weight:bold;		
+}
+
+#display_result #firstoutline {
+	float:left;	
+	width:160px;	
+	margin-left:30px;
+	height:180px;	
+	border-bottom:solid 1px #575748;		
+}
+#display_result #fprintres1 {
+	float:left;	
+	width:145px;
+	height:60px;	
+    font-size:19px;	
+	font-weight:bold;		
+}
+#display_result #fprintres2 {
+	float:left;	
+	width:145px;
+	height:68px;	
+    font-size:16px;	
+	font-weight:bold;		
+}
+
+
+
+#display_result #outline {
+	float:left;	
+	width:700px;	
+	height:180px;	
+}
+#display_result #outline #res4 {
+	float:left;	
+	height:100px;	
+}
+
+#display_result #outline #res5 {
+	float:left;	
+	width:230px;	
+	height:30px;	
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#display_result #outline #res6 {
+	float:left;	
+	width:230px;	
+	height:30px;	
+	text-align:right;
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#display_result #outline #res7 {
+	float:left;	
+	width:240px;	
+	height:30px;	
+	text-align:right;
+    font-size:20px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+#display_result #outline #check1 {
+	float:left;	
+	width:230px;	
+	height:50px;	
+	text-align:right;
+	border-bottom:solid 1px #575748;		
+    font-size:30px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+#display_result #outline #check2 {
+	float:left;	
+	width:230px;	
+	height:50px;	
+	text-align:right;
+	border-bottom:solid 1px #575748;		
+    font-size:30px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+#display_result #outline #check3 {
+	float:left;	
+	width:230px;	
+	height:50px;	
+	text-align:right;
+	border-bottom:solid 1px #575748;		
+    font-size:30px;	
+	font-weight:bold;		
+	text-align:center;		
+}
+
+#display_result #addline {
+	float:left;	
+	width:350px;	
+	height:130px;	
+	margin-left:20px;
+}
+
+#display_result #addline #cols1 {
+	float:left;	
+	width:300px;	
+	height:30px;	
+	margin-top:5px;
+	text-align:left;
+	border-bottom:solid 1px #bfefff;		
+    font-size:15px;	
+	font-weight:bold;	
+    color:brown;	
+}
+#display_result #addline #cols2 {
+	float:left;	
+	width:200px;	
+	height:30px;	
+	margin-top:5px;	
+	text-align:left;
+	border-bottom:solid 1px #99ffe5;		
+    font-size:15px;	
+	font-weight:bold;		
+    color:green;	
+}
+
+#display_result #addline #cols2_1 {
+	float:left;	
+	width:100px;	
+	height:30px;	
+	margin-top:5px;	
+	text-align:left;
+	border-bottom:solid 1px #bdbdae;		
+    font-size:14px;	
+	font-weight:bold;		
+    color:black;	
+}
+
+#display_result #addline #cols3 {
+	float:left;	
+	width:300px;	
+	height:60px;	
+	margin-top:20px;	
+	text-align:center;
+	border-bottom:solid 1px #ff4000;		
+    font-size:16px;	
+	font-weight:bold;		
+    color:magenta;	
+}
+
+
+#containers {     
+    width:1100px;
+	height:730px;
+	float:left;
+} 
+
+input[type=checkbox] {  
+    display: none;  
+}
+
+input[type=checkbox] + label{
+    display: inline-block;  
+    cursor: pointer;  
+    position: relative;  
+    padding-left: 25px;  
+    margin-right: 15px;  
+    font-size: 20px;
+}
+
+input[type=checkbox]+ label:before {     
+
+    content: "";  
+    display: inline-block;  
+  
+    width: 25px;  
+    height: 25px;  
+  
+    margin-right: 20px;  
+    position: absolute;  
+    left: 0;  
+    bottom: 1px;  
+    background-color: #f0f0e1;  
+    border-radius: 5px; 
+    box-shadow: inset 0px 1px 1px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
+}
+
+input[type=checkbox]:checked + label:before { 
+
+    content: "\2713";  /* 체크모양 */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);  
+    font-size: 30px; 
+    font-weight:800; 
+    color: #fff;  
+    background:#ff0040;
+    text-align: center;  
+    line-height: 28px;  
+
+}
+

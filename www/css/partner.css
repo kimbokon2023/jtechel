@@ -1,0 +1,61 @@
+/* unvisited link grey */
+#top-menu a:link {
+        color: #777;
+}
+/* visited link grey */
+#top-menu a:visited {
+        color: #777;
+}
+/* mouse over link blue */
+#top-menu a:hover {
+        color: #0CF;
+}
+/* selected link blue */
+#top-menu a:active {
+        color: #0CF;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+	padding: 10px 16px;
+	font-size: 30px;
+	line-height: 1.3333333;
+	border-radius: 6px;
+}
+.btn-group-sm>.btn, .btn-sm {
+	padding: 5px 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+.btn-group-xs>.btn, .btn-xs {
+	padding: 1px 5px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+
+.container {
+}
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+
+.row:not(:last-child) {
+border-bottom: 1px solid #dddddd;
+}
+
+.column-1:not(:last-child) {
+border-right: 1px solid #dddddd;
+}

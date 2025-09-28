@@ -1,0 +1,1675 @@
+
+.notes {
+  background-attachment: local;
+  background-image:
+    linear-gradient(to right, white 10px, transparent 10px),
+    linear-gradient(to left, white 10px, transparent 10px),
+    repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+  line-height: 15px;
+  padding: 3px 4px;
+}
+	
+.color-red {color:red}
+.color-green {color:green}
+.color-black {color:black}
+.color-blue {color:blue}
+.color-purple {color:purple}
+.color-brown {color:brown}
+
+.limit {overflow: hidden; margin: 0 auto; padding: 0 2%; width: 90%;}
+.header-logo {padding: 5px 0;}
+
+.list-header {padding: 5px 0;}
+.list-row {display: table; width: 100%;border-bottom: 1px solid #eee; font-size: 13px; color: #666;}
+.list-row--header {padding: 5px ; background: #f8f8f8; border-top: 1px solid #333;font-weight: normal; color: #222;}
+.list-link {display: table; width: 100%; color: #666;}
+.list-link:hover {background: #ddd; }
+.list-cell {display: table-cell; padding: 8px 5px;text-align: left; vertical-align: middle;}
+.list-cell--10 {width: 10px;}
+.list-cell--20 {width: 20px;}
+.list-cell--30 {width: 30px;}
+.list-cell--40 {width: 40px;}
+.list-cell--50 {width: 50px;}
+.list-cell--60 {width: 60px;}
+.list-cell--70 {width: 70px;}
+.list-cell--80 {width: 80px;}
+.list-cell--90 {width: 90px;}
+.list-cell--100 {width: 100px;}
+.list-cell--110 {width: 110px;}
+.list-cell--120 {width: 120px;}
+.list-cell--130 {width: 130px;}
+.list-cell--140 {width: 140px;}
+.list-cell--150 {width: 150px;}
+.list-cell--160 {width: 160px;}
+.list-cell--170 {width: 170px;}
+.list-cell--180 {width: 180px;}
+.list-cell--190 {width: 190px;}
+.list-cell--200 {width: 200px;}
+.list-cell--210 {width: 210px;}
+.list-cell--220 {width: 220px;}
+.list-cell--230 {width: 230px;}
+.list-cell--240 {width: 240px;}
+.list-cell--250 {width: 250px;}
+.list-cell--260 {width: 260px;}
+.list-cell--270 {width: 270px;}
+.list-cell--280 {width: 280px;}
+.list-cell--290 {width: 290px;}
+.list-cell--300 {width: 300px;}
+.list-cell--350 {width: 350px;}
+.list-cell--400 {width: 400px;}
+.list-cell--500 {width: 500px;}
+.list-cell--600 {width: 600px;}
+.list-cell--700 {width: 700px;}
+.list-cell--800 {width: 800px;}
+
+.list-cell span {display: block;}
+
+.ui-button {text-align: right;}
+.ui-button a {display: inline-block; background: #eee; font-size: 12px; color: #aaa; padding: 10px 10px; border-radius: 5px;}
+/* index */
+.section-index {margin-top: 50px;}
+.section-index__title {padding: 5px 0;font-size: 18px;}
+ 
+#work_col3 {     /* 자재출고 전체크기 */ 
+    margin-top:5px;
+	width:1250px;
+	height:730px;
+	float:left;
+	margin-left:100px;
+    font-size:14px;
+	font-weight:normal;
+}
+
+
+#output_text {       /* 출고 폼 */
+	margin-top:50px;
+	margin-left:100px;
+    width:1400px; 
+	height:700px;
+    font-size:14px;
+	font-weight:normal;
+}
+#sero1{
+    width:100px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;
+}
+
+#sero_new1{                    /* 회사구분 text */
+    width:180px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:0px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;
+}
+
+#sero_new2{                       /* 주일/경동 radio 버튼 */
+    width:250px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:0px;	
+    font-size:15px;
+}
+#sero_new3{                       /* 절곡/모터 checkbox */
+    width:100px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:0px;	
+    font-size:15px;
+}
+#sero2{
+    width:150px; 
+	height:30px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero3{
+    width:100px; 
+	height:30px;	
+	float:left;
+	margin-top:20px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;	
+}
+#sero333{
+    width:500px; 
+	height:30px;	
+	float:left;
+	margin-top:20px;
+	margin-left:-8px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;	
+}
+#sero31{
+    width:100px; 
+	height:30px;	
+	float:left;
+	margin-top:12px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;	
+}
+#sero32{
+    width:100px; 
+	height:30px;	
+	float:left;
+	margin-top:6px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:right;	
+}
+#sero33{
+    width:600px; 
+	height:30px;	
+	float:left;
+	margin-top:20px;
+	margin-left:310px;	
+    font-size:15px;
+	font-weight:normal;	
+	text-align:left;	
+}
+#sero4{
+    width:150px; 
+	height:30px;	
+	float:left;
+	margin-top:20px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero5{
+    width:400px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero55{
+    width:400px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero555{
+    width:400px; 
+	height:20px;	
+	float:left;
+	margin-top:15px;
+	margin-left:-30px;	
+    font-size:14px;
+	font-weight:bold;			
+}
+#sero6{
+    width:100px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+
+#regist_state{
+    width:400px; 
+	height:20px;	
+	float:left;
+	margin-top:-5px;
+	margin-left:355px;	
+    font-size:15px;
+	font-weight:normal;		
+    color:brown;	
+}
+
+#sero7{
+    width:300px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero8{
+    width:250px; 
+	height:20px;	
+	float:left;
+	margin-top:20px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero9{
+    width:100px; 
+	height:20px;	
+	float:left;
+	margin-top:20px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero10{
+    width:300px; 
+	height:60px;	
+	float:left;
+	margin-top:20px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+#sero11{
+    width:100px; 
+	height:20px;	
+	float:left;
+    font-size:15px;
+	margin-top:20px;	
+	margin-left:150px;	
+	font-weight:bold;	
+	text-align:right;	
+}
+#sero12{
+    width:100px; 
+	height:20px;	
+	float:left;
+	margin-top:20px;
+	margin-left:5px;	
+	text-align:left;	
+	font-weight:normal;				
+}
+#sero111{
+    width:150px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:10px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+
+#serodelivery1{
+    width:900px; 
+	height:20px;	
+	float:left;
+	margin-top:5px;
+	margin-left:5px;	
+    font-size:14px;
+	font-weight:normal;			
+}
+#serodelivery2{
+    width:900px; 
+	height:20px;	
+	float:left;
+	margin-top:5px;
+	margin-left:100px;	
+    font-size:14px;
+	font-weight:normal;			
+}
+
+.serofile{
+    width:250px; 
+	height:20px;	
+	float:left;
+	margin-top:30px;
+	margin-left:100px;	
+    font-size:15px;
+	font-weight:normal;			
+}
+
+.serofileview{
+    width:400px; 
+	height:20px;	
+	float:left;
+	margin-top:10px;
+	margin-left:120px;	
+    font-size:14px;
+	font-weight:normal;			
+}
+
+
+
+#content #col2 {
+	width:auto;
+	float:left;
+	margin-left:15px;
+}
+
+#title{
+	margin-top:15px;
+	width:250px;
+	float:left;
+	height:30px;	
+
+}
+
+#top_board0{
+	margin-top:20px;
+	width:150px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:right;
+}
+
+#top_board1{
+	margin-top:20px;
+	width:150px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:right;
+}
+
+#top_board2{
+	margin-top:20px;
+	width:40px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:center;
+	color:blue;
+}
+
+#top_board3{
+	margin-top:20px;
+	width:150px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:right;
+}
+#top_board4{
+	margin-top:20px;
+	width:70px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:center;
+	color:brown;	
+}
+#top_board5{
+	margin-top:20px;
+	width:722px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:right;
+	color:brown;	
+}
+#top_board_all{
+	margin-top:20px;
+	margin-left:140px;
+	width:1000px;
+	float:left;
+	height:25px;	
+	font-size:13px;
+	font-weight:bold;
+	text-align:left;
+	color:black;	
+}
+
+#title1{    
+	margin-left:300px;	
+	font-weight:bold;
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title11{    
+	margin-left:200px;
+	width:700px;
+	font-weight:bold;
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title11 #col1{    
+	color:black;
+	font-weight:bold;
+	width:50px;
+}
+
+#title11 #col2{    
+	color:red;
+	font-weight:bold;
+	width:80px;
+}
+
+#title2{    
+	margin-left:360px;
+	font-weight:bold;
+	border-bottom:solid 1px #cccccc;	
+}
+
+#title2_sub{    
+   	width:620px;		
+}
+
+/* list search css */
+
+#list_search {
+	height:30px;
+	padding-top:10px;
+}
+
+#list_search #list_search1 {
+	float:left;
+	margin-top:2px;
+}
+
+#list_search #list_search11 {
+	float:left;
+	margin-left:10px;
+	margin-top:2px;
+}
+#list_search #list_search111 {
+	float:left;	
+	margin-top:2px;
+	margin-left:50px;
+}
+
+#list_search #list_search2 {
+	float:left;
+	margin-left:10px;
+	margin-top:4px;
+}
+#list_search #list_search22 {
+	float:left;
+	margin-left:290px;
+	margin-top:4px;
+}
+
+#list_search #list_search3 {
+	float:left;
+	margin-left:5px;
+	margin-top:1px;
+}
+
+#list_search #list_search3 select {
+	width:80px;
+	height:21px;
+	border:solid 1px #cccccc;
+}
+
+#list_search #list_search4 {
+	float:left;
+	margin-left:3px;
+}
+
+#list_search #list_search4 input {
+	width:120px;
+	height:18px;
+	border:solid 1px #cccccc;
+}
+
+#list_search #list_search5 {
+	float:left;
+	margin-left:5px;
+	margin-top:1px;
+}
+
+#list_search #list_search6 {
+	float:left;
+	margin-left:30px;
+	margin-top:1px;
+}
+
+#list_top_title {
+	width:100%;
+	height:30px;
+	padding:2px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:2px;
+	margin-bottom:1px;
+	font-size:15px;	
+	font-weight:bold;	
+}
+
+#list_title1 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	font-size:14px;	
+	font-weight:bold;
+}
+
+#list_title2 {
+	margin-left:80px;
+}
+
+#list_title3 {
+	margin-left:80px;
+}
+
+#list_title4 {
+	margin-left:35px;
+}
+
+#list_title5 {
+	margin-left:115px;
+}
+#list_title6 {
+	margin-left:200px;
+}
+#list_title7 {
+	margin-left:10px;
+}
+#list_title8 {
+	margin-left:-10px;
+}
+
+#output_top_title {
+	width:100%;
+	height:30px;
+	padding:2px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:2px;
+	margin-bottom:1px;
+	font-size:14px;	
+	font-weight:normal;	
+}
+
+#output_title1 {
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#output_title2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+
+#output_title3 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title33 {      /* 접수상태 타이틀 */
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:1px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title7 {           /* 현장명 */
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#output_title8 {     /* 수신처  */
+	width:120px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;	
+}
+ #output_title9 {   /* 주소 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#output_title10 {  /* 연락처 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+#output_title11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:15px;
+    float:left;
+	text-align:center;
+}
+#output_title12 {  /* 비고 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+#output_title13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+#output_title14 {  /* 진행상태 */
+	width:80px;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:center;
+}
+
+#output_title15 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:-10px;
+    float:left;
+	text-align:center;
+	color:red;
+}
+#output_title16 {  /* 스크린틀수 */
+	width:80px;
+	margin-top:5px;
+	margin-left:-20px;
+    float:left;
+	text-align:center;
+	color:brown;
+}
+
+#make_output_top_title {
+	width:100%;
+	height:45px;
+	padding:2px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-top:2px;
+	margin-bottom:1px;
+	font-size:14px;	
+	font-weight:normal;	
+}
+
+#list_title1 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+	font-size:12px;
+    float:left;
+		text-align:center;
+}
+#list_title2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+}
+#list_title3 {
+	width:100px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+		text-align:center;
+}
+
+#list_title4 {
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+		text-align:center;
+}
+#list_title5 {
+	width:500px;
+	margin-top:5px;
+	margin-left:100px;
+    float:left;
+		text-align:center;
+}
+
+
+
+
+#list_content {
+	height:600px;
+	width:100%;
+}
+
+
+#make_outlist_item {
+	overflow:hidden;
+	width:100%;
+	height:40px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;	
+	font-weight:normal;		
+}
+
+#make_outlist_item1 {
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;	
+}
+
+#list_item1 {
+	width:50px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#list_item2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#list_item3  {  
+	width:100px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		 
+}
+
+#list_item4  {   
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		 
+}
+
+#list_item5 {     /* 발주서 text부분  */
+	width:800px;
+	margin-top:5px;
+	margin-left:15px;
+    float:left;
+	text-align:left;	
+}
+
+
+
+ #make_outlist_item9 {   /* 수신처 주소 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+#make_outlist_item10 {  /* 연락처 */
+	width:90px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#make_outlist_item11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+}
+
+#make_outlist_item14 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:red;
+}
+
+
+#make_outlist_item12 {  /* 비고 */
+	width:460px;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:left;
+}
+#make_outlist_item13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+
+#make_outlist_item14 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:red
+}
+#make_outlist_item16 {  /* 스크린수량 */
+	width:60px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:brown;
+}
+#make_outlist_item17 {  /* 완료수량 */
+	width:100px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:blue;
+}
+
+ /* 절곡 분석 CSS */
+
+#make_outlist_item21 {  /* 각종 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:brown;
+}
+#make_outlist_item22 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:brown;
+}
+#make_outlist_item23 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:brown;
+}
+
+#make_outlist_item24 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:blue;
+}
+#make_outlist_item25 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:blue;
+}
+#make_outlist_item26 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:gray;
+}
+#make_outlist_item27 {  /* 면적 */
+	width:80px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;
+	color:gray;
+}
+ 
+
+
+
+
+#outlist_item {
+	overflow:hidden;
+	width:1600px;
+	height:20px;
+	margin:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+	font-size:10px;	
+	font-weight:normal;		
+}
+
+#outlist_item1 {
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;	
+}
+
+#outlist_item2 {
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+
+#outlist_item3 {
+	width:70px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+
+#outlist_item33  {      /* 접수상태 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		 
+}
+
+#outlist_item4 {         /* 주일/경동 타이틀 */
+	width:30px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item5 {         /* 절곡 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item6 {         /* 모터 발주 이틀 */
+	width:40px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;		
+}
+
+#outlist_item7 {
+	width:150px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+
+#outlist_item8 {     /* 수신처 타이틀 */
+	width:120px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:center;	
+}
+ #outlist_item9 {   /* 수신처 주소 */
+	width:200px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+	text-align:left;		
+}
+#outlist_item10 {  /* 연락처 */
+	width:90px;
+	margin-top:5px;
+	margin-left:5px;
+    float:left;
+}
+#outlist_item11 {   /* 발주담당 */
+	width:50px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+}
+#outlist_item12 {  /* 비고 */
+	width:300px;
+	margin-top:5px;
+	margin-left:10px;
+    float:left;
+	text-align:left;
+}
+#outlist_item13 {  /* 운송방식 */
+	width:90px;
+	margin-top:5px;
+	margin-left:2px;
+    float:left;
+	text-align:center;
+}
+
+#outlist_item14 {  /* 진행상태 */
+	width:80px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+}
+#outlist_item15 {  /* 면적 */
+	width:60px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:red;
+}
+
+#outlist_item16 {  /* 스크린수량 */
+	width:60px;
+	margin-top:5px;
+	margin-left:0px;
+    float:left;
+	text-align:center;
+	font-weight:bold;
+	color:brown;
+}
+
+#list_item {
+	height:20px;
+	margin-top:2px;
+	padding:2px;  
+	border-bottom:solid 1px #eeeeee;
+}
+
+#list_item #list_item1{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#list_item #list_item2{
+	float:left;
+	width:560px;
+}
+
+#list_item #list_item3{
+	float:left;
+	width:65px;
+	text-align:center;
+}
+
+#list_item #list_item4{
+	float:left;
+	width:80px;
+	text-align:center;
+}
+
+#list_item #list_item5{
+	float:left;
+	width:40px;
+	text-align:center;
+}
+
+#page_button {
+	margin-top:20px;
+}
+
+#page_num {
+	float:left;
+	width:80%;
+	margin-top:10px;
+	text-align:center;
+}
+
+#button {
+	float:left;
+	width:18%;
+	text-align:right;
+}
+
+/* write_form css */
+
+#write_form_title {
+	margin-top:20px;
+	width:99%;
+	height:20px;
+	text-align:center;
+	padding-top:7px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+}
+
+#write_form {
+	margin-top:10px;
+	height:80px;
+	overflow:auto;
+}
+
+#write_form #write_row1 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row2 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row3 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row4 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row5 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#write_form #write_row6 {
+    width:99%; 
+	height:20px; 
+	margin:2px 0 2px 0; 
+}
+
+#work_write_form {
+	margin-top:10px;
+	height:150px;
+	overflow:auto;
+}
+
+#work_write_form #work_write_row1 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row2 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row3 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row4 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row5 {
+     width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+#work_write_form #work_write_row6 {
+    width:99%; 
+	height:20px; 
+	margin:1px 0 1px 0; 
+}
+
+.write_line {
+    width:99%; 
+	border-bottom:solid 1px #cccccc;
+}
+
+#write_form .col1 {
+	float:left;
+	width:120px;
+	text-align:center;
+	padding:5px;
+	background-color:#eeeeee;
+}
+
+#write_form #write_row3 .col1 {
+	height:126px;
+	padding-top:120px;
+}
+
+#write_form .col2 {
+	float:left;
+	margin-left: 8px;
+	margin-top:2px;
+}
+
+#write_row1 .col2 {
+	margin-top:6px;
+}
+
+#write_form #write_row1 .col3 {
+	float:left;
+	margin-top:4px;
+	margin-left:100px;
+}
+
+#write_row2 .col2 input {
+	width:650px;
+	height:17px;
+	border:solid 1px #cccccc;
+}
+
+#write_row3 .col2 textarea {
+    margin-top:1px;
+	border:solid 1px #cccccc;
+}
+
+#write_row4 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_row5 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_row6 .col2 input {
+	width:300px;
+	height:19px;
+	border:solid 1px #cccccc;
+}
+
+#write_button {
+	margin-top:15px;
+	width:1100px;
+	text-align:right;
+}
+
+#write_button_renew {
+	margin-top:2px;
+	width:1000px;
+	text-align:right;
+}
+#write_button_renew2 {
+	margin-top:2px;
+	margin-left:2px;
+	width:1000px;
+	text-align:left;
+}
+
+.delete_ok {
+	margin:0 0 3px 10px;
+}
+
+/* view.php css */
+
+#view_comment {
+	margin:10px 0 0 10px;
+}
+
+#view_title {
+	height:18px;
+	padding:10px 8px 8px 8px;  
+	border-top:solid 2px #aaaaaa;
+	background-color:#eeeeee;
+	margin-bottom:5px;
+}
+
+#view_title1 {
+	float:left;
+	width:70%;
+}
+
+#view_title2 {
+	float:left;
+	width:28%;
+	text-align:right;
+}
+
+#view_content {
+	width:98%;
+	min-height:200px;
+	padding:15px 0 15px 8px;
+	overflow:hidden;
+	line-height:150%;
+	border-bottom:solid 1px #cccccc;
+	margin-bottom:15px;
+}
+
+#work_view_content {
+	width:90%;
+	height:40px;
+	line-height:100%;
+	overflow:auto;
+    float:left;	
+}
+
+
+#view_button {
+	width:98%;
+	text-align:right;
+	margin-bottom:15px;
+}
+
+#work_view_button {
+	width:55%;
+	height:60px;
+	text-align:right;
+	margin-bottom:10px;
+	margin-top:10px;
+}
+
+
+/* ripple_work css */
+
+#ripple_work {
+	width:90%;
+	float:left;
+}
+
+#ripple_work_writer_title {
+	height:26px;
+	padding-top:10px; 
+}
+
+#ripple_writer_title ul {
+	margin-left:5px;
+}
+
+#ripple_writer_title li {
+	display:inline;
+}
+
+#work_writer_title1 {
+	margin-left:12px;
+	font-weight:bold;
+}
+
+#work_writer_title2 {
+	margin-left:20px;
+}
+
+#work_writer_title3 {
+	margin-left:540px;
+}
+
+#ripple_work_content {
+	padding:10px;
+	margin-left:5px;
+	line-height:150%;
+}
+
+.hor_work_line_ripple {
+	width:80%;
+	height:1px;
+	margin-bottom:10px;
+	border-bottom:solid 3px #efefef;
+}
+
+#ripple_work_box {
+	width:99%;
+	height:100px;
+	padding:8px;
+	margin-left:3px;
+	margin-bottom:15px;
+	background-color:#efefef;
+}
+
+#ripple_work_box1 {
+	float:left;
+	margin:5px;
+}
+
+#ripple_work_box2 {
+	float:left;
+	margin:5px;
+}
+
+#ripple_work_box2 textarea {
+	border:solid 1px #cccccc;
+}
+#ripple_work_box3 {
+	float:left;
+	margin:5px 0 0 10px;
+}
+#ripple_work_writer_title {
+	height:26px;
+	padding-top:10px; 
+}
+#ripple_work_writer_title ul {
+	margin-left:5px;
+}
+
+#ripple_work_writer_title li {
+	display:inline;
+}
+#writer_work_title1 {
+	margin-left:10px;
+	font-weight:bold;
+}
+
+#writer_work_title2 {
+	margin-left:20px;
+}
+
+/* @group Blink */
+.blink {
+	-webkit-animation: blink 2.0s linear infinite;
+	-moz-animation: blink 2.0s linear infinite;
+	-ms-animation: blink 2.0s linear infinite;
+	-o-animation: blink 2.0s linear infinite;
+	 animation: blink 2.0s linear infinite;
+}
+@-webkit-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-o-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+
+/* @end */
+.img{
+    position: relative;
+    background-image: url(http://5130.co.kr/img/output_list.jpg);                                                               
+    height: 870px;
+    width: 1250px;
+    /* background-size: cover; */
+}
+.img-cover{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.4);                                                                 
+   z-index:1;
+}
+.img .content{
+     position: absolute;
+	 top:10px;
+	 left:10px;
+     font-size:1rem;
+     color: black;     
+     text-align: left;
+}
+
+    /*  프린트 부분  */
+
+.menu{
+		width:1250px;
+		height:870px;
+		margin:1px;	
+	    font-size:15px;
+		font-weight:bold;
+	 /*position: relative; top: 50px; left: 10px;*/ 
+	}
+
+
+.menu .print1 {       /*  출고일  */
+    float:left;
+	width:170px;
+	height:75px;
+    margin-top:25px;	
+	margin-left:120px;	
+	font-size:18px;
+	color:blue;
+}
+
+.menu .print1_new {       /*  listall 출고일  */
+    float:left;
+	width:400px;
+	height:75px;
+    margin-top:25px;	
+	margin-left:120px;	
+	font-size:18px;
+	color:blue;
+}
+
+.menu .print1_1 {       /*  경동,대신  */
+    float:left;
+	width:70px;
+	height:44px;
+    margin-top:3px;	
+	margin-bottom:3px;	
+	margin-left:30px;	
+	margin-right:10px;	
+	color:black;
+    font-size:18px;
+    text-align:left;
+}
+
+.menu .print2 {       /*  수신처  */
+    float:left;
+	width:155px;
+	height:44px;
+    margin-top:3px;	
+	margin-bottom:3px;	
+	margin-left:10px;	
+	margin-right:10px;	
+	color:black;
+    font-size:20px;
+    text-align:left;
+}
+.menu .print3 {        /*  품목  */
+    float:left;
+	width:185px;
+	height:16px;
+    margin-top:1px;	
+	margin-left:10px;	
+	margin-right:10px;	
+	color:black;
+    font-size:14px;
+    text-align:left;
+}
+.menu .print4 {        /*  주소(영업소)  */
+    float:left;
+	width:300px;
+    margin-top:2px;	
+	margin-left:80px;	
+	margin-right:10px;	
+	color:black;
+    font-size:19px;
+    text-align:left;
+}
+.menu .print5 {        /*  연락처  */
+    float:left;
+	width:120px;
+    margin-top:2px;	
+	margin-left:10px;	
+	margin-right:5px;	
+	color:black;
+    font-size:20px;
+    text-align:left;
+}
+.menu .print6 {        /*  운송방식  */
+    float:left;
+	width:100px;
+    margin-top:2px;	
+	margin-left:5px;	
+	margin-right:10px;	
+	color:black;
+    font-size:20px;
+    text-align:left;
+}
+
+#textarea1{
+    font-size:15px;
+	font-weight:normal;			
+}
