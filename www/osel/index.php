@@ -536,9 +536,9 @@ try {
                     <i class="bi bi-calculator"></i>
                 </div>
                 <h4 class="card-title">제작산출</h4>
-                <p class="card-description">실측 데이터를 기반으로 제작 결과물 생성</p>
+                <p class="card-description">실측 데이터로 제작사이즈 생성</p>
                 <?php
-                echo LinearButton::primary('산출 시작')->addAttribute('style', 'pointer-events: none;');
+                echo LinearButton::primary('제작사이즈 생성')->addAttribute('style', 'pointer-events: none;');
                 ?>
             </a>
         </div>

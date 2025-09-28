@@ -27,6 +27,7 @@ function generateMakePanelData($original_panel_data, $production_settings) {
     error_log("Transom excluded: " . $transom_excluded);
     error_log("Molding included: " . $molding_included);
     error_log("Original panel count: " . count($original_panel_data));
+    error_log("DEBUG: production_height1_11 type: " . gettype($production_height1_11) . ", value: " . var_export($production_height1_11, true));
 
     foreach ($original_panel_data as $panel_number => $panel_info) {
         // 1,11번 패널이 제외된 경우 건너뛰기
@@ -49,12 +50,17 @@ function generateMakePanelData($original_panel_data, $production_settings) {
 
         if ($panel_number === '1' || $panel_number === '11') {
             // 1,11번 패널: production_height1_11 우선, 없으면 production_height 사용
-            if ($production_height1_11 > 0) {
+            error_log("DEBUG Panel {$panel_number}: Checking heights - production_height1_11={$production_height1_11}, production_height={$production_height}");
+            
+            // production_height1_11이 설정되어 있으면 사용 (0이어도 명시적으로 설정된 값으로 간주)
+            if (isset($production_settings['production_height1_11']) && $production_settings['production_height1_11'] !== '') {
                 $new_height = $production_height1_11;
-                error_log("Panel {$panel_number}: Using specific height {$production_height1_11}");
+                error_log("Panel {$panel_number}: Using specific height {$production_height1_11} (explicitly set)");
             } elseif ($production_height > 0) {
                 $new_height = $production_height;
                 error_log("Panel {$panel_number}: Using general height {$production_height}");
+            } else {
+                error_log("Panel {$panel_number}: No production height set, keeping original height");
             }
         } elseif ($panel_number >= '2' && $panel_number <= '10') {
             // 2~10번 패널: production_height 사용
@@ -119,11 +125,14 @@ function updateMakePanelDataInDB($pdo, $measurement_id, $production_settings) {
         }
 
         // 제작 패널 데이터 생성
+        error_log("DEBUG updateMakePanelDataInDB: Calling generateMakePanelData with settings: " . json_encode($production_settings));
         $make_panel_data = generateMakePanelData($original_panel_data, $production_settings);
 
         if (empty($make_panel_data)) {
             error_log("Generated make_panel_data is empty for measurement_id: {$measurement_id}");
             // 빈 데이터라도 저장 (제외 옵션으로 인해 모든 패널이 제외될 수 있음)
+        } else {
+            error_log("DEBUG updateMakePanelDataInDB: Generated make_panel_data for panels: " . implode(', ', array_keys($make_panel_data)));
         }
 
         // make_panel_data 저장

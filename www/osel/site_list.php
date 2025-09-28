@@ -3,7 +3,7 @@ require_once '../lib/mydb.php';
 session_start();
 $DB = 'jtechel';
 
-// 실제 패널 개수 계산 함수
+// 실제 패널 개수 계산 함수 (index.php와 동일한 로직)
 function calculateActualPanelCount($panel_data, $transom_data) {
     $panel_count = 9; // 기본 2-10번 패널
 
@@ -22,7 +22,7 @@ function calculateActualPanelCount($panel_data, $transom_data) {
                 $panel_count += 1;
             }
         }
-    }
+    } 
 
     // 12번 transom 패널 확인 (transom 키 안의 width 필드가 실제로 존재하고 비어있지 않아야 함)
     if (!empty($transom_data) && $transom_data !== '{}') {
@@ -260,6 +260,7 @@ try {
     foreach ($sites as &$site) {
         $site['actual_panel_count'] = calculateActualPanelCount($site['latest_panel_data'], $site['latest_transom_data']);
         $site['has_transom'] = hasTransomData($site['latest_transom_data']);
+        
     }
     unset($site); // 참조 제거
 } catch (PDOException $e) {
@@ -1209,8 +1210,8 @@ require_once '../components/LinearNavigation.php';
                             <td>
                                 <?php if ($site['measurement_sessions'] > 0): ?>
                                     <?php
-                                    // transom이 있으면 패널 개수에서 1개 빼고 표시
-                                    $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) - 1 : ($site['actual_panel_count'] ?? 0);
+                                    // transom이 있으면 패널 개수에서 1개 빼고 표시 (index.php와 동일한 로직)
+                                    $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) + 1 : ($site['actual_panel_count'] ?? 0);
                                     ?>
                                     <div class="badge success">
                                         <?= $display_panel_count ?>개
@@ -1257,7 +1258,7 @@ require_once '../components/LinearNavigation.php';
                             <div class="card-status">
                                 <?php if ($site['measurement_sessions'] > 0): ?>
                                     <?php
-                                    // transom이 있으면 패널 개수에서 1개 빼고 표시
+                                    // transom이 있으면 패널 개수에서 1개 빼고 표시 (index.php와 동일한 로직)
                                     $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) - 1 : ($site['actual_panel_count'] ?? 0);
                                     ?>
                                     <div class="badge success">

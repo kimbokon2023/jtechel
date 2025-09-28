@@ -38,6 +38,8 @@ try {
 // Debug: Log received POST data
 error_log("=== UPDATE PANEL PRODUCTION SETTINGS REQUEST ===");
 error_log("Request data: " . json_encode($_POST));
+error_log("Raw production_height1_11 value: " . ($_POST['production_height1_11'] ?? 'NOT SET'));
+error_log("Parsed production_height1_11 value: " . intval($_POST['production_height1_11'] ?? 0));
 
 // Get form data
 $measurement_id = intval($_POST['measurement_id'] ?? 0);
@@ -175,11 +177,13 @@ if ($has_make_panel_data && ($has_production_height || $has_production_height1_1
                 // Create production settings for make_panel_data generation
                 $production_settings = [
                     'production_height' => $production_height ?: 2400, // Default if not set
-                    'production_height1_11' => $production_height1_11 ?: $production_height ?: 2400,
+                    'production_height1_11' => $production_height1_11, // 0이어도 전달 (명시적으로 설정된 값)
                     'panel_corners_excluded' => $panel_corners_excluded,
                     'transom_excluded' => $transom_excluded,
                     'molding_included' => $molding_included
                 ];
+                
+                error_log("DEBUG: Production settings for make_panel_data generation: " . json_encode($production_settings));
 
                 // Generate make_panel_data
                 $make_panel_data = generateMakePanelData($original_panel_data, $production_settings);
@@ -231,6 +235,8 @@ try {
             'transom_excluded' => $transom_excluded,
             'molding_included' => $molding_included
         ];
+        
+        error_log("DEBUG: Final production settings for updateMakePanelDataInDB: " . json_encode($production_settings));
 
         $make_data_result = updateMakePanelDataInDB($pdo, $measurement_id, $production_settings);
         if (!$make_data_result) {

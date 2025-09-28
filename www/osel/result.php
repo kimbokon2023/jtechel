@@ -21,8 +21,9 @@ try {
 
 // Search parameters
 $search_site = $_GET['search_site'] ?? '';
-$search_date_from = $_GET['search_date_from'] ?? '';
-$search_date_to = $_GET['search_date_to'] ?? '';
+// 기본값: 시작일은 6개월 전, 종료일은 오늘 (list.php와 동일한 로직)
+$search_date_from = $_GET['search_date_from'] ?? date('Y-m-d', strtotime('-6 months'));
+$search_date_to = $_GET['search_date_to'] ?? date('Y-m-d');
 $search_measurer = $_GET['search_measurer'] ?? '';
 $selected_measurement = $_GET['measurement_id'] ?? '';
 
@@ -48,7 +49,7 @@ if (!empty($search_date_to)) {
 if (!empty($search_measurer)) {
     $where_conditions[] = "measurer_name LIKE ?";
     $params[] = "%{$search_measurer}%";
-}
+} 
 
 $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
@@ -172,6 +173,7 @@ if ($selected_data) {
 function calculateProductionResults($panel_data, $transom_data, $measurement_data) {
     // 1,11번 패널 제외 설정 확인
     $panel_corners_excluded = $measurement_data['panel_corners_excluded'] ?? 1;
+    $production_height1_11 = $measurement_data['production_height1_11'] ?? 0;
 
     // Transom 정보 확인 (measurement_detail.php와 동일한 로직)
     $transom_info = [];
@@ -197,7 +199,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
         'dimension_summary' => [],
         'special_requirements' => [],
         'corner_panels' => [],
-        'transom_details' => []
+        'transom_details' => [],
+        'production_height1_11' => [],
+        'production_height' => [],
+        'panel_corners_excluded' => [],
+        'transom_excluded' => [],
+        'molding_included' => [],
+        'elevator_count' => []
     ];
 
     // Material summary
@@ -265,7 +273,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
     $total_area = 0;
     $dimensions = [];
     $molding_included = $measurement_data['molding_included'] ?? 0;
-    $panel_corners_excluded = $measurement_data['panel_corners_excluded'] ?? 1;
+    $panel_corners_excluded = $measurement_data['panel_corners_excluded'] ?? 1;  
 
     foreach ($panel_data as $panel_num => $data) {
         // 1,11번 패널 제외 설정이 켜져있으면 해당 패널 건너뛰기
@@ -275,6 +283,19 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
         if (!empty($data['width']) && !empty($data['height'])) {
             $width = floatval($data['width']);
             $height = floatval($data['height']);
+            
+            // 1,11번 패널의 경우 production_height1_11 값 사용
+            if (intval($panel_num) === 1 || intval($panel_num) === 11 ) {
+                if (!empty($measurement_data['production_height1_11'])) {
+                    $height = floatval($measurement_data['production_height1_11']);
+                }
+            }
+            // 2~10번 패널의 경우 production_height 값 사용
+            elseif (intval($panel_num) >= 2 && intval($panel_num) <= 10) {
+                if (!empty($measurement_data['production_height'])) {
+                    $height = floatval($measurement_data['production_height']);
+                }
+            }
 
             // 몰딩포함 시 패널별 width 차감 적용
             if ($molding_included && is_numeric($panel_num) && $panel_num >= 2 && $panel_num <= 10) {
@@ -299,7 +320,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 'width' => $width,
                 'height' => $height,
                 'area' => $area,
-                'molding_deduction' => $molding_included ? ($molding_deduction ?? 0) : 0
+                'molding_deduction' => $molding_included ? ($molding_deduction ?? 0) : 0,
+                'production_height1_11' => $production_height1_11 ?? 0,
             ];
         }
     }
@@ -331,7 +353,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제작산출 - 실측 데이터 기반 결과 생성</title>
+    <title>제작산출 - 실측 데이터 기반 생성</title>
 
     <!-- Linear Theme CSS -->
     <link rel="stylesheet" href="../components/linear-theme.css">
@@ -660,6 +682,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: var(--linear-radius-md);
             background-color: var(--linear-bg-secondary);
             overflow: hidden;
+            height: 48px; /* 행의 높이와 맞춤 */
         }
 
         .project-type-toggle input[type="radio"] {
@@ -679,6 +702,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transition: all 0.2s ease;
             font-size: var(--linear-text-body);
             font-weight: var(--linear-font-weight-medium);
+            height: 100%;
+            min-height: 48px; /* 행의 높이와 맞춤 */
         }
 
         .toggle-option:hover {
@@ -1770,11 +1795,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             /* 모바일에서 프로젝트 타입 토글을 한 행에 표시 */
             .project-type-toggle {
                 flex-direction: row;
+                height: 44px; /* 모바일에서 약간 작게 */
             }
 
             .toggle-option {
                 padding: var(--linear-spacing-sm);
                 font-size: var(--linear-text-small);
+                min-height: 44px; /* 모바일에서 약간 작게 */
             }
 
             .exclusion-options {
@@ -3029,7 +3056,16 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                     <div class="panel-number">Panel <?= $detail['panel'] ?></div>
                                     <div class="dimension-specs">
                                         <span class="dimension-size">
-                                            <?= number_format($detail['width']) ?> × <?= number_format($detail['height']) ?>mm
+                                            <?php
+                                            // 1,11번 패널의 경우 production_height1_11 값 사용
+                                            $display_height = $detail['height'];
+                                            if ($detail['panel'] === '1' || $detail['panel'] === '11') {
+                                                if (!empty($selected_data['production_height1_11'])) {
+                                                    $display_height = $selected_data['production_height1_11'];
+                                                }
+                                            }
+                                            ?>
+                                            <?= number_format($detail['width']) ?> × <?= number_format($display_height) ?>mm
                                         </span>
                                     </div>
                                     <div class="quantity-info">
@@ -3361,6 +3397,9 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 전역 변수로 현재 선택된 데이터 초기화
+            window.currentSelectedData = <?= json_encode($selected_data) ?>;
+            
             const themeToggleBtn = document.getElementById('themeToggleBtn');
             const themeIcon = document.getElementById('themeIcon');
 
@@ -4323,8 +4362,11 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             const formData = new FormData(form);
 
             // FormData 내용 디버깅
+            console.log('=== FORM DATA DEBUG ===');
             for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
             }
+            console.log('=== END FORM DATA DEBUG ===');
 
             // 체크박스 값 처리 (체크되지 않은 경우 0으로 설정)
             const settings = {
@@ -4337,6 +4379,12 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 production_height: parseInt(formData.get('production_height')) || 0,
                 production_height1_11: parseInt(formData.get('production_height1_11')) || 0
             };
+            
+            console.log('=== SETTINGS DEBUG ===');
+            console.log('Raw production_height1_11 from form:', formData.get('production_height1_11'));
+            console.log('Parsed production_height1_11:', parseInt(formData.get('production_height1_11')) || 0);
+            console.log('Final settings:', settings);
+            console.log('=== END SETTINGS DEBUG ===');
 
             // 엘리베이터 대수 추출 세부 확인
             const rawElevatorCount = formData.get('elevator_count');
@@ -4391,12 +4439,19 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             .then(data => {
 
                 if (data.success) {
+                    // 제작 조건이 성공적으로 저장되었으므로 패널 시각화 업데이트
+                    updatePanelVisualizationWithNewSettings(data.data);
 
                     // 엘리베이터 대수가 제대로 저장되었는지 확인
                     if (data.data && data.data.elevator_count) {
                     } else {
                         console.warn('⚠️ 엘리베이터 대수가 응답에 포함되지 않음');
                     }
+                    
+                    // 패널별 상세 치수가 서버에서 다시 계산되도록 페이지 새로고침
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
 
                     // 몰딩 테이블 즉시 업데이트 (엘리베이터 대수 반영)
                     if (typeof calculateMoldingData === 'function' && typeof renderMoldingTable === 'function') {
@@ -4742,6 +4797,34 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <?php endif; ?>
         }
 
+        // 제작 조건 설정이 업데이트된 후 패널 시각화를 실시간으로 업데이트하는 함수
+        function updatePanelVisualizationWithNewSettings(updatedData) {
+            if (!updatedData) {
+                console.warn('업데이트된 데이터가 없습니다.');
+                return;
+            }
+
+            // 업데이트된 제작 조건을 전역 변수에 저장
+            if (window.currentSelectedData) {
+                window.currentSelectedData.production_height = updatedData.production_height;
+                window.currentSelectedData.production_height1_11 = updatedData.production_height1_11;
+                window.currentSelectedData.panel_corners_excluded = updatedData.panel_corners_excluded;
+                window.currentSelectedData.transom_excluded = updatedData.transom_excluded;
+                window.currentSelectedData.molding_included = updatedData.molding_included;
+            }
+
+            // 패널 시각화 다시 렌더링
+            const panelData = <?= json_encode($selected_data['panel_data']) ?>;
+            const transomData = <?= json_encode($selected_data['transom_data']) ?>;
+            
+            if (panelData && transomData) {
+                renderPanelVisualization(panelData, transomData);
+            }
+
+            // 패널별 상세 치수도 업데이트 (새로고침으로 인해 서버에서 다시 계산됨)
+            console.log('패널 시각화와 상세 치수가 새로운 제작 조건으로 업데이트되었습니다.');
+        }
+
         function applyProjectSettings(selectedData) {
             // 저장된 값 읽기 (정수로 변환하여 0/1 값으로 처리)
             const panelCornersExcluded = parseInt(selectedData.panel_corners_excluded) || 0;
@@ -4837,8 +4920,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
             // Dimensions with production height and molding deduction
             if (data.width && data.height) {
-                // 제작 높이 적용 - 저장된 설정값에 따라
-                const selectedData = <?= json_encode($selected_data) ?>;
+                // 제작 높이 적용 - 실시간 업데이트된 설정값 사용
+                const selectedData = window.currentSelectedData || <?= json_encode($selected_data) ?>;
                 let displayHeight = data.height;
                 let displayWidth = data.width;
 
@@ -4938,8 +5021,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             }
 
             if (data.width && data.height) {
-                // 제작 높이 적용된 치수 표시
-                const selectedData = <?= json_encode($selected_data) ?>;
+                // 제작 높이 적용된 치수 표시 - 실시간 업데이트된 설정값 사용
+                const selectedData = window.currentSelectedData || <?= json_encode($selected_data) ?>;
                 let displayHeight = data.height;
                 let displayWidth = data.width;
 
