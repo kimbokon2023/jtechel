@@ -10,9 +10,6 @@
 !README.md
 !.github/
 !.github/workflows/
-!.github/workflows/deploy.yml
-!*.yml
-!*.yaml
 
 # 3) 소스/정적파일 허용(확장자)
 !*.php
