@@ -531,16 +531,25 @@ try {
             </div>
 
             <!-- Production Result -->
-            <a href="result.php" class="dashboard-card">
+            <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="bi bi-calculator"></i>
                 </div>
                 <h4 class="card-title">제작산출</h4>
                 <p class="card-description">실측 데이터로 제작사이즈 생성</p>
-                <?php
-                echo LinearButton::primary('제작사이즈 생성')->addAttribute('style', 'pointer-events: none;');
-                ?>
-            </a>
+                <div style="display: flex; gap: var(--linear-spacing-sm, 8px); justify-content: center; flex-wrap: wrap;">
+                    <a href="result.php" style="text-decoration: none;">
+                        <?php
+                        echo LinearButton::primary('제작사이즈 생성');
+                        ?>
+                    </a>
+                    <a href="site_groups.php" style="text-decoration: none;">
+                        <?php
+                        echo LinearButton::secondary('현장그룹 제작생성');
+                        ?>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- Recent Activity Section -->

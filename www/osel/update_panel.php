@@ -51,6 +51,21 @@ $elevator_count = intval($_POST['elevator_count'] ?? 1);
 $production_height = intval($_POST['production_height'] ?? 0);
 $production_height1_11 = intval($_POST['production_height1_11'] ?? 0);
 
+// molding_data JSON 데이터 처리
+$molding_data = null;
+if (isset($_POST['molding_data']) && !empty($_POST['molding_data'])) {
+    // JSON 데이터 검증
+    $molding_data_json = $_POST['molding_data'];
+    $decoded_data = json_decode($molding_data_json, true);
+    
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_data)) {
+        $molding_data = $molding_data_json;
+        error_log("Valid molding_data received: " . $molding_data);
+    } else {
+        error_log("Invalid molding_data JSON: " . json_last_error_msg());
+    }
+}
+
 // Validate required fields
 if ($measurement_id <= 0) {
     ob_clean();
@@ -88,6 +103,7 @@ try {
     $has_production_height = in_array('production_height', $columns);
     $has_production_height1_11 = in_array('production_height1_11', $columns);
     $has_make_panel_data = in_array('make_panel_data', $columns);
+    $has_molding_data = in_array('molding_data', $columns);
 
     error_log("Available columns - project_type: " . ($has_project_type ? 'YES' : 'NO') .
              ", panel_corners_excluded: " . ($has_panel_corners_excluded ? 'YES' : 'NO') .
@@ -96,7 +112,8 @@ try {
              ", elevator_count: " . ($has_elevator_count ? 'YES' : 'NO') .
              ", production_height: " . ($has_production_height ? 'YES' : 'NO') .
              ", production_height1_11: " . ($has_production_height1_11 ? 'YES' : 'NO') .
-             ", make_panel_data: " . ($has_make_panel_data ? 'YES' : 'NO'));
+             ", make_panel_data: " . ($has_make_panel_data ? 'YES' : 'NO') .
+             ", molding_data: " . ($has_molding_data ? 'YES' : 'NO'));
 
     // If new columns don't exist, provide guidance
     if (!$has_molding_included || !$has_production_height || !$has_production_height1_11 || !$has_make_panel_data) {
@@ -158,6 +175,12 @@ if ($has_production_height) {
 if ($has_production_height1_11) {
     $update_fields[] = "production_height1_11 = ?";
     $update_values[] = $production_height1_11;
+}
+
+if ($has_molding_data && $molding_data !== null) {
+    $update_fields[] = "molding_data = ?";
+    $update_values[] = $molding_data;
+    error_log("Adding molding_data to update: " . $molding_data);
 }
 
 // Generate make_panel_data if production settings changed

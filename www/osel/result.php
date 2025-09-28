@@ -63,20 +63,48 @@ try {
         error_log("Table 'panel_measurements' does not exist");
     } else {
         error_log("Table 'panel_measurements' exists, proceeding to load data");
-        // Get measurement list for selection
-        $query = "
-            SELECT id, site_name, measurement_date, measurer_name,
-                   car_inside_width, car_inside_depth, car_inside_height,
-                   material_type, material_thickness,
-                   panel_data, transom_data, notes, created_at, updated_at
-            FROM panel_measurements
-            $where_clause
-            ORDER BY measurement_date DESC, created_at DESC
-        ";
+        // Check if this is a group export request
+$group_export = $_GET['group_export'] ?? null;
+if ($group_export) {
+    // Get measurements from the specified group
+    $group_query = "
+        SELECT pm.id, pm.site_name, pm.measurement_date, pm.measurer_name,
+               pm.car_inside_width, pm.car_inside_depth, pm.car_inside_height,
+               pm.material_type, pm.material_thickness, pm.project_type,
+               pm.panel_corners_excluded, pm.transom_excluded,
+               pm.molding_included, pm.production_height, pm.production_height1_11,
+               pm.panel_data, pm.transom_data, pm.notes, pm.created_at, pm.updated_at,
+               COALESCE(pm.elevator_count, 1) as elevator_count
+        FROM panel_measurements pm
+        INNER JOIN site_group_members sgm ON pm.id = sgm.measurement_id
+        WHERE sgm.group_id = ? AND sgm.is_deleted = 0
+        ORDER BY pm.measurement_date DESC, pm.created_at DESC
+    ";
+    
+    $group_stmt = $pdo->prepare($group_query);
+    $group_stmt->execute([$group_export]);
+    $measurements = $group_stmt->fetchAll();
+    
+    error_log("Group export requested for group_id: $group_export, found " . count($measurements) . " measurements");
+} else {
+    // Get measurement list for selection (normal case)
+    $query = "
+        SELECT id, site_name, measurement_date, measurer_name,
+               car_inside_width, car_inside_depth, car_inside_height,
+               material_type, material_thickness, project_type,
+               panel_corners_excluded, transom_excluded,
+               molding_included, production_height, production_height1_11,
+               panel_data, transom_data, notes, created_at, updated_at,
+               COALESCE(elevator_count, 1) as elevator_count
+        FROM panel_measurements
+        $where_clause
+        ORDER BY measurement_date DESC, created_at DESC
+    ";
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute($params);
-        $measurements = $stmt->fetchAll();
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $measurements = $stmt->fetchAll();
+}
 
         // 디버깅: 측정 데이터 개수 확인
         error_log("Found " . count($measurements) . " measurements with current search criteria");
@@ -93,8 +121,11 @@ try {
                 $fallback_stmt = $pdo->prepare("
                     SELECT id, site_name, measurement_date, measurer_name,
                            car_inside_width, car_inside_depth, car_inside_height,
-                           material_type, material_thickness,
-                           panel_data, transom_data, notes, created_at, updated_at
+                           material_type, material_thickness, project_type,
+                           panel_corners_excluded, transom_excluded,
+                           molding_included, production_height, production_height1_11,
+                           panel_data, transom_data, notes, created_at, updated_at,
+                           COALESCE(elevator_count, 1) as elevator_count
                     FROM panel_measurements
                     ORDER BY measurement_date DESC, created_at DESC
                     LIMIT 10
@@ -671,18 +702,88 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             font-weight: var(--linear-font-weight-medium);
         }
 
+        /* (신규/MOD 선택) 필드 - 라벨과 토글을 같은 행에 배치 */
+        .project-type-field .field-row {
+            display: flex;
+            align-items: center;
+            gap: var(--linear-spacing-lg);
+        }
+
+        .project-type-field .field-label {
+            margin-bottom: 0;
+            flex-shrink: 0;
+            min-width: 120px; /* 라벨 최소 너비 고정 */
+        }
+
+        .project-type-field .project-type-toggle {
+            flex: 1;
+            max-width: 200px; /* 토글 최대 너비 제한 */
+        }
+
+        /* 높이 입력 필드 - 라벨과 입력을 같은 행에 배치 */
+        .height1-11-field .field-row,
+        .height-field .field-row {
+            display: flex;
+            align-items: center;
+            gap: var(--linear-spacing-lg);
+        }
+
+        .height1-11-field .field-label,
+        .height-field .field-label {
+            margin-bottom: 0;
+            flex-shrink: 0;
+            min-width: 180px; /* 라벨 최소 너비 고정 */
+        }
+
+        /* 컴팩트한 입력 그룹 */
+        .height-input-group.compact-input {
+            display: flex !important;
+            align-items: center;
+            max-width: 140px; /* 단위를 포함해서 너비 증가 */
+            gap: 4px;
+            border: none !important; /* 외부 컨테이너 테두리 제거 */
+            background: transparent !important; /* 배경 투명 */
+            border-radius: 0 !important; /* 테두리 반경 제거 */
+            padding: 0 !important; /* 패딩 제거 */
+        }
+
+        .height-input-group.compact-input input {
+            width: 80px; /* 입력 필드 너비 제한 */
+            padding: var(--linear-spacing-sm);
+            border: 1px solid var(--linear-border-primary);
+            border-radius: var(--linear-radius-sm);
+            background-color: var(--linear-bg-primary);
+            color: var(--linear-text-primary);
+            font-size: var(--linear-text-body);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .height-input-group.compact-input .unit {
+            color: var(--linear-text-secondary) !important;
+            font-size: var(--linear-text-caption);
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: inline-block !important;
+            visibility: visible !important;
+            background: transparent !important; /* 배경 제거 */
+            border: none !important; /* 테두리 제거 */
+            padding: 0 !important; /* 패딩 제거 */
+            margin-left: 4px; /* 간격만 유지 */
+        }
+
         .field-label i {
             color: var(--linear-brand-primary);
         }
 
-        /* 프로젝트 타입 토글 스타일 */
+        /* (신규/MOD 선택) 토글 스타일 */
         .project-type-toggle {
             display: flex;
             border: 1px solid var(--linear-border-primary);
             border-radius: var(--linear-radius-md);
             background-color: var(--linear-bg-secondary);
             overflow: hidden;
-            height: 48px; /* 행의 높이와 맞춤 */
+            height: 42px; /* 텍스트가 보이도록 높이 증가 */
         }
 
         .project-type-toggle input[type="radio"] {
@@ -692,18 +793,20 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
         .toggle-option {
             flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: var(--linear-spacing-xs);
-            padding: var(--linear-spacing-md);
+            gap: 2px;
+            padding: 6px 8px;
             background-color: transparent;
             color: var(--linear-text-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: var(--linear-text-body);
+            font-size: var(--linear-text-small);
             font-weight: var(--linear-font-weight-medium);
             height: 100%;
-            min-height: 48px; /* 행의 높이와 맞춤 */
+            min-height: 42px; /* 텍스트가 보이도록 높이 증가 */
+            line-height: 1.2;
         }
 
         .toggle-option:hover {
@@ -1792,16 +1895,58 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 font-size: 1.2rem;
             }
 
-            /* 모바일에서 프로젝트 타입 토글을 한 행에 표시 */
+            /* 모바일에서 (신규/MOD 선택) 토글을 한 행에 표시 */
+            .project-type-field .field-row {
+                flex-direction: row;
+                gap: var(--linear-spacing-md);
+            }
+
+            .project-type-field .field-label {
+                min-width: 100px; /* 모바일에서 라벨 너비 줄임 */
+                font-size: var(--linear-text-small);
+            }
+
             .project-type-toggle {
                 flex-direction: row;
-                height: 44px; /* 모바일에서 약간 작게 */
+                height: 38px; /* 모바일에서 텍스트가 보이도록 높이 증가 */
+                max-width: 160px; /* 모바일에서 토글 너비 줄임 */
             }
 
             .toggle-option {
-                padding: var(--linear-spacing-sm);
+                padding: 4px 6px;
                 font-size: var(--linear-text-small);
-                min-height: 44px; /* 모바일에서 약간 작게 */
+                min-height: 38px; /* 모바일에서 텍스트가 보이도록 높이 증가 */
+                gap: 1px;
+            }
+
+            /* 모바일에서 높이 입력 필드 */
+            .height1-11-field .field-row,
+            .height-field .field-row {
+                flex-direction: row;
+                gap: var(--linear-spacing-md);
+            }
+
+            .height1-11-field .field-label,
+            .height-field .field-label {
+                min-width: 140px; /* 모바일에서 라벨 너비 줄임 */
+                font-size: var(--linear-text-small);
+            }
+
+            .height-input-group.compact-input {
+                max-width: 120px; /* 모바일에서 단위 포함해서 너비 증가 */
+            }
+
+            .height-input-group.compact-input input {
+                width: 70px; /* 모바일에서 입력 필드 더 작게 */
+                font-size: var(--linear-text-small);
+            }
+
+            .height-input-group.compact-input .unit {
+                font-size: var(--linear-text-small);
+                background: transparent !important; /* 배경 제거 */
+                border: none !important; /* 테두리 제거 */
+                padding: 0 !important; /* 패딩 제거 */
+                margin-left: 3px; /* 모바일에서 간격 조정 */
             }
 
             .exclusion-options {
@@ -2492,6 +2637,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <?php endif; ?>
 
             <?php if (!empty($measurements)): ?>
+
                 <div class="measurement-list" id="measurementList">
                     <?php foreach ($measurements as $measurement):
                         // Parse JSON data to count panels
@@ -2516,20 +2662,24 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         $is_selected = ($selected_measurement == $measurement['id']);
                     ?>
                     <div class="measurement-item <?= $is_selected ? 'selected' : '' ?>"
-                         onclick="selectMeasurement(<?= $measurement['id'] ?>)">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong><?= htmlspecialchars($measurement['site_name']) ?></strong>
-                                <small style="display: block; color: var(--linear-text-secondary); margin-top: 2px;">
-                                    측정자: <?= htmlspecialchars($measurement['measurer_name']) ?> |
-                                    측정일: <?= $measurement['measurement_date'] ?> |
-                                    패널: <?= $total_panels ?>개
-                                </small>
-                            </div>
-                            <div style="text-align: right;">
-                                <span style="font-family: monospace; font-size: 0.8rem; color: var(--linear-text-tertiary);">
-                                    W<?= $measurement['car_inside_width'] ?>×D<?= $measurement['car_inside_depth'] ?>×H<?= $measurement['car_inside_height'] ?>
-                                </span>
+                         style="position: relative;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="flex: 1; cursor: pointer;" onclick="selectMeasurement(<?= $measurement['id'] ?>)">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong><?= htmlspecialchars($measurement['site_name']) ?></strong>
+                                        <small style="display: block; color: var(--linear-text-secondary); margin-top: 2px;">
+                                            측정자: <?= htmlspecialchars($measurement['measurer_name']) ?> |
+                                            측정일: <?= $measurement['measurement_date'] ?> |
+                                            패널: <?= $total_panels ?>개
+                                        </small>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="font-family: monospace; font-size: 0.8rem; color: var(--linear-text-tertiary);">
+                                            W<?= $measurement['car_inside_width'] ?>×D<?= $measurement['car_inside_depth'] ?>×H<?= $measurement['car_inside_height'] ?>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2555,29 +2705,31 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 <form id="productionSettingsForm">
                     <input type="hidden" name="measurement_id" value="<?= $selected_measurement ?>">
 
-                    <!-- 프로젝트 타입 토글 -->
-                    <div class="production-field">
-                        <label class="field-label">
-                            <i class="bi bi-tag"></i>
-                            프로젝트 타입
-                        </label>
-                        <div class="project-type-toggle">
-                            <?php
-                            $current_project_type = $selected_data['project_type'] ?? '신규';
-                            ?>
-                            <input type="radio" id="projectNew" name="project_type" value="신규"
-                                   <?= $current_project_type === '신규' ? 'checked' : '' ?>>
-                            <label for="projectNew" class="toggle-option">
-                                <i class="bi bi-plus-circle"></i>
-                                신규
+                    <!-- (신규/MOD 선택) 토글 -->
+                    <div class="production-field project-type-field">
+                        <div class="field-row">
+                            <label class="field-label">
+                                <i class="bi bi-tag"></i>
+                                (신규/MOD 선택)
                             </label>
+                            <div class="project-type-toggle">
+                                <?php
+                                $current_project_type = $selected_data['project_type'] ?? '신규';
+                                ?>
+                                <input type="radio" id="projectNew" name="project_type" value="신규"
+                                       <?= $current_project_type === '신규' ? 'checked' : '' ?>>
+                                <label for="projectNew" class="toggle-option">
+                                    <i class="bi bi-plus-circle"></i>
+                                    신규
+                                </label>
 
-                            <input type="radio" id="projectMod" name="project_type" value="MOD"
-                                   <?= $current_project_type === 'MOD' ? 'checked' : '' ?>>
-                            <label for="projectMod" class="toggle-option">
-                                <i class="bi bi-arrow-repeat"></i>
-                                MOD
-                            </label>
+                                <input type="radio" id="projectMod" name="project_type" value="MOD"
+                                       <?= $current_project_type === 'MOD' ? 'checked' : '' ?>>
+                                <label for="projectMod" class="toggle-option">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    MOD
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -2645,8 +2797,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         </div>
 
                         <!-- 제작 높이 -->
-                        <div style="display: flex; align-items: center; gap: var(--linear-spacing-sm);">
-                            <label class="field-label" style="margin: 0; white-space: nowrap;">
+                        <div class="field-row">
+                            <label class="field-label">
                                 <i class="bi bi-rulers"></i>
                                 제작 높이 (H) - 2~10번 패널
                             </label>
@@ -2654,7 +2806,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                             // 제작 높이: 저장된 값이 있으면 사용, 없으면 카 내부 높이 사용
                             $production_height = $selected_data['production_height'] ?? $selected_data['car_inside_height'];
                             ?>
-                            <div class="height-input-group">
+                            <div class="height-input-group compact-input">
                                 <input type="number" id="productionHeight" name="production_height"
                                        placeholder="제작높이" min="1" max="3200" step="1"
                                        value="<?= $production_height ?>">
@@ -2664,20 +2816,22 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     </div>
 
                     <!-- 1,11번 패널 높이 입력 (동적 표시) -->
-                    <div class="production-field height-field" id="height1_11Field" style="display: none;">
-                        <label class="field-label me-2">
-                            <i class="bi bi-rulers"></i>
-                            제작 높이 (H) - 1,11번 패널
-                        </label>
-                        <?php
-                        // 1,11번 패널 제작 높이: 저장된 값이 있으면 사용, 없으면 일반 제작 높이 사용
-                        $production_height1_11 = $selected_data['production_height1_11'] ?? $production_height;
-                        ?>
-                        <div class="height-input-group">
-                            <input type="number" id="productionHeight1_11" name="production_height1_11"
-                                   placeholder="1,11번 제작높이" min="1" max="3200" step="1"
-                                   value="<?= $production_height1_11 ?>">
-                            <span class="unit">mm</span>
+                    <div class="production-field height-field height1-11-field" id="height1_11Field" style="display: none;">
+                        <div class="field-row">
+                            <label class="field-label">
+                                <i class="bi bi-rulers"></i>
+                                제작 높이 (H) - 1,11번 패널
+                            </label>
+                            <?php
+                            // 1,11번 패널 제작 높이: 저장된 값이 있으면 사용, 없으면 일반 제작 높이 사용
+                            $production_height1_11 = $selected_data['production_height1_11'] ?? $production_height;
+                            ?>
+                            <div class="height-input-group compact-input">
+                                <input type="number" id="productionHeight1_11" name="production_height1_11"
+                                       placeholder="1,11번 제작높이" min="1" max="3200" step="1"
+                                       value="<?= $production_height1_11 ?>">
+                                <span class="unit">mm</span>
+                            </div>
                         </div>
                     </div>
 
@@ -4213,7 +4367,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     }
                 }
 
-                // 4. 프로젝트 타입 라디오 버튼 업데이트
+                // 4. (신규/MOD 선택) 라디오 버튼 업데이트
                 if (updatedData.project_type) {
                     const projectTypeRadio = document.querySelector(`input[name="project_type"][value="${updatedData.project_type}"]`);
                     if (projectTypeRadio) {
@@ -4342,13 +4496,40 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 }
             }
 
-            // 페이지 로드시 초기 상태 설정
-            toggleHeight1_11Field();
+        // 페이지 로드시 초기 상태 설정
+        toggleHeight1_11Field();
 
-            // 체크박스 변경시 동적 업데이트
-            if (panelCornersCheckbox) {
-                panelCornersCheckbox.addEventListener('change', toggleHeight1_11Field);
-            }
+        // 체크박스 변경시 동적 업데이트
+        if (panelCornersCheckbox) {
+            panelCornersCheckbox.addEventListener('change', toggleHeight1_11Field);
+        }
+
+        // 그룹 내보내기인 경우 자동으로 엑셀 내보내기 실행
+        <?php if ($group_export): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 그룹의 모든 현장 데이터를 직접 엑셀로 내보내기
+            setTimeout(() => {
+                const measurements = <?= json_encode($measurements) ?>;
+                if (measurements && measurements.length > 0) {
+                    // 폼 생성하여 엑셀 내보내기 실행
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'export_merged_production_data.php';
+                    form.target = '_blank';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'measurements';
+                    input.value = JSON.stringify(measurements);
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                    document.body.removeChild(form);
+                }
+            }, 1000);
+        });
+        <?php endif; ?>
         }
 
         // 제작 조건 설정 적용 함수
@@ -4379,6 +4560,20 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 production_height: parseInt(formData.get('production_height')) || 0,
                 production_height1_11: parseInt(formData.get('production_height1_11')) || 0
             };
+
+            // molding_data 추가 (몰딩이 포함된 경우에만)
+            if (settings.molding_included) {
+                try {
+                    // 현재 molding 데이터 계산
+                    const moldingData = window.calculateMoldingData ? window.calculateMoldingData() : [];
+                    if (moldingData && moldingData.length > 0) {
+                        settings.molding_data = JSON.stringify(moldingData);
+                        console.log('Added molding_data to settings:', moldingData);
+                    }
+                } catch (error) {
+                    console.error('Error calculating molding data:', error);
+                }
+            }
             
             console.log('=== SETTINGS DEBUG ===');
             console.log('Raw production_height1_11 from form:', formData.get('production_height1_11'));
@@ -4617,6 +4812,9 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             currentUrl.searchParams.set('measurement_id', measurementId);
             window.location.href = currentUrl.toString();
         }
+
+
+
 
         function exportToExcel() {
             // 확인 대화상자 없이 바로 Excel 다운로드 실행
