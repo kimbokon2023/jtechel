@@ -31,7 +31,7 @@ if (!empty($edit_id)) {
                    car_inside_width, car_inside_depth, car_inside_height,
                    material_type, material_thickness,
                    panel_data, transom_data, notes, project_type,
-                   panel_corners_excluded, transom_excluded, ipark_check,
+                   panel_corners_excluded, transom_excluded, elevator_count, ipark_check,
                    created_at, updated_at
             FROM panel_measurements
             WHERE id = ?
@@ -79,7 +79,7 @@ try {
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title><?= $edit_mode ? '카 판넬 측정 수정' : '카 판넬 측정' ?></title>
+    <title><?= $edit_mode ? '카 판넬 측정' : '카 판넬 측정' ?></title>
 
     <!-- SweetAlert2 CSS/JS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
@@ -480,6 +480,154 @@ try {
             overflow: hidden;
         }
         
+        /* PC에서 아이파크 체크박스 강제 표시 */
+        #iparkCheckContainer {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            margin-bottom: 20px !important;
+        }
+        
+        #iparkCheckContainer label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            cursor: pointer !important;
+            padding: 12px !important; 
+            border: 1px solid #ddd !important;
+            border-radius: 6px !important;
+            background: #f8f9fa !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        #iparkCheckContainer label:hover {
+            background: #e9ecef !important;
+            border-color: #007bff !important;
+        }
+        
+        #iparkCheckContainer label span {
+            font-weight: 500 !important;
+            color: #333 !important;
+            font-size: 14px !important;
+            display: inline !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        #iparkCheckContainer label i {
+            color: #007bff !important;
+            margin-right: 6px !important;
+            display: inline !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* 다크 테마에서도 텍스트가 보이도록 강화 */
+        body.dark-theme #iparkCheckContainer label span,
+        [data-theme="dark"] #iparkCheckContainer label span {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        
+        body.dark-theme #iparkCheckContainer label,
+        [data-theme="dark"] #iparkCheckContainer label {
+            background: #2d3748 !important;
+            border-color: #4a5568 !important;
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #iparkCheckContainer label:hover,
+        [data-theme="dark"] #iparkCheckContainer label:hover {
+            background: #4a5568 !important;
+            border-color: #007bff !important;
+        }
+        
+        #iparkCheck {
+            width: 18px !important;
+            height: 18px !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+        }
+        
+        /* 모바일에서 PC 버전 카드들 숨기기 */
+        @media (max-width: 768px) {
+            #iparkCheckContainer {
+                display: none !important;
+            }
+            
+            /* 모바일 전용 아이파크 체크박스는 표시 */
+            #mobileIparkCheckContainer {
+                display: block !important;
+                margin-bottom: 15px !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* 모바일 아이파크 체크박스 내부 요소들도 표시 */
+            #mobileIparkCheck,
+            #mobileIparkCheckLabel {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                cursor: pointer !important;
+            }
+            
+            /* 모바일 아이파크 체크박스 그룹도 표시 */
+            #mobileIparkCheckContainer .linear-input-group {
+                display: block !important;
+                visibility: visible !important;
+                width: 100% !important;
+                margin-bottom: 10px !important;
+            }
+            
+            /* 모바일 카드 전체 표시 강화 */
+            .mobile-only-cards {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .mobile-card-1,
+            .mobile-card-3 {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .mobile-card-1 .linear-card {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .mobile-card-1 .linear-card-body,
+            .mobile-card-3 .linear-card,
+            .mobile-card-3 .linear-card-body {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            #mobile-site-info {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 100% !important;
+            }
+            
+            /* 🎯 PHASE 4: 모바일에서 반응형 컨테이너 표시 */
+            .responsive-container {
+                display: block !important;
+            }
+            
+            .responsive-card,
+            .responsive-section {
+                display: block !important;
+            }
+        }
+        
         /* 카드 내부 패딩 및 오버플로우 처리 */
         .linear-card-body {
             padding: 5px;
@@ -493,9 +641,283 @@ try {
             box-sizing: border-box;
         }
         
-        /* PC에서 모바일용 카드 숨기기 */
-        .mobile-only-cards {
-            display: none;
+        /* 🎯 PHASE 4: 모바일 전용 카드 CSS 제거됨 (더 이상 사용하지 않음) */
+
+        /* ============================================
+           📱 PHASE 1: 반응형 CSS 프레임워크
+           모바일 퍼스트 리팩토링 진행 중
+           ============================================ */
+        
+        /* 🎯 반응형 컨테이너 - 모바일 우선 */
+        .responsive-container {
+            width: 100%;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        /* 🎯 반응형 섹션 */
+        .responsive-section {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            background: var(--linear-bg-primary, #ffffff);
+            border-radius: var(--linear-radius-lg, 12px);
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .responsive-section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--linear-text-primary, #1a1a1a);
+        }
+
+        /* 🎯 반응형 입력 필드 */
+        .responsive-input-group {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .responsive-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--linear-text-secondary, #666);
+        }
+
+        .responsive-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--linear-border-color, #e0e0e0);
+            border-radius: var(--linear-radius-md, 8px);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .responsive-input:focus {
+            outline: none;
+            border-color: var(--linear-color-primary, #5e6ad2);
+            box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.1);
+        }
+
+        /* 🎯 반응형 그리드 (모바일: 1열, 태블릿+: 2열) */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        /* 🎯 반응형 버튼 */
+        .responsive-button {
+            width: 100%;
+            padding: 0.875rem;
+            font-size: 1rem;
+            border-radius: var(--linear-radius-md, 8px);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .responsive-button-primary {
+            background: var(--linear-color-primary, #5e6ad2);
+            color: white;
+        }
+
+        .responsive-button-primary:hover {
+            background: var(--linear-color-primary-hover, #4c5ab8);
+        }
+
+        /* 🎯 반응형 카드 */
+        .responsive-card {
+            background: var(--linear-bg-primary, #ffffff);
+            border-radius: var(--linear-radius-lg, 12px);
+            border: 1px solid var(--linear-border-color, #e0e0e0);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .responsive-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--linear-border-color, #e0e0e0);
+        }
+
+        .responsive-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--linear-text-primary, #1a1a1a);
+            margin: 0;
+        }
+
+        .responsive-card-body {
+            padding: 0;
+        }
+
+        /* 📱 모바일 전용 스타일 (max-width: 767px) */
+        @media (max-width: 767px) {
+            .responsive-container {
+                padding: 0.75rem;
+            }
+
+            .responsive-section {
+                padding: 0.875rem;
+                margin-bottom: 1rem;
+            }
+
+            .responsive-section-title {
+                font-size: 1rem;
+            }
+
+            .responsive-input {
+                padding: 0.625rem;
+                font-size: 16px; /* iOS zoom 방지 */
+            }
+
+            .responsive-button {
+                padding: 0.75rem;
+            }
+
+            /* 모바일: 스티키 버튼 영역 */
+            .responsive-sticky-bottom {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 100;
+            }
+        }
+
+        /* 💻 태블릿 (768px ~ 1023px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .responsive-container {
+                padding: 1.5rem;
+                max-width: 768px;
+                margin: 0 auto;
+            }
+
+            .responsive-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
+
+            .responsive-section {
+                padding: 1.25rem;
+            }
+
+            .responsive-button {
+                width: auto;
+                min-width: 120px;
+            }
+        }
+
+        /* 🖥️ PC (1024px 이상) */
+        @media (min-width: 1024px) {
+            .responsive-container {
+                padding: 2rem;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* PC: 사이드바 + 메인 레이아웃 */
+            .responsive-layout-sidebar {
+                display: grid;
+                grid-template-columns: 400px 1fr;
+                gap: 2rem;
+                align-items: start;
+            }
+
+            .responsive-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .responsive-grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .responsive-section {
+                padding: 1.5rem;
+            }
+
+            .responsive-button {
+                width: auto;
+                min-width: 140px;
+                padding: 0.875rem 1.5rem;
+            }
+
+            /* PC: 버튼 그룹을 오른쪽 정렬 */
+            .responsive-button-group {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+            }
+        }
+
+        /* 🖥️ 대형 화면 (1440px 이상) */
+        @media (min-width: 1440px) {
+            .responsive-container {
+                max-width: 1400px;
+            }
+
+            .responsive-layout-sidebar {
+                grid-template-columns: 450px 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        /* 🎨 유틸리티 클래스 */
+        .hide-mobile {
+            display: none !important;
+        }
+
+        .hide-desktop {
+            display: block !important;
+        }
+
+        @media (min-width: 768px) {
+            .hide-mobile {
+                display: block !important;
+            }
+
+            .hide-desktop {
+                display: none !important;
+            }
+        }
+
+        /* 반응형 여백 */
+        .responsive-spacing-sm {
+            margin-bottom: 0.5rem;
+        }
+
+        .responsive-spacing-md {
+            margin-bottom: 1rem;
+        }
+
+        .responsive-spacing-lg {
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .responsive-spacing-sm {
+                margin-bottom: 0.75rem;
+            }
+
+            .responsive-spacing-md {
+                margin-bottom: 1.5rem;
+            }
+
+            .responsive-spacing-lg {
+                margin-bottom: 2rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -561,17 +983,13 @@ try {
             }
             
             /* 모바일에서 입력 필드 추가 스타일 */
-            .mobile-card-1 .linear-input-group,
-            .mobile-card-3 .linear-input-group {
+            .mobile-card-1 .linear-input-group {
                 margin-bottom: 5px;
             }
             
             .mobile-card-1 .linear-input,
-            .mobile-card-3 .linear-input,
             .mobile-card-1 select,
-            .mobile-card-3 select,
-            .mobile-card-1 textarea,
-            .mobile-card-3 textarea {
+            .mobile-card-1 textarea {
                 width: 100% !important;
                 max-width: 100% !important;
                 box-sizing: border-box;
@@ -579,8 +997,7 @@ try {
             }
             
             /* 모바일 카드 내부 여백 조정 */
-            .mobile-card-1 .linear-card-body,
-            .mobile-card-3 .linear-card-body {
+            .mobile-card-1 .linear-card-body {
                 padding: 5px;
             }
 
@@ -671,7 +1088,7 @@ try {
         <div class="page-title-container" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--linear-spacing-xl);">
             <h2 class="page-title" style="margin: 0;">
                 <i class="bi bi-grid-3x3-gap"></i>
-                <?= $edit_mode ? 'EL 카 판넬 측정 수정' : 'EL 카 판넬 측정' ?>
+                <?= $edit_mode ? 'EL 카 판넬 측정' : 'EL 카 판넬 측정' ?>
             </h2>
             
             <?php if ($edit_mode): ?>
@@ -688,65 +1105,24 @@ try {
             <?php endif; ?>
         </div>
 
-        <!-- 모바일용 분리된 카드들 (PC에서는 숨김) -->
-        <div class="mobile-only-cards" style="display: none;">
-            <!-- 모바일 카드 1: 현장정보 + W×D×H -->
-            <div class="mobile-card-1">
-                <div class="linear-card">
-                    <div class="linear-card-header">
-                        <h3 class="linear-card-title"><i class="bi bi-building"></i> 현장 정보</h3>
-                    </div>
-                    <div class="linear-card-body">
-                        <!-- 현장정보 필드들이 들어갈 자리 -->
-                        <div id="mobile-site-info"></div>
-                        
-                        <!-- W×D×H 필드들이 들어갈 자리 -->
-                        <div id="mobile-dimensions"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 모바일 카드 2: 판넬 시각화 -->
-            <div class="mobile-card-2">
-                <div id="mobile-panel-visualization"></div>
-            </div>
-            
-            <!-- 모바일 카드 3: 측정값 + 재질 + 버튼 -->
-            <div class="mobile-card-3">
-                <div class="linear-card">
-                    <div class="linear-card-header">
-                        <h3 class="linear-card-title"><i class="bi bi-rulers"></i> 측정값 및 재질</h3>
-                    </div>
-                    <div class="linear-card-body">
-                        <!-- 측정값 및 재질 정보가 들어갈 자리 -->
-                        <div id="mobile-measurements"></div>
-                        <div id="mobile-materials"></div>
-                        <div id="mobile-buttons"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- 🎯 PHASE 4: 모바일 전용 카드 제거됨 (반응형으로 완전 통합) -->
         
-        <div class="measurement-grid">
+        <!-- 🎯 PHASE 2: measurement-grid를 responsive-container로 변경 -->
+        <div class="responsive-container">
             <!-- Measurement Form (현장정보 카드) -->
-            <div>
-                <?php 
-                require_once '../components/LinearCard.php';
-                
-                // 현장정보 카드 시작
-                echo '<div class="linear-card">';
-                echo '<div class="linear-card-header">';
-                echo '<h3 class="linear-card-title"><i class="bi bi-building"></i> 현장 정보 입력</h3>';
-                echo '</div>';
-                echo '<div class="linear-card-body">';
-                ?>
+            <div class="responsive-card">
+                <div class="responsive-card-header">
+                    <h3 class="responsive-card-title"><i class="bi bi-building"></i> 현장 정보 입력</h3>
+                </div>
+                <div class="responsive-card-body">
                 
                 <form id="measurementForm" action="save_panel_measurement.php" method="POST">
                     <?php if ($edit_mode): ?>
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?>">
                     <?php endif; ?>
                     <!-- Site Information -->
-                    <div class="form-section">
+                    <!-- 🎯 PHASE 2: 반응형으로 전환 시작 -->
+                    <div class="form-section responsive-section">
 
                         <?php
                         require_once '../components/LinearInput.php';
@@ -811,31 +1187,34 @@ try {
                         </div>
 
                         <?php
-                        // Site Name Input
+                        // 🎯 PHASE 2: 반응형 현장명 입력 (PC/모바일 공통)
                         $defaultSiteName = $edit_mode ? $edit_data['site_name'] : '임시현장_' . date('ymdHi');
-                        $siteInput = LinearInput::text()
-                            ->setId('siteName')
-                            ->name('site_name')
-                            ->label('현장명 <span style="color: var(--linear-color-red);">*</span>')
-                            ->placeholder('현장명을 입력하세요')
-                            ->value($defaultSiteName)
-                            ->required()
-                            ->fullWidth()
-                            ->addAttribute('list', 'existingSites');
-                        echo $siteInput->renderGroup();
                         ?>
-                        <datalist id="existingSites">
-                            <?php foreach ($existing_sites as $site): ?>
-                                <option value="<?= htmlspecialchars($site) ?>">
-                            <?php endforeach; ?>
-                        </datalist>
+                        <div class="responsive-input-group">
+                            <label for="siteName" class="linear-label">
+                                현장명 <span style="color: var(--linear-color-red);">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="siteName" 
+                                   name="site_name" 
+                                   class="linear-input responsive-input" 
+                                   placeholder="현장명을 입력하세요"
+                                   value="<?= htmlspecialchars($defaultSiteName) ?>"
+                                   list="existingSites"
+                                   required>
+                            <datalist id="existingSites">
+                                <?php foreach ($existing_sites as $site): ?>
+                                    <option value="<?= htmlspecialchars($site) ?>">
+                                <?php endforeach; ?>
+                            </datalist>
+                        </div>
                         
                         <?php
-                        // 측정일자와 측정자를 한 행에 표시
+                        // 🎯 PHASE 2: 반응형 측정일자/측정자 (모바일: 1열, PC: 2열)
                         ?>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--linear-spacing-md); align-items: start;">
+                        <div class="responsive-grid">
                             <!-- 측정일자 -->
-                            <div class="linear-input-group">
+                            <div class="responsive-input-group">
                                 <label for="measurementDate" class="linear-label">
                                     측정일자 <span style="color: var(--linear-color-red);">*</span>
                                 </label>
@@ -843,12 +1222,12 @@ try {
                                     <input type="text"
                                            id="measurementDate"
                                            name="measurement_date"
-                                           class="linear-input"
+                                           class="linear-input responsive-input"
                                            placeholder="날짜를 선택하세요"
                                            value="<?= $edit_mode ? $edit_data['measurement_date'] : date('Y-m-d') ?>"
                                            readonly
                                            required
-                                           style="cursor: pointer; width: 120px !important;">
+                                           style="cursor: pointer;">
                                     <div id="datePicker" class="date-picker">
                                         <div class="date-picker-header">
                                             <button type="button" class="date-picker-nav" id="prevMonth">◀</button>
@@ -869,7 +1248,7 @@ try {
                             </div>
  
                             <!-- 측정자 -->
-                            <div class="linear-input-group">
+                            <div class="responsive-input-group">
                                 <label for="measurer" class="linear-label">
                                     측정자 <span style="color: var(--linear-color-red);">*</span>
                                 </label>
@@ -881,8 +1260,7 @@ try {
                                 <input type="text"
                                        id="measurer"
                                        name="measurer"
-                                       class="linear-input"
-                                       style="width: 100px;"
+                                       class="linear-input responsive-input"
                                        value="<?= htmlspecialchars($defaultMeasurer) ?>"
                                        required>
                             </div>
@@ -895,69 +1273,66 @@ try {
                         <p class="mb-0 small">판넬의 측정값을 입력해주세요</p>
                     </div>
 
-                    <!-- 카 내부 W x D x H -->
-                    <div class="form-section">
-                        <h6 class="form-section-title">카 내부 W x D x H</h6>
+                    <!-- 🎯 PHASE 2: 카 내부 W x D x H (반응형) -->
+                    <div class="responsive-section">
+                        <h6 class="responsive-section-title">카 내부 W x D x H</h6>
                         
-                        <div id="carInsideInputs" class="dimensions-grid">
+                        <div id="carInsideInputs" class="responsive-grid responsive-grid-3">
                             <?php
                             // Car Inside Width
                             $defaultWidth = $edit_mode ? $edit_data['car_inside_width'] : '1600';
-                            $carWidthInput = LinearInput::create('', ['type' => 'number'])
-                                ->setId('carInsideWidth')
-                                ->name('car_inside_width')
-                                ->placeholder('')
-                                ->value($defaultWidth)
-                                ->addAttribute('min', '800')
-                                ->addAttribute('max', '2500')
-                                ->addAttribute('step', '5');
                             ?>
-                            <div>
-                                <div class="dimension-label">
-                                    <i class="bi bi-arrows-horizontal dimension-icon"></i>
-                                    <span>가로 (W) <small style="color: var(--linear-text-tertiary);">mm</small></span>
-                                </div>
-                                <?= $carWidthInput->render() ?>
+                            <div class="responsive-input-group">
+                                <label for="carInsideWidth" class="linear-label">
+                                    <i class="bi bi-arrows-horizontal" style="margin-right: 4px;"></i>
+                                    가로 (W) <small style="color: var(--linear-text-tertiary);">mm</small>
+                                </label>
+                                <input type="number" 
+                                       id="carInsideWidth" 
+                                       name="car_inside_width" 
+                                       class="linear-input responsive-input"
+                                       value="<?= htmlspecialchars($defaultWidth) ?>"
+                                       min="800" 
+                                       max="2500" 
+                                       step="5">
                             </div>
                             
                             <?php
                             // Car Inside Depth
                             $defaultDepth = $edit_mode ? $edit_data['car_inside_depth'] : '1500';
-                            $carDepthInput = LinearInput::create('', ['type' => 'number'])
-                                ->setId('carInsideDepth')
-                                ->name('car_inside_depth')
-                                ->placeholder('')
-                                ->value($defaultDepth)
-                                ->addAttribute('min', '800') 
-                                ->addAttribute('max', '2000')
-                                ->addAttribute('step', '5');
                             ?>
-                            <div>
-                                <div class="dimension-label">
-                                    <i class="bi bi-arrow-up-down dimension-icon"></i>
-                                    <span>깊이 (D) <small style="color: var(--linear-text-tertiary);">mm</small></span>
-                                </div>
-                                <?= $carDepthInput->render() ?>
+                            <div class="responsive-input-group">
+                                <label for="carInsideDepth" class="linear-label">
+                                    <i class="bi bi-arrow-up-down" style="margin-right: 4px;"></i>
+                                    깊이 (D) <small style="color: var(--linear-text-tertiary);">mm</small>
+                                </label>
+                                <input type="number" 
+                                       id="carInsideDepth" 
+                                       name="car_inside_depth" 
+                                       class="linear-input responsive-input"
+                                       value="<?= htmlspecialchars($defaultDepth) ?>"
+                                       min="800" 
+                                       max="2000" 
+                                       step="5">
                             </div>
                             
                             <?php
                             // Car Inside Height
                             $defaultHeight = $edit_mode ? $edit_data['car_inside_height'] : '2700';
-                            $carHeightInput = LinearInput::create('', ['type' => 'number'])
-                                ->setId('carInsideHeight')
-                                ->name('car_inside_height')
-                                ->placeholder('')
-                                ->value($defaultHeight)
-                                ->addAttribute('min', '2000')
-                                ->addAttribute('max', '3000')
-                                ->addAttribute('step', '5');
                             ?>
-                            <div>
-                                <div class="dimension-label">
-                                    <i class="bi bi-arrows-vertical dimension-icon"></i>
-                                    <span>높이 (H) <small style="color: var(--linear-text-tertiary);">mm</small></span>
-                                </div>
-                                <?= $carHeightInput->render() ?>
+                            <div class="responsive-input-group">
+                                <label for="carInsideHeight" class="linear-label">
+                                    <i class="bi bi-arrows-vertical" style="margin-right: 4px;"></i>
+                                    높이 (H) <small style="color: var(--linear-text-tertiary);">mm</small>
+                                </label>
+                                <input type="number" 
+                                       id="carInsideHeight" 
+                                       name="car_inside_height" 
+                                       class="linear-input responsive-input"
+                                       value="<?= htmlspecialchars($defaultHeight) ?>"
+                                       min="2000" 
+                                       max="3000" 
+                                       step="5">
                             </div>
                         </div>
                     </div>
@@ -1002,14 +1377,14 @@ try {
                         <input type="hidden" id="panelCornersExcluded" name="panel_corners_excluded" value="<?= htmlspecialchars($defaultPanelCornersExcluded) ?>">
                     </div>
 
-                    <!-- Material Information -->
-                    <div class="form-section">
-                        <h6 class="form-section-title">재질 정보</h6>
+                    <!-- 🎯 PHASE 2: 재질 정보 (반응형) -->
+                    <div class="responsive-section">
+                        <h6 class="responsive-section-title">재질 정보</h6>
                         
-                        <!-- Material Type and Thickness -->
-                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-lg);">
-                            <div>
-                                <label for="materialType" style="display: block; margin-bottom: var(--linear-spacing-sm); font-weight: var(--linear-font-weight-medium); color: var(--linear-text-primary);">의장재질</label>
+                        <!-- Material Type and Thickness (반응형 그리드: 모바일 1열, PC 2열) -->
+                        <div class="responsive-grid">
+                            <div class="responsive-input-group">
+                                <label for="materialType" class="linear-label">의장재질</label>
                                 <?php
                                 $defaultMaterialType = $edit_mode ? ($edit_data['material_type'] ?? '') : '';
                                 $materialOptions = [
@@ -1022,14 +1397,14 @@ try {
                                     '기타' => '기타'
                                 ];
                                 ?>
-                                <select class="linear-input" id="materialType" name="material_type" style="width: 100%;">
+                                <select class="linear-input responsive-input" id="materialType" name="material_type">
                                     <?php foreach($materialOptions as $value => $text): ?>
                                         <option value="<?= htmlspecialchars($value) ?>" <?= $defaultMaterialType === $value ? 'selected' : '' ?>><?= htmlspecialchars($text) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div>
-                                <label for="materialThickness" style="display: block; margin-bottom: var(--linear-spacing-sm); font-weight: var(--linear-font-weight-medium); color: var(--linear-text-primary);">두께 <span style="color: var(--linear-text-tertiary);">mm</span></label>
+                            <div class="responsive-input-group">
+                                <label for="materialThickness" class="linear-label">두께 <span style="color: var(--linear-text-tertiary);">mm</span></label>
                                 <?php
                                 $defaultMaterialThickness = $edit_mode ? ($edit_data['material_thickness'] ?? '') : '';
                                 $thicknessOptions = [
@@ -1041,7 +1416,7 @@ try {
                                     '1.6' => '1.6'
                                 ];
                                 ?>
-                                <select class="linear-input" id="materialThickness" name="material_thickness" style="width: 100%;">
+                                <select class="linear-input responsive-input" id="materialThickness" name="material_thickness">
                                     <?php foreach($thicknessOptions as $value => $text): ?>
                                         <option value="<?= htmlspecialchars($value) ?>" <?= $defaultMaterialThickness === $value ? 'selected' : '' ?>><?= htmlspecialchars($text) ?></option>
                                     <?php endforeach; ?>
@@ -1050,30 +1425,32 @@ try {
                         </div>
 
                         <!-- Elevator Count -->
-                        <div style="margin-bottom: var(--linear-spacing-lg);">
-                            <label for="elevatorCount" style="display: block; margin-bottom: var(--linear-spacing-sm); font-weight: var(--linear-font-weight-medium); color: var(--linear-text-primary);">엘리베이터 대수</label>
+                        <div class="responsive-input-group">
+                            <label for="elevatorCount" class="linear-label">엘리베이터 대수</label>
                             <?php
                             $defaultElevatorCount = $edit_mode ? ($edit_data['elevator_count'] ?? 1) : 1;
                             ?>
-                            <input type="number" class="linear-input" id="elevatorCount" name="elevator_count"
+                            <input type="number" 
+                                   class="linear-input responsive-input" 
+                                   id="elevatorCount" 
+                                   name="elevator_count"
                                    value="<?= htmlspecialchars($defaultElevatorCount) ?>"
-                                   min="1" max="20" step="1"
-                                   style="width: 100px;" placeholder="1">                            
+                                   min="1" 
+                                   max="20" 
+                                   step="1"
+                                   placeholder="1">                            
                         </div>
 
-                        <?php
-                        // Notes Textarea
-                        $defaultNotes = $edit_mode ? ($edit_data['notes'] ?? '') : '';
-                        $notesInput = LinearInput::textarea()
-                            ->setId('notes')
-                            ->name('notes')
-                            ->label('특이사항')
-                            ->placeholder('측정 시 특이사항이나 주의사항을 입력하세요')
-                            ->fullWidth()
-                            ->value($defaultNotes)
-                            ->addAttribute('rows', '3');
-                        echo $notesInput->renderGroup();
-                        ?>
+                        <!-- Notes (특이사항) -->
+                        <div class="responsive-input-group">
+                            <label for="notes" class="linear-label">특이사항</label>
+                            <?php $defaultNotes = $edit_mode ? ($edit_data['notes'] ?? '') : ''; ?>
+                            <textarea class="linear-input responsive-input" 
+                                      id="notes" 
+                                      name="notes" 
+                                      rows="3" 
+                                      placeholder="측정 시 특이사항이나 주의사항을 입력하세요"><?= htmlspecialchars($defaultNotes) ?></textarea>
+                        </div>
                     </div>
 
                     <!-- Hidden Fields -->
@@ -1432,23 +1809,136 @@ try {
             renderCalendar();
         });
 
-        // 아이파크 신규 체크박스 기능 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📱 DEBUG F1: DOMContentLoaded 이벤트 발생');
+        // 전역 디바운싱 변수
+        let iparkCheckboxLastExecution = 0;
 
-            const iparkCheck = document.getElementById('iparkCheck');
-            const siteNameInput = document.getElementById('siteName');
+        // 아이파크 신규 체크박스 기능 초기화 (강화된 버전)
+        function initializeIparkCheckbox() {
+            console.log('🚀 initializeIparkCheckbox 함수 시작');
+            
+            // 신규 모드 확인을 위한 URL 파라미터 체크
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEditMode = !!urlParams.get('edit');
+            console.log('🔍 현재 모드:', isEditMode ? '편집 모드' : '신규 모드');
 
-            console.log('📱 DEBUG F2: iparkCheck 요소 검색 결과:', iparkCheck ? '✅ 발견' : '❌ 없음');
-            console.log('📱 DEBUG F3: siteNameInput 요소 검색 결과:', siteNameInput ? '✅ 발견' : '❌ 없음');
+            // 여러 방법으로 요소 찾기
+            let iparkCheck = document.getElementById('iparkCheck');
+            let siteNameInput = document.getElementById('siteName');
+
+            // 대체 방법으로 요소 찾기
+            if (!iparkCheck) {
+                iparkCheck = document.querySelector('input[name="ipark_check"]');
+                console.log('📱 대체 방법으로 iparkCheck 찾기:', iparkCheck ? '✅ 발견' : '❌ 없음');
+            }
+
+            if (!siteNameInput) {
+                siteNameInput = document.querySelector('input[name="site_name"]');
+                console.log('📱 대체 방법으로 siteNameInput 찾기:', siteNameInput ? '✅ 발견' : '❌ 없음');
+            }
+
+            console.log('📱 최종 요소 확인:');
+            console.log('  - iparkCheck:', iparkCheck ? `✅ ID: ${iparkCheck.id}, Type: ${iparkCheck.type}` : '❌ 없음');
+            console.log('  - siteNameInput:', siteNameInput ? `✅ ID: ${siteNameInput.id}, Name: ${siteNameInput.name}` : '❌ 없음');
 
             if (iparkCheck && siteNameInput) {
                 console.log('📱 DEBUG F4: 아이파크 체크박스 초기화 시작');
+                
+                // 신규 모드에서는 초기 로드 시에만 체크박스를 해제 상태로 설정 (재시도 시에는 상태 유지)
+                if (!isEditMode && !window.iparkCheckboxInitialized) {
+                    iparkCheck.checked = false;
+                    console.log('🆕 신규 모드: 체크박스 초기 해제 완료');
+                    window.iparkCheckboxInitialized = true; // 초기화 완료 플래그 설정
+                } else if (!isEditMode && window.iparkCheckboxInitialized) {
+                    console.log('🔄 재시도: 체크박스 상태 유지 (현재 상태:', iparkCheck.checked, ')');
+                }
+                
+                // PC 환경에서 체크박스 속성 확인 및 강제 활성화
+                console.log('🖥️ PC 체크박스 속성 확인:');
+                console.log('  - disabled:', iparkCheck.disabled);
+                console.log('  - readonly:', iparkCheck.readOnly);
+                console.log('  - style.display:', iparkCheck.style.display);
+                console.log('  - style.visibility:', iparkCheck.style.visibility);
+                console.log('  - pointer-events:', window.getComputedStyle(iparkCheck).pointerEvents);
+                
+                // 체크박스가 비활성화되어 있다면 강제로 활성화
+                if (iparkCheck.disabled) {
+                    iparkCheck.disabled = false;
+                    console.log('🖥️ PC 체크박스 강제 활성화 완료');
+                }
+                
+                // 포인터 이벤트가 비활성화되어 있다면 활성화
+                const computedStyle = window.getComputedStyle(iparkCheck);
+                if (computedStyle.pointerEvents === 'none') {
+                    iparkCheck.style.pointerEvents = 'auto';
+                    console.log('🖥️ PC 체크박스 포인터 이벤트 활성화 완료');
+                }
+                
+                // PC에서 아이파크 체크박스 컨테이너 강제 표시
+                const iparkCheckContainer = document.getElementById('iparkCheckContainer');
+                if (iparkCheckContainer) {
+                    iparkCheckContainer.style.display = 'block';
+                    iparkCheckContainer.style.visibility = 'visible';
+                    iparkCheckContainer.style.opacity = '1';
+                    console.log('🖥️ PC 아이파크 체크박스 컨테이너 강제 표시 완료');
+                    
+                    // 라벨과 텍스트 요소들도 강제 표시
+                    const iparkLabel = document.getElementById('iparkCheckLabel');
+                    if (iparkLabel) {
+                        iparkLabel.style.display = 'flex';
+                        iparkLabel.style.visibility = 'visible';
+                        iparkLabel.style.opacity = '1';
+                        iparkLabel.style.color = '#333';
+                        console.log('🖥️ PC 아이파크 라벨 강제 표시 완료');
+                        
+                        // span 요소들도 강제 표시
+                        const spans = iparkLabel.querySelectorAll('span');
+                        spans.forEach(span => {
+                            span.style.display = 'inline';
+                            span.style.visibility = 'visible';
+                            span.style.opacity = '1';
+                            span.style.color = '#333';
+                            span.style.fontWeight = '500';
+                            span.style.fontSize = '14px';
+                        });
+                        
+                        // 아이콘도 강제 표시
+                        const icons = iparkLabel.querySelectorAll('i');
+                        icons.forEach(icon => {
+                            icon.style.display = 'inline';
+                            icon.style.visibility = 'visible';
+                            icon.style.opacity = '1';
+                            icon.style.color = '#007bff';
+                            icon.style.marginRight = '6px';
+                        });
+                        
+                        console.log('🖥️ PC 아이파크 텍스트 및 아이콘 강제 표시 완료');
+                    }
+                }
                 // 체크박스 변경 이벤트 (모바일 호환성을 위해 여러 이벤트 등록)
                 const handleIparkCheckboxChange = function() {
+                    // 강화된 디바운싱: 300ms 이내 중복 실행 방지
+                    const now = Date.now();
+                    if (now - iparkCheckboxLastExecution < 300) {
+                        console.log('🚫 디바운싱: 중복 실행 방지 (300ms)', now - iparkCheckboxLastExecution + 'ms 경과');
+                        return;
+                    }
+                    iparkCheckboxLastExecution = now;
+                    
+                    // 동기화 중인 경우 중복 실행 방지
+                    if (this.hasAttribute('data-sync-in-progress')) {
+                        console.log('🔄 동기화 중: 중복 실행 방지');
+                        return;
+                    }
+                    
                     console.log('🔄 handleIparkCheckboxChange 함수 실행, 체크 상태:', this.checked);
                     console.log('🔍 CALLBACK STEP 1: 함수 컨텍스트 - this:', this.id || 'no-id');
                     console.log('🔍 CALLBACK STEP 2: 체크박스 타입:', this.type);
+                    console.log('🔍 DEBUG: 체크박스 실제 DOM 상태:', {
+                        checked: this.checked,
+                        value: this.value,
+                        id: this.id,
+                        name: this.name
+                    }); 
 
                     // 📱 DEBUG: 모바일 환경 확인
                     console.log('📱 DEBUG A1: isMobileDevice 함수 존재:', typeof isMobileDevice);
@@ -1491,53 +1981,24 @@ try {
                             console.log('🔍 CALLBACK STEP 7: 트랜섬 제외 체크박스 활성화');
                         }
 
-                        // 모달창 표시
-                        console.log('🚀 CALLBACK STEP 8: showIparkPanelModal 호출 시작');
-                        console.log('🔍 CALLBACK STEP 9: showIparkPanelModal 함수 존재 확인:', typeof showIparkPanelModal);
-
-                        // 📱 DEBUG: 모달창 표시 전 환경 체크
-                        console.log('📱 DEBUG B1: showIparkPanelModalDOM 함수 존재:', typeof showIparkPanelModalDOM);
-
-                        const iparkModal = document.getElementById('iparkModal');
-                        console.log('📱 DEBUG B2: 아이파크 모달 DOM 요소 존재:', iparkModal ? '✅ 발견' : '❌ 없음');
-                        if (iparkModal) {
-                            console.log('📱 DEBUG B3: 모달 현재 display 스타일:', iparkModal.style.display);
-                            console.log('📱 DEBUG B4: 모달 computed 스타일:', window.getComputedStyle(iparkModal).display);
+                        // 숨겨진 div 표시 - PC/모바일 모두 div 토글 방식 사용
+                        console.log('🚀 CALLBACK STEP 8: 아이파크 설정 화면 표시 시작');
+                        
+                        // 이미 div가 표시된 상태인지 확인
+                        const settingsDiv = document.getElementById('iparkSettingsDiv');
+                        if (settingsDiv && settingsDiv.style.display === 'block') {
+                            console.log('🚫 이미 div가 표시된 상태 - 중복 표시 방지');
+                            return;
                         }
-
+                        
                         try {
-                            console.log('📱 DEBUG B5: showIparkSettingsDiv 호출 시도');
+                            console.log('🖥️ 모든 환경에서 showIparkSettingsDiv 호출 (숨겨진 div 표시)');
+                            console.log('🔍 showIparkSettingsDiv 함수 존재:', typeof showIparkSettingsDiv);
                             showIparkSettingsDiv();
-                            console.log('✅ CALLBACK STEP 10: showIparkSettingsDiv 호출 성공');
-
-                            // 📱 DEBUG: 모달창 표시 후 상태 체크
-                            setTimeout(() => {
-                                if (iparkModal) {
-                                    console.log('📱 DEBUG B6: 모달 호출 후 display 스타일:', iparkModal.style.display);
-                                    console.log('📱 DEBUG B7: 모달 호출 후 computed 스타일:', window.getComputedStyle(iparkModal).display);
-                                    console.log('📱 DEBUG B8: 모달 zIndex:', window.getComputedStyle(iparkModal).zIndex);
-                                }
-                            }, 100);
+                            console.log('✅ 아이파크 설정 화면 표시 성공 (모달창 대신 div)');
                         } catch (error) {
-                            console.error('❌ CALLBACK ERROR: showIparkPanelModalDOM 호출 실패:', error);
-                            console.error('📱 DEBUG B9: 에러 스택:', error.stack);
-                        }
-
-                        // 모바일 폴백: 일정 시간 내 모달이 열리지 않으면 네이티브 프롬프트로 대체
-                        if (typeof isMobileDevice === 'function' && isMobileDevice()) {
-                            setTimeout(() => {
-                                try {
-                                    const modal = document.getElementById('iparkModal');
-                                    const isOpen = modal && modal.style.display === 'flex';
-                                    if (!isOpen) {
-                                        console.warn('⏱️ DOM 모달 미표시 감지 → 모바일 폴백 다이얼로그 실행');
-                                        showIparkFallbackPrompt();
-                                    }
-                                } catch (e) {
-                                    console.warn('폴백 판별 중 오류 → 폴백 실행:', e);
-                                    try { showIparkFallbackPrompt(); } catch (_) {}
-                                }
-                            }, 300);
+                            console.error('❌ 아이파크 설정 화면 표시 실패:', error);
+                            console.error('📱 에러 스택:', error.stack);
                         }
                     } else {
                         // 체크 해제된 경우: '아이파크'를 '임시현장'으로 변경
@@ -1548,11 +2009,31 @@ try {
 
                         // 아이파크 자동계산 값 초기화
                         clearIparkAutoMeasurements();
+                        
+                        // 설정 div 숨기기 (모든 환경 공통)
+                        console.log('📱 체크 해제: 설정 div 숨기기 시도 (모달창 대신)');
+                        hideIparkSettingsDiv();
                     }
                 };
 
-                // 모바일/PC 공통: change 이벤트만 사용하여 중복 호출 방지
+                // 모바일/PC 공통: change 이벤트 등록
                 iparkCheck.addEventListener('change', handleIparkCheckboxChange);
+                console.log('✅ 체크박스 change 이벤트 리스너 등록 완료');
+                
+                // 체크박스 클릭 이벤트도 추가 (상태 변경 확인용)
+                iparkCheck.addEventListener('click', function(e) {
+                    console.log('🖱️ 체크박스 직접 클릭 감지:', {
+                        checked: this.checked,
+                        target: e.target.id,
+                        timestamp: new Date().toISOString()
+                    });
+                });
+                
+                // PC 환경에서 클릭 이벤트도 등록 (체크박스 클릭 감지용)
+                // change 이벤트가 이미 있으므로 중복 실행 방지를 위해 클릭 이벤트는 제거
+                
+                // PC 환경에서 레이블 클릭 이벤트는 제거 (change 이벤트만 사용)
+                console.log('🚫 PC 레이블 클릭 이벤트 제거 - change 이벤트만 사용');
 
                 // 모바일에서 터치 이벤트도 추가 (시각화 패널과 동일한 방식)
                 if (typeof isMobileDevice === 'function' && isMobileDevice()) {
@@ -1608,8 +2089,7 @@ try {
                                     this.click();
 
                                     console.log('📱 DEBUG D9: click() 호출 후 체크 상태:', this.checked);
-                                    // 일부 환경에서 change 누락 보완: 다음 프레임에서 직접 콜백 실행
-                                    requestAnimationFrame(() => handleIparkCheckboxChange.call(this));
+                                    // change 이벤트가 자동으로 발생하므로 중복 호출 제거
                                     return;
                                 }
                             }, { passive: false });
@@ -1634,8 +2114,7 @@ try {
 
                                     // 레이블 터치 시 체크박스 클릭만 트리거하여 change 경로로 통일
                                     iparkCheck.click();
-                                    // 보강: 다음 프레임에서 직접 콜백 실행
-                                    requestAnimationFrame(() => handleIparkCheckboxChange.call(iparkCheck));
+                                    // change 이벤트가 자동으로 발생하므로 중복 호출 제거
                                     return;
                                 }
                             }, { passive: false });
@@ -1670,8 +2149,7 @@ try {
 
                                     // 체크박스 클릭만 트리거하여 change 경로로 통일
                                     iparkCheck.click();
-                                    // 보강: 다음 프레임에서 직접 콜백 실행
-                                    requestAnimationFrame(() => handleIparkCheckboxChange.call(iparkCheck));
+                                    // change 이벤트가 자동으로 발생하므로 중복 호출 제거
                                     return;
                                 }
                             }, { passive: false });
@@ -1727,10 +2205,18 @@ try {
                 if (debugBtn && typeof isMobileDevice === 'function' && isMobileDevice()) {
                     debugBtn.style.display = 'inline-block';
                     debugBtn.addEventListener('click', function() {
-                        showIparkPanelModalDOM();
+                        console.log('🔧 디버그 버튼 클릭 - showIparkSettingsDiv 호출 (숨겨진 div 표시)');
+                        if (typeof showIparkSettingsDiv === 'function') {
+                            showIparkSettingsDiv();
+                        } else {
+                            console.error('❌ showIparkSettingsDiv 함수가 정의되지 않음');
+                        }
                     });
                 }
 
+                // 현재 체크박스 상태 로그
+                console.log('📋 현재 체크박스 상태:', iparkCheck.checked);
+                
                 // 초기 로드시 체크 상태에 따른 현장명 설정
                 if (iparkCheck.checked) {
                     const currentValue = siteNameInput.value;
@@ -1781,7 +2267,179 @@ try {
                 console.log('📱 DEBUG F7: 대체 체크박스 검색 (name):', document.querySelector('input[name="ipark_check"]'));
                 console.log('📱 DEBUG F8: 대체 현장명 검색 (name):', document.querySelector('input[name="site_name"]'));
                 console.log('📱 DEBUG F9: 전체 input 요소 수:', document.querySelectorAll('input').length);
+                
+                // 재시도 로직
+                console.log('🔄 3초 후 재시도 예약');
+                setTimeout(() => {
+                    console.log('🔄 재시도 시작');
+                    initializeIparkCheckbox();
+                }, 3000);
             }
+        }
+
+        // PC에서는 change 이벤트만 사용하고, 이벤트 위임은 제거 (중복 실행 방지)
+        console.log('🚫 PC 이벤트 위임 제거 - change 이벤트만 사용');
+
+        // 터치 이벤트 위임 (모바일에서만 동작)
+        if (typeof isMobileDevice === 'function' && isMobileDevice()) {
+            document.addEventListener('touchend', function(e) {
+                if (e.target && (e.target.id === 'iparkCheck' || e.target.closest('#iparkCheckContainer'))) {
+                    console.log('🎯 이벤트 위임으로 아이파크 터치 감지');
+                    console.log('📱 터치된 요소:', e.target.tagName, e.target.id);
+                    
+                    const iparkCheck = document.getElementById('iparkCheck');
+                    if (iparkCheck) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // 체크박스 토글
+                        const wasChecked = iparkCheck.checked;
+                        iparkCheck.checked = !wasChecked;
+                        console.log('📱 터치로 체크박스 상태 변경:', wasChecked, '→', iparkCheck.checked);
+                        
+                        // change 이벤트 발생
+                        const changeEvent = new Event('change', { bubbles: true });
+                        iparkCheck.dispatchEvent(changeEvent);
+                        console.log('📱 터치에서 change 이벤트 발생');
+                        
+                        // 체크 해제 시 설정 화면 숨기기
+                        if (!iparkCheck.checked) {
+                            console.log('📱 터치로 체크 해제 감지: 설정 화면 숨기기 (모달창 대신)');
+                            hideIparkSettingsDiv();
+                        }
+                    }
+                }
+            }, { passive: false });
+        } else {
+            console.log('🚫 PC 환경: 터치 이벤트 위임 제거');
+        }
+
+        // PC 버전 요소들을 모바일에서 숨기기
+        function hidePCVersionElements() {
+            console.log('📱 PC 버전 요소들 숨기기 시작');
+            
+            // PC 버전 요소들 선택 (아이파크 체크박스는 제외)
+            const pcElements = [
+                '.measurement-grid',
+                '#measurementForm'
+            ];
+            
+            pcElements.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    if (element && !element.closest('.mobile-only-cards')) {
+                        element.style.display = 'none';
+                        console.log('📱 PC 요소 숨김:', selector);
+                    }
+                });
+            });
+            
+            // PC 버전 아이파크 체크박스는 모바일에서 숨기기 (CSS로 이미 처리됨)
+            const iparkCheckContainer = document.getElementById('iparkCheckContainer');
+            if (iparkCheckContainer && !iparkCheckContainer.closest('.mobile-only-cards')) {
+                iparkCheckContainer.style.display = 'none';
+                console.log('📱 PC 아이파크 체크박스 숨김');
+            }
+            
+            // 모바일 아이파크 체크박스는 표시
+            const mobileIparkCheckContainer = document.getElementById('mobileIparkCheckContainer');
+            if (mobileIparkCheckContainer) {
+                mobileIparkCheckContainer.style.display = 'block';
+                console.log('📱 모바일 아이파크 체크박스 표시');
+            }
+            
+            // 모바일 카드 표시
+            const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+            if (mobileCardsContainer) {
+                mobileCardsContainer.style.display = 'block';
+                console.log('📱 모바일 카드 표시');
+            }
+            
+            console.log('📱 PC 버전 요소들 숨기기 완료');
+        }
+        
+        // PC 환경에서 요소들 표시하기
+        function showPCVersionElements() {
+            console.log('🖥️ PC 버전 요소들 표시 시작');
+            
+            // PC 버전 요소들 선택
+            const pcElements = [
+                '.measurement-grid',
+                '#measurementForm',
+                '#iparkCheckContainer'
+            ];
+            
+            pcElements.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    if (element && !element.closest('.mobile-only-cards')) {
+                        element.style.display = '';
+                        console.log('🖥️ PC 요소 표시:', selector);
+                    }
+                });
+            });
+            
+            // 모바일 카드 숨기기
+            const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+            if (mobileCardsContainer) {
+                mobileCardsContainer.style.display = 'none';
+                console.log('🖥️ 모바일 카드 숨김');
+            }
+            
+            // 모바일 아이파크 체크박스도 숨기기
+            const mobileIparkCheckContainer = document.getElementById('mobileIparkCheckContainer');
+            if (mobileIparkCheckContainer) {
+                mobileIparkCheckContainer.style.display = 'none';
+                console.log('🖥️ 모바일 아이파크 체크박스 숨김');
+            }
+            
+            console.log('🖥️ PC 버전 요소들 표시 완료');
+        }
+
+        // DOMContentLoaded 이벤트 리스너 등록
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 DEBUG F1: DOMContentLoaded 이벤트 발생');
+            
+            // 환경에 따라 요소들 표시/숨기기
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    console.log('📱 DOMContentLoaded 후 PC 버전 요소들 숨기기');
+                    hidePCVersionElements();
+                }, 100);
+            } else {
+                setTimeout(() => {
+                    console.log('🖥️ DOMContentLoaded 후 PC 버전 요소들 표시');
+                    showPCVersionElements();
+                }, 100);
+            }
+            
+            // 즉시 시도
+            initializeIparkCheckbox();
+            
+            // 추가 재시도 (DOM이 완전히 로드되지 않은 경우를 대비)
+            setTimeout(() => {
+                console.log('🔄 1초 후 추가 재시도');
+                initializeIparkCheckbox();
+                
+                // 환경에 따라 요소들 표시/숨기기
+                if (window.innerWidth <= 768) {
+                    hidePCVersionElements();
+                } else {
+                    showPCVersionElements();
+                }
+            }, 1000);
+            
+            setTimeout(() => {
+                console.log('🔄 2초 후 최종 재시도');
+                initializeIparkCheckbox();
+                
+                // 환경에 따라 요소들 표시/숨기기
+                if (window.innerWidth <= 768) {
+                    hidePCVersionElements();
+                } else {
+                    showPCVersionElements();
+                }
+            }, 2000);
         });
 
         // 아이파크 판넬폭 설정 모달창
@@ -1963,7 +2621,7 @@ try {
             });
         }
 
-        // 아이파크 설정 div 표시 함수
+        // 아이파크 설정 div 표시 함수 (PC용)
         function showIparkSettingsDiv() {
             console.log('🚀 showIparkSettingsDiv 함수 진입 - div 토글 표시 시작');
 
@@ -1989,18 +2647,15 @@ try {
             input6.value = saved6;
             console.log('🔍 입력 필드 값 설정 완료');
 
-            // div 표시
+            // 숨겨진 div를 표시 (모달창 대신)
             settingsDiv.style.display = 'block';
-            console.log('✅ 아이파크 설정 div 표시 완료');
+            console.log('✅ 아이파크 설정 div 표시 완료 (모달창 대신)');
 
             // 스크롤을 설정 div로 이동 (모바일 친화적)
             settingsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
             console.log('🔍 설정 div로 스크롤 이동');
-
-            // ESC 키 이벤트 리스너 추가
-            document.addEventListener('keydown', handleIparkEscapeKey);
-            console.log('🔍 ESC 키 이벤트 리스너 추가');
         }
+
 
         // 아이파크 설정 div ESC 키 핸들러
         function handleIparkEscapeKey(e) {
@@ -2019,7 +2674,7 @@ try {
             const settingsDiv = document.getElementById('iparkSettingsDiv');
             if (settingsDiv) {
                 settingsDiv.style.display = 'none';
-                console.log('✅ 아이파크 설정 div 숨김 처리 완료');
+                console.log('✅ 아이파크 설정 div 숨김 처리 완료 (모달창 대신)');
             }
 
             // ESC 키 이벤트 리스너 제거
@@ -2147,32 +2802,8 @@ try {
                     }
                 })();
 
-                // 글로벌 캡처 리스너로 보강: 어떤 경로로든 체크 변경 시 확실히 처리
-                document.addEventListener('change', function(e) {
-                    try {
-                        const target = e.target || e.srcElement;
-                        if (target && target.id === 'iparkCheck') {
-                            console.log('🌐 GLOBAL CHANGE (capture): iparkCheck 감지, checked =', target.checked);
-                            handleIparkCheckboxChange.call(target);
-                        }
-                    } catch (err) {
-                        console.error('GLOBAL CHANGE handler error:', err);
-                    }
-                }, true);
-
-                // 일부 브라우저에서 change 누락 보완: click 캡처에서도 처리
-                document.addEventListener('click', function(e) {
-                    try {
-                        const target = e.target || e.srcElement;
-                        if (target && target.id === 'iparkCheck') {
-                            console.log('🌐 GLOBAL CLICK (capture): iparkCheck 감지, checked =', target.checked);
-                            // 클릭 직후 상태 반영 위해 다음 프레임에서 처리
-                            requestAnimationFrame(() => handleIparkCheckboxChange.call(target));
-                        }
-                    } catch (err) {
-                        console.error('GLOBAL CLICK handler error:', err);
-                    }
-                }, true);
+                // 글로벌 이벤트 핸들러는 제거 (중복 실행 방지)
+                console.log('🚫 글로벌 이벤트 핸들러 제거 - 중복 실행 방지');
 
                 // 자동계산 값 초기화
                 clearIparkAutoMeasurements();
@@ -2183,64 +2814,6 @@ try {
             hideIparkSettingsDiv();
         }
 
-        // 모바일 폴백 다이얼로그 (네이티브 prompt 사용)
-        function showIparkFallbackPrompt() {
-            try {
-                console.log('📲 showIparkFallbackPrompt 실행');
-                const default39 = localStorage.getItem('iparkPanel39Width') || '800';
-                const default6 = localStorage.getItem('iparkPanel6Width') || '1000';
-
-                const input39 = prompt('3,9번 판넬 폭(mm)을 입력하세요', String(default39));
-                if (input39 === null) {
-                    console.log('사용자가 폴백 다이얼로그를 취소함');
-                    const iparkCheck = document.getElementById('iparkCheck');
-                    if (iparkCheck) iparkCheck.checked = false;
-                    return;
-                }
-                const w39 = parseInt(input39, 10);
-                if (isNaN(w39) || w39 < 100 || w39 > 2000) {
-                    alert('3,9번 폭은 100~2000 사이의 숫자로 입력해주세요.');
-                    return;
-                }
-
-                const input6 = prompt('6번 판넬 폭(mm)을 입력하세요', String(default6));
-                if (input6 === null) {
-                    console.log('사용자가 폴백 다이얼로그를 취소함(2)');
-                    const iparkCheck = document.getElementById('iparkCheck');
-                    if (iparkCheck) iparkCheck.checked = false;
-                    return;
-                }
-                const w6 = parseInt(input6, 10);
-                if (isNaN(w6) || w6 < 100 || w6 > 2000) {
-                    alert('6번 폭은 100~2000 사이의 숫자로 입력해주세요.');
-                    return;
-                }
-
-                // 저장 및 적용
-                localStorage.setItem('iparkPanel39Width', String(w39));
-                localStorage.setItem('iparkPanel6Width', String(w6));
-                try {
-                    applyIparkAutoMeasurements(w39, w6);
-                } catch (e) {
-                    console.error('applyIparkAutoMeasurements 실행 오류:', e);
-                }
-                setTimeout(() => {
-                    try {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '설정 완료',
-                            text: `아이파크 자동계산 적용됨\n(3,9번: ${w39}mm, 6번: ${w6}mm)`,
-                            timer: 2000,
-                            showConfirmButton: false,
-                            toast: true,
-                            position: 'top-end'
-                        });
-                    } catch (_) {}
-                }, 50);
-            } catch (err) {
-                console.error('showIparkFallbackPrompt 오류:', err);
-            }
-        }
 
         // 아이파크 자동 실측값 계산 및 적용 함수
         function applyIparkAutoMeasurements(panel39Width, panel6Width) {
@@ -2519,6 +3092,12 @@ try {
 
         // 아이파크 자동계산 값 초기화 함수
         function clearIparkAutoMeasurements() {
+            // 중복 실행 방지
+            if (window.clearIparkInProgress) {
+                console.log('🚫 clearIparkAutoMeasurements 중복 실행 방지');
+                return;
+            }
+            window.clearIparkInProgress = true;
 
             // 2-10번 판넬의 자동계산 값 제거
             for (let panelNum = 2; panelNum <= 10; panelNum++) {
@@ -2576,6 +3155,10 @@ try {
                 });
             }
 
+            // 중복 실행 방지 플래그 해제
+            setTimeout(() => {
+                window.clearIparkInProgress = false;
+            }, 500);
         }
 
         // UI 상태 업데이트 함수
@@ -2707,6 +3290,14 @@ try {
                     !transomPanel.classList.contains('has-info') &&
                     transomPanel.children.length === 0) {
                     transomPanel.textContent = 'T';
+                }
+                
+                // 모바일 Transom 패널 기본 'T' 표시
+                const mobileTransomPanel = document.querySelector('#mobile-panel-visualization .panel-12');
+                if (mobileTransomPanel && (!window.panelData || !window.panelData['12']) &&
+                    !mobileTransomPanel.classList.contains('has-info') &&
+                    mobileTransomPanel.children.length === 0) {
+                    mobileTransomPanel.textContent = 'T';
                 }
 
                 console.log('=== CHECKBOX STATES INITIALIZED ===');
@@ -3035,8 +3626,11 @@ try {
             updatePanelsByProjectType();
 
 
-                // 모바일 판넬 동기화 함수 (체크박스 시스템용)
+                // 🎯 PHASE 3: syncMobilePanels 함수 비활성화 (반응형으로 통합됨)
                 window.syncMobilePanels = function() {
+                    console.log('⚠️ DEPRECATED: syncMobilePanels - 반응형 통합으로 더 이상 사용되지 않습니다.');
+                    return; // 즉시 종료
+                    
                     setTimeout(() => {
                         // 모바일 버튼들
                         const mobileNewBtn = document.querySelector('#mobile-panel-visualization #newBtn');
@@ -3125,15 +3719,32 @@ try {
                             if (mobilePanel11) mobilePanel11.style.display = 'flex';
                         }
 
-                        // 트랜섬 포함 조건 확인 (체크박스 상태 AND 실제 데이터 존재 여부)
-                        const shouldIncludeTransom = !transomExcluded && hasTransomData();
-
-                        // 트랜섬 패널 제어
-                        if (shouldIncludeTransom) {
-                            if (mobilePanel12) mobilePanel12.style.display = 'flex';
+                        // 트랜섬 패널 제어 (PC 버전과 동일하게 체크박스 상태만으로 제어)
+                        if (transomExcluded) {
+                            if (mobilePanel12) {
+                                mobilePanel12.style.display = 'none';
+                            }
                         } else {
-                            if (mobilePanel12) mobilePanel12.style.display = 'none';
+                            if (mobilePanel12) {
+                                mobilePanel12.style.display = 'flex';
+                                // 패널 데이터가 있으면 다시 렌더링
+                                const transomData = window.panelData && (window.panelData['transom'] || window.panelData['12']);
+                                if (transomData) {
+                                    // 데이터가 있으면 렌더링
+                                    if (typeof window.renderPanelInfo === 'function') {
+                                        window.renderPanelInfo('12', transomData);
+                                    }
+                                } else {
+                                    // 데이터가 없으면 기본 'T' 텍스트 표시
+                                    if (!mobilePanel12.classList.contains('has-info') && mobilePanel12.children.length === 0) {
+                                        mobilePanel12.textContent = 'T';
+                                    }
+                                }
+                            }
                         }
+                        
+                        // 트랜섬 포함 조건 (패널 수 계산용)
+                        const shouldIncludeTransom = !transomExcluded && hasTransomData();
 
                         // 패널 수 및 정보 업데이트 (체크박스 상태 및 실제 데이터 기반)
                         let panelCountNum = panelCornersExcluded ? 9 : 11; // 기본 패널 수
@@ -3165,8 +3776,10 @@ try {
         document.addEventListener('DOMContentLoaded', function() {
             let mobileCardsPopulated = false;
 
-            // 모바일 입력 필드에 이벤트 리스너 추가하는 함수
+            // 🎯 PHASE 3: 모바일 전용 이벤트 리스너 비활성화 (반응형으로 통합됨)
             function addMobileInputEventListeners() {
+                console.log('⚠️ DEPRECATED: addMobileInputEventListeners - 반응형 통합으로 더 이상 사용되지 않습니다.');
+                return; // 즉시 종료
                 // 모바일 측정 입력 필드들
                 const mobileInputFields = [
                     '#mobile-measurements input[name="panelWidth"]',
@@ -3217,8 +3830,10 @@ try {
                 }
             }
 
-            // 모바일 버튼들에 이벤트 리스너 추가하는 함수
+            // 🎯 PHASE 3: 모바일 버튼 이벤트 리스너 비활성화 (반응형으로 통합됨)
             function addMobileButtonEventListeners() {
+                console.log('⚠️ DEPRECATED: addMobileButtonEventListeners - 반응형 통합으로 더 이상 사용되지 않습니다.');
+                return; // 즉시 종료
                 // 모바일 버튼 컨테이너 확인
                 const mobileButtonsContainer = document.getElementById('mobile-buttons');
                 if (!mobileButtonsContainer) {
@@ -3486,69 +4101,979 @@ try {
                 }
             }
 
-            // 모바일 카드에 내용 복사
+            // 중복 생성 방지를 위한 체크 함수
+            function isMobileCardAlreadyExists() {
+                const mobileSiteInfo = document.getElementById('mobile-site-info');
+                return mobileSiteInfo && mobileSiteInfo.children.length > 0;
+            }
+            
+            // 모바일 아이파크 체크박스만 강제 생성하는 함수
+            function createMobileIparkCheckbox() {
+                console.log('📱 createMobileIparkCheckbox 함수 호출');
+                
+                let mobileSiteInfo = document.getElementById('mobile-site-info');
+                if (!mobileSiteInfo) {
+                    console.log('📱 mobile-site-info 요소를 찾을 수 없음 - 생성 시도');
+                    const mobileCard1 = document.querySelector('.mobile-card-1 .linear-card-body');
+                    if (mobileCard1) {
+                        mobileSiteInfo = document.createElement('div');
+                        mobileSiteInfo.id = 'mobile-site-info';
+                        mobileSiteInfo.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important;';
+                        mobileCard1.insertBefore(mobileSiteInfo, mobileCard1.firstChild);
+                        console.log('📱 mobile-site-info 생성 완료');
+                    } else {
+                        console.error('📱 mobile-card-1을 찾을 수 없어서 mobile-site-info를 생성할 수 없습니다');
+                        return;
+                    }
+                }
+                
+                // 이미 존재하는지 확인
+                const existingIparkCheck = document.getElementById('mobileIparkCheck');
+                if (existingIparkCheck) {
+                    console.log('📱 모바일 아이파크 체크박스가 이미 존재함');
+                    return;
+                }
+                
+                console.log('📱 모바일 아이파크 체크박스 강제 생성 시작');
+                
+                // 아이파크 체크박스 컨테이너 생성
+                const mobileIparkContainer = document.createElement('div');
+                mobileIparkContainer.id = 'mobileIparkCheckContainer';
+                mobileIparkContainer.style.cssText = 'margin-bottom: var(--linear-spacing-lg); display: block !important; visibility: visible !important;';
+                
+                // PC 버전과 동일한 스타일로 HTML 생성
+                mobileIparkContainer.innerHTML = `
+                    <label id="mobileIparkCheckLabel" for="mobileIparkCheck" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border: 1px solid #ddd; border-radius: 6px; background: #f8f9fa; transition: all 0.2s ease; margin-bottom: 15px;">
+                        <input type="checkbox" id="mobileIparkCheck" name="mobile_ipark_check" value="1" style="width: 18px; height: 18px; margin: 0; cursor: pointer;">
+                        <span style="font-weight: 500; color: #333;">
+                            <i class="bi bi-building"></i> 아이파크 신규 체크
+                        </span>
+                    </label>
+                    <div id="mobileIparkSettingsDiv" style="display: none; margin-top: 15px; padding: 20px; border-radius: 8px; background: #f8f9fa; border: 1px solid #ddd;">
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="margin: 0 0 10px 0; font-size: 16px; color: #333;">
+                                <i class="bi bi-gear-fill" style="margin-right: 8px; color: #007bff;"></i>
+                                아이파크 판넬폭 설정
+                            </h4>
+                            <p style="margin: 0; font-size: 14px; color: #666;">아이파크 신규 설정 시 각 패널의 폭을 조정할 수 있습니다.</p>
+                        </div>
+                        <form>
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                                <div style="flex: 1; min-width: 150px;">
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">39번 패널폭 (mm)</label>
+                                    <input type="number" id="mobileIparkPanel39Width" value="800" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <small style="color: #666; font-size: 12px;">※ 기본값: 800mm</small>
+                                </div>
+                                <div style="flex: 1; min-width: 150px;">
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">6번 패널폭 (mm)</label>
+                                    <input type="number" id="mobileIparkPanel6Width" value="1000" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <small style="color: #666; font-size: 12px;">※ 기본값: 1000mm</small>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" id="mobileIparkCancelBtn" style="padding: 8px 16px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 4px; cursor: pointer;">취소</button>
+                                <button type="button" id="mobileIparkConfirmBtn" style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer;">설정 완료</button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+                
+                // mobile-site-info 맨 위에 추가
+                if (mobileSiteInfo.firstChild) {
+                    mobileSiteInfo.insertBefore(mobileIparkContainer, mobileSiteInfo.firstChild);
+                } else {
+                    mobileSiteInfo.appendChild(mobileIparkContainer);
+                }
+                
+                console.log('📱 모바일 아이파크 체크박스 강제 생성 완료');
+                
+                // PC 버전과 동기화
+                setTimeout(() => {
+                    const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                    if (mobileIparkCheck) {
+                        console.log('📱 모바일 아이파크 체크박스 동기화 시작');
+                        
+                        // PC 버전과 초기 동기화
+                        const pcIparkCheck = document.getElementById('iparkCheck');
+                        if (pcIparkCheck) {
+                            mobileIparkCheck.checked = pcIparkCheck.checked;
+                            console.log('📱 초기 상태 동기화:', mobileIparkCheck.checked);
+                        }
+                        
+                        // 모바일 → PC 동기화
+                        mobileIparkCheck.addEventListener('change', function() {
+                            console.log('📱 모바일 아이파크 체크박스 변경:', this.checked);
+                            
+                            if (pcIparkCheck) {
+                                pcIparkCheck.checked = this.checked;
+                                
+                                // PC 버전의 change 이벤트 발생시켜서 모든 기능 작동
+                                const changeEvent = new Event('change', { bubbles: true });
+                                pcIparkCheck.dispatchEvent(changeEvent);
+                            }
+                        });
+                        
+                        console.log('📱 모바일 아이파크 체크박스 동기화 완료');
+                    }
+                }, 100);
+            }
+            
+            // 모바일 카드 내부 아이파크 체크박스 강화 함수
+            function ensureMobileIparkCheckboxInCard() {
+                console.log('📱 모바일 카드 내부 아이파크 체크박스 확인 및 강화');
+                
+                let mobileSiteInfo = document.getElementById('mobile-site-info');
+                const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                
+                if (!mobileSiteInfo) {
+                    console.log('📱 mobile-site-info 요소를 찾을 수 없음 - 생성 시도');
+                    const mobileCard1 = document.querySelector('.mobile-card-1 .linear-card-body');
+                    if (mobileCard1) {
+                        mobileSiteInfo = document.createElement('div');
+                        mobileSiteInfo.id = 'mobile-site-info';
+                        mobileSiteInfo.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important;';
+                        mobileCard1.insertBefore(mobileSiteInfo, mobileCard1.firstChild);
+                        console.log('📱 mobile-site-info 생성 완료');
+                    } else {
+                        console.error('📱 mobile-card-1을 찾을 수 없어서 mobile-site-info를 생성할 수 없습니다');
+                        return;
+                    }
+                }
+                
+                if (!mobileIparkCheck) {
+                    console.log('📱 모바일 카드 내부에 아이파크 체크박스 생성');
+                    createMobileIparkCheckbox();
+                } else {
+                    console.log('📱 모바일 아이파크 체크박스가 이미 존재함');
+                    
+                    // 표시 확인 및 강화
+                    const mobileIparkContainer = document.getElementById('mobileIparkCheckContainer');
+                    if (mobileIparkContainer) {
+                        mobileIparkContainer.style.display = 'block';
+                        mobileIparkContainer.style.visibility = 'visible';
+                        mobileIparkContainer.style.opacity = '1';
+                        console.log('📱 모바일 아이파크 체크박스 표시 강화 완료');
+                    }
+                }
+            }
+            
+            // 강제로 모바일 아이파크 체크박스 생성하는 함수
+            function forceCreateMobileIparkCheckbox() {
+                console.log('📱 forceCreateMobileIparkCheckbox 함수 호출');
+                
+                // mobile-site-info 요소 찾기
+                let mobileSiteInfo = document.getElementById('mobile-site-info');
+                
+                if (!mobileSiteInfo) {
+                    console.error('📱 mobile-site-info 요소를 찾을 수 없음 - 직접 생성');
+                    
+                    // mobile-site-info 요소가 없으면 직접 생성
+                    let mobileCard1 = document.querySelector('.mobile-card-1 .linear-card-body');
+                    
+                    // mobile-card-1이 없으면 mobile-only-cards 컨테이너에 직접 생성
+                    if (!mobileCard1) {
+                        const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+                        if (mobileCardsContainer) {
+                            // mobile-card-1을 직접 생성
+                            const mobileCard1Element = document.createElement('div');
+                            mobileCard1Element.className = 'mobile-card-1';
+                            mobileCard1Element.innerHTML = `
+                                <div class="linear-card">
+                                    <div class="linear-card-header">
+                                        <h3 class="linear-card-title"><i class="bi bi-building"></i> 현장 정보 및 측정값</h3>
+                                    </div>
+                                    <div class="linear-card-body">
+                                        <div id="mobile-site-info"></div>
+                                    </div>
+                                </div>
+                            `;
+                            mobileCardsContainer.insertBefore(mobileCard1Element, mobileCardsContainer.firstChild);
+                            mobileCard1 = mobileCard1Element.querySelector('.linear-card-body');
+                            console.log('📱 mobile-card-1 직접 생성 완료');
+                        } else {
+                            console.error('📱 mobile-only-cards 컨테이너도 찾을 수 없음');
+                            return;
+                        }
+                    }
+                    
+                    if (mobileCard1) {
+                        mobileSiteInfo = document.createElement('div');
+                        mobileSiteInfo.id = 'mobile-site-info';
+                        mobileSiteInfo.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important;';
+                        mobileCard1.insertBefore(mobileSiteInfo, mobileCard1.firstChild);
+                        console.log('📱 mobile-site-info 요소 직접 생성 완료');
+                    } else {
+                        console.error('📱 mobile-card-1 생성 실패');
+                        return;
+                    }
+                }
+                
+                // 기존 아이파크 체크박스 제거
+                const existingIparkCheck = document.getElementById('mobileIparkCheck');
+                if (existingIparkCheck) {
+                    const existingContainer = document.getElementById('mobileIparkCheckContainer');
+                    if (existingContainer) {
+                        existingContainer.remove();
+                        console.log('📱 기존 아이파크 체크박스 제거');
+                    }
+                }
+                
+                // 새로운 아이파크 체크박스 컨테이너 생성
+                const mobileIparkContainer = document.createElement('div');
+                mobileIparkContainer.id = 'mobileIparkCheckContainer';
+                mobileIparkContainer.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    margin-bottom: 15px !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                
+                // PC 버전과 동일한 스타일로 HTML 생성
+                mobileIparkContainer.innerHTML = `
+                    <label id="mobileIparkCheckLabel" for="mobileIparkCheck" style="
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 8px !important;
+                        cursor: pointer !important;
+                        padding: 12px !important;
+                        border: 1px solid #ddd !important;
+                        border-radius: 6px !important;
+                        background: #f8f9fa !important;
+                        transition: all 0.2s ease !important;
+                        margin-bottom: 15px !important;
+                        width: 100% !important;
+                        box-sizing: border-box !important;
+                    ">
+                        <input type="checkbox" id="mobileIparkCheck" name="mobile_ipark_check" value="1" style="
+                            width: 18px !important;
+                            height: 18px !important;
+                            margin: 0 !important;
+                            cursor: pointer !important;
+                        ">
+                        <span style="
+                            font-weight: 500 !important;
+                            color: #333 !important;
+                            font-size: 14px !important;
+                            display: inline !important;
+                            visibility: visible !important;
+                            opacity: 1 !important;
+                        ">
+                            <i class="bi bi-building" style="
+                                color: #007bff !important;
+                                margin-right: 6px !important;
+                                display: inline !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                            "></i> 아이파크 신규 체크
+                        </span>
+                    </label>
+                `;
+                
+                // mobile-site-info 맨 위에 추가
+                mobileSiteInfo.insertBefore(mobileIparkContainer, mobileSiteInfo.firstChild);
+                console.log('📱 강제 아이파크 체크박스 생성 완료');
+                
+                // 모바일용 아이파크 설정 div 생성
+                const mobileIparkSettingsDiv = document.createElement('div');
+                mobileIparkSettingsDiv.id = 'mobileIparkSettingsDiv';
+                mobileIparkSettingsDiv.style.cssText = `
+                    display: none !important;
+                    margin-top: 15px !important;
+                    padding: 20px !important;
+                    border-radius: 8px !important;
+                    background: #f8f9fa !important;
+                    border: 1px solid #ddd !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                `;
+                mobileIparkSettingsDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 16px; color: #333;">
+                            <i class="bi bi-gear-fill" style="margin-right: 8px; color: #007bff;"></i>
+                            아이파크 판넬폭 설정
+                        </h4>
+                        <p style="margin: 0; font-size: 14px; color: #666;">아이파크 신규 설정 시 각 패널의 폭을 조정할 수 있습니다.</p>
+                    </div>
+                    <form>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 150px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">39번 패널폭 (mm)</label>
+                                <input type="number" id="mobileIparkPanel39Width" value="800" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <small style="color: #666; font-size: 12px;">※ 기본값: 800mm</small>
+                            </div>
+                            <div style="flex: 1; min-width: 150px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">6번 패널폭 (mm)</label>
+                                <input type="number" id="mobileIparkPanel6Width" value="1000" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <small style="color: #666; font-size: 12px;">※ 기본값: 1000mm</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button type="button" id="mobileIparkCancelBtn" style="padding: 8px 16px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 4px; cursor: pointer;">취소</button>
+                            <button type="button" id="mobileIparkConfirmBtn" style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer;">설정 완료</button>
+                        </div>
+                    </form>
+                `;
+                
+                // 아이파크 체크박스 컨테이너에 설정 div 추가
+                mobileIparkContainer.appendChild(mobileIparkSettingsDiv);
+                
+                // PC 버전과 동기화
+                setTimeout(() => {
+                    const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                    const pcIparkCheck = document.getElementById('iparkCheck');
+                    
+                    if (mobileIparkCheck && pcIparkCheck) {
+                        // 초기 상태 동기화
+                        mobileIparkCheck.checked = pcIparkCheck.checked;
+                        
+                        // 모바일 → PC 동기화 및 토글 기능 (중복 방지)
+                        if (!mobileIparkCheck.hasAttribute('data-force-listener-added')) {
+                            mobileIparkCheck.addEventListener('change', function() {
+                                console.log('📱 강제 생성된 모바일 아이파크 체크박스 변경:', this.checked);
+                                
+                                // 모바일 아이파크 설정 div 토글
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                if (this.checked) {
+                                    if (mobileSettingsDiv) {
+                                        mobileSettingsDiv.style.display = 'block';
+                                        console.log('📱 모바일 아이파크 설정 div 표시');
+                                    }
+                                } else {
+                                    if (mobileSettingsDiv) {
+                                        mobileSettingsDiv.style.display = 'none';
+                                        console.log('📱 모바일 아이파크 설정 div 숨김');
+                                    }
+                                }
+                                
+                                // PC 버전과 동기화 (중복 방지)
+                                if (!pcIparkCheck.hasAttribute('data-sync-in-progress')) {
+                                    pcIparkCheck.setAttribute('data-sync-in-progress', 'true');
+                                    pcIparkCheck.checked = this.checked;
+                                    
+                                    // PC 버전의 change 이벤트 발생
+                                    const changeEvent = new Event('change', { bubbles: true });
+                                    pcIparkCheck.dispatchEvent(changeEvent);
+                                    
+                                    // 플래그 해제
+                                    setTimeout(() => {
+                                        pcIparkCheck.removeAttribute('data-sync-in-progress');
+                                    }, 100);
+                                }
+                            });
+                            
+                            // 중복 리스너 방지 플래그 설정
+                            mobileIparkCheck.setAttribute('data-force-listener-added', 'true');
+                            console.log('📱 강제 생성된 모바일 아이파크 체크박스 이벤트 리스너 등록 완료 (중복 방지)');
+                        }
+                        
+                        // 모바일 아이파크 설정 버튼 이벤트
+                        const mobileCancelBtn = document.getElementById('mobileIparkCancelBtn');
+                        const mobileConfirmBtn = document.getElementById('mobileIparkConfirmBtn');
+                        
+                        if (mobileCancelBtn) {
+                            mobileCancelBtn.addEventListener('click', function() {
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                if (mobileSettingsDiv) {
+                                    mobileSettingsDiv.style.display = 'none';
+                                    console.log('📱 모바일 아이파크 설정 취소');
+                                }
+                            });
+                        }
+                        
+                        if (mobileConfirmBtn) {
+                            mobileConfirmBtn.addEventListener('click', function() {
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                const mobilePanel39Width = document.getElementById('mobileIparkPanel39Width');
+                                const mobilePanel6Width = document.getElementById('mobileIparkPanel6Width');
+                                
+                                if (mobileSettingsDiv) {
+                                    // 입력값 검증
+                                    const panel39Width = parseInt(mobilePanel39Width?.value) || 800;
+                                    const panel6Width = parseInt(mobilePanel6Width?.value) || 1000;
+                                    
+                                    // localStorage에 저장 (PC 버전과 동일)
+                                    localStorage.setItem('iparkPanel39Width', panel39Width);
+                                    localStorage.setItem('iparkPanel6Width', panel6Width);
+                                    console.log('💾 모바일 localStorage에 저장 완료 (강제 생성)');
+                                    
+                                    // PC 버전과 동일한 자동계산 적용
+                                    if (typeof applyIparkAutoMeasurements === 'function') {
+                                        applyIparkAutoMeasurements(panel39Width, panel6Width);
+                                        console.log('🔄 모바일 자동계산 적용 완료 (강제 생성)');
+                                    } else {
+                                        console.error('❌ applyIparkAutoMeasurements 함수를 찾을 수 없습니다 (강제 생성)');
+                                    }
+                                    
+                                    // 설정 div 숨기기
+                                    mobileSettingsDiv.style.display = 'none';
+                                    
+                                    // 성공 메시지 (모바일용)
+                                    console.log('📱 모바일 아이파크 설정 완료 (강제 생성):', {
+                                        panel39: panel39Width,
+                                        panel6: panel6Width
+                                    });
+                                    
+                                    // 간단한 성공 알림
+                                    if (typeof Swal !== 'undefined') {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '설정 완료',
+                                            text: `아이파크 자동계산이 적용되었습니다.\n(3,9번: ${panel39Width}mm, 6번: ${panel6Width}mm)`,
+                                            timer: 2000,
+                                            showConfirmButton: false,
+                                            toast: true,
+                                            position: 'top-end'
+                                        });
+                                    } else {
+                                        alert(`아이파크 설정 완료!\n3,9번: ${panel39Width}mm, 6번: ${panel6Width}mm`);
+                                    }
+                                }
+                            });
+                        }
+                        
+                        console.log('📱 강제 생성된 아이파크 체크박스 동기화 및 토글 기능 완료');
+                    }
+                }, 100);
+            }
+            
+            
+            // 모바일 아이파크 체크박스와 PC 버전 동기화
+            function syncMobileIparkCheckbox() {
+                console.log('📱 모바일 아이파크 체크박스 동기화 시작');
+                
+                const pcIparkCheck = document.getElementById('iparkCheck');
+                const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                
+                if (!pcIparkCheck || !mobileIparkCheck) {
+                    console.log('📱 PC 또는 모바일 아이파크 체크박스를 찾을 수 없음');
+                    return;
+                }
+                
+                // 초기 상태 동기화
+                mobileIparkCheck.checked = pcIparkCheck.checked;
+                console.log('📱 초기 상태 동기화:', mobileIparkCheck.checked);
+                
+                // PC → 모바일 동기화
+                pcIparkCheck.addEventListener('change', function() {
+                    mobileIparkCheck.checked = this.checked;
+                    console.log('📱 PC → 모바일 동기화:', this.checked);
+                });
+                
+                // 모바일 → PC 동기화
+                mobileIparkCheck.addEventListener('change', function() {
+                    pcIparkCheck.checked = this.checked;
+                    console.log('📱 모바일 → PC 동기화:', this.checked);
+                    
+                    // PC 버전의 change 이벤트 발생시켜서 모든 기능 작동
+                    const changeEvent = new Event('change', { bubbles: true });
+                    pcIparkCheck.dispatchEvent(changeEvent);
+                });
+                
+                console.log('📱 아이파크 체크박스 동기화 완료');
+            }
+            
+            // 🎯 PHASE 3: populateMobileCards 함수 비활성화 (반응형으로 통합됨)
             function populateMobileCards() {
-                if (mobileCardsPopulated) return;
+                console.log('⚠️ DEPRECATED: populateMobileCards - 반응형 통합으로 더 이상 사용되지 않습니다.');
+                return; // 즉시 종료
+                
+                // 플래그와 실제 DOM 상태 모두 체크 (일시적으로 비활성화하여 강제 실행)
+                const shouldSkip = mobileCardsPopulated || isMobileCardAlreadyExists();
+                
+                if (shouldSkip) {
+                    // 아이파크 체크박스가 없으면 강제로 생성
+                    const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                    if (!mobileIparkCheck) {
+                        createMobileIparkCheckbox();
+                    }
+                    return;
+                }
+                
+                // 모바일 카드 컨테이너 존재 확인
+                const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+                if (!mobileCardsContainer) {
+                    console.error('❌ 모바일 카드 컨테이너를 찾을 수 없음');
+                    return;
+                }
                 
                 // 기존 모바일 카드 내용 초기화
-                document.getElementById('mobile-site-info').innerHTML = '';
-                document.getElementById('mobile-dimensions').innerHTML = '';
-                document.getElementById('mobile-panel-visualization').innerHTML = '';
-                document.getElementById('mobile-measurements').innerHTML = '';
-                document.getElementById('mobile-materials').innerHTML = '';
-                document.getElementById('mobile-buttons').innerHTML = '';
+                let mobileSiteInfo = document.getElementById('mobile-site-info');
+                const mobileDimensions = document.getElementById('mobile-dimensions');
+                const mobilePanelViz = document.getElementById('mobile-panel-visualization');
+                const mobileMeasurements = document.getElementById('mobile-measurements');
+                const mobileMaterials = document.getElementById('mobile-materials');
+                const mobileButtons = document.getElementById('mobile-buttons');
                 
-                // 1. 현장정보 섹션만 복사 (타이틀이 없는 첫 번째 섹션)
-                const siteInfoSection = Array.from(document.querySelectorAll('.form-section')).find(section => 
-                    !section.querySelector('.form-section-title')
-                );
-                if (siteInfoSection) {
+                // mobileSiteInfo가 없으면 생성
+                if (!mobileSiteInfo) {
+                    let mobileCard1 = document.querySelector('.mobile-card-1 .linear-card-body');
+                    
+                    // mobile-card-1이 없으면 mobile-only-cards 컨테이너에 직접 생성
+                    if (!mobileCard1) {
+                        const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+                        if (mobileCardsContainer) {
+                            // mobile-card-1을 직접 생성
+                            const mobileCard1Element = document.createElement('div');
+                            mobileCard1Element.className = 'mobile-card-1';
+                            mobileCard1Element.innerHTML = `
+                                <div class="linear-card">
+                                    <div class="linear-card-header">
+                                        <h3 class="linear-card-title"><i class="bi bi-building"></i> 현장 정보 및 측정값</h3>
+                                    </div>
+                                    <div class="linear-card-body">
+                                        <div id="mobile-site-info"></div>
+                                    </div>
+                                </div>
+                            `;
+                            mobileCardsContainer.insertBefore(mobileCard1Element, mobileCardsContainer.firstChild);
+                            mobileCard1 = mobileCard1Element.querySelector('.linear-card-body');
+                        } else {
+                            console.error('❌ mobile-only-cards 컨테이너도 찾을 수 없습니다');
+                            return;
+                        }
+                    }
+                    
+                    if (mobileCard1) {
+                        mobileSiteInfo = document.createElement('div');
+                        mobileSiteInfo.id = 'mobile-site-info';
+                        mobileSiteInfo.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important;';
+                        mobileCard1.insertBefore(mobileSiteInfo, mobileCard1.firstChild);
+                    } else {
+                        console.error('❌ mobile-card-1 생성 실패');
+                        return;
+                    }
+                }
+                
+                if (mobileSiteInfo) mobileSiteInfo.innerHTML = '';
+                if (mobileDimensions) mobileDimensions.innerHTML = '';
+                if (mobilePanelViz) mobilePanelViz.innerHTML = '';
+                if (mobileMeasurements) mobileMeasurements.innerHTML = '';
+                if (mobileMaterials) mobileMaterials.innerHTML = '';
+                if (mobileButtons) mobileButtons.innerHTML = '';
+                
+                // 1. 현장정보 섹션 복사 제거 (이미 모바일 카드에 현장정보가 있으므로)
+                if (false && siteInfoSection && mobileSiteInfo) { // 현장정보 섹션 복사 비활성화
+                    console.log('📱 현장정보 섹션 복사 시작');
                     const siteInfoClone = siteInfoSection.cloneNode(true);
-                    document.getElementById('mobile-site-info').appendChild(siteInfoClone);
+                    
+                    // 모바일 복사본에서 중복 요소들 제거
+                    const iparkCheckInClone = siteInfoClone.querySelector('#iparkCheckContainer');
+                    if (iparkCheckInClone) {
+                        console.log('📱 모바일 복사본에서 아이파크 체크박스 제거');
+                        iparkCheckInClone.remove();
+                    }
+                    
+                    // 중복된 현장명, 측정일, 측정자 필드 제거 (이미 모바일 카드에 있으므로)
+                    const duplicateFields = siteInfoClone.querySelectorAll('input[name="site_name"], input[name="measurement_date"], input[name="measurer"]');
+                    duplicateFields.forEach(field => {
+                        console.log('📱 중복 필드 제거:', field.name);
+                        // 부모 요소(linear-input-group)도 함께 제거
+                        const parentGroup = field.closest('.linear-input-group');
+                        if (parentGroup) {
+                            parentGroup.remove();
+                        } else {
+                            field.remove();
+                        }
+                    });
+                    
+                    // 현장정보 관련 전체 섹션도 제거 (중복 방지)
+                    const siteInfoFields = siteInfoClone.querySelectorAll('input[name="site_name"], input[name="measurement_date"], input[name="measurer"]');
+                    if (siteInfoFields.length === 0) {
+                        console.log('📱 모든 현장정보 필드가 제거됨 - 섹션 자체를 제거');
+                        // 현장정보 섹션이 비어있으면 전체 섹션 제거
+                        const emptySection = siteInfoClone.querySelector('.form-section');
+                        if (emptySection && emptySection.children.length === 0) {
+                            siteInfoClone.remove();
+                            console.log('📱 빈 현장정보 섹션 제거 완료');
+                        }
+                    }
+                    
+                    mobileSiteInfo.appendChild(siteInfoClone);
+                    console.log('📱 현장정보 섹션 복사 완료 (아이파크 체크박스 제외)');
+                    
+                    // 모바일 카드에 아이파크 체크박스 추가 (PC 버전과 동기화)
+                    const mobileIparkContainer = document.createElement('div');
+                    mobileIparkContainer.id = 'mobileIparkCheckContainer';
+                    mobileIparkContainer.style.cssText = 'margin-bottom: var(--linear-spacing-lg);';
+                    
+                    // PC 버전 아이파크 체크박스 복사
+                    const originalIparkContainer = document.getElementById('iparkCheckContainer');
+                    if (originalIparkContainer) {
+                        const mobileIparkClone = originalIparkContainer.cloneNode(true);
+                        
+                        // ID 변경하여 중복 방지
+                        mobileIparkClone.id = 'mobileIparkCheckContainer';
+                        const mobileIparkCheck = mobileIparkClone.querySelector('#iparkCheck');
+                        const mobileIparkLabel = mobileIparkClone.querySelector('#iparkCheckLabel');
+                        
+                        if (mobileIparkCheck) {
+                            mobileIparkCheck.id = 'mobileIparkCheck';
+                            mobileIparkCheck.name = 'mobile_ipark_check';
+                        }
+                        if (mobileIparkLabel) {
+                            mobileIparkLabel.id = 'mobileIparkCheckLabel';
+                            mobileIparkLabel.setAttribute('for', 'mobileIparkCheck');
+                        }
+                        
+                        // mobileIparkContainer가 정의되지 않았으므로 직접 mobileSiteInfo에 추가
+                        if (mobileSiteInfo) {
+                            try {
+                                mobileSiteInfo.insertBefore(mobileIparkClone, mobileSiteInfo.firstChild);
+                                console.log('📱 mobileIparkClone 추가 성공');
+                            } catch (error) {
+                                console.error('📱 mobileIparkClone 추가 실패:', error);
+                                // 대안: appendChild 사용
+                                try {
+                                    mobileSiteInfo.appendChild(mobileIparkClone);
+                                    console.log('📱 mobileIparkClone appendChild로 추가 성공');
+                                } catch (appendError) {
+                                    console.error('📱 mobileIparkClone appendChild도 실패:', appendError);
+                                }
+                            }
+                        } else {
+                            console.error('📱 mobileSiteInfo가 null입니다');
+                        }
+                        
+                        console.log('📱 모바일 아이파크 체크박스 추가 완료');
+                        
+                        // 모바일 아이파크 체크박스와 PC 버전 동기화
+                        setTimeout(() => {
+                            syncMobileIparkCheckbox();
+                            
+                            // 모바일 아이파크 체크박스가 제대로 표시되는지 확인
+                            const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                            const mobileIparkCheckContainer = document.getElementById('mobileIparkCheckContainer');
+                            if (mobileIparkCheck && mobileIparkCheckContainer) {
+                                console.log('📱 모바일 아이파크 체크박스 생성 완료 및 표시');
+                                mobileIparkCheck.style.display = 'block';
+                                mobileIparkCheckContainer.style.display = 'block';
+                            } else {
+                                console.error('📱 모바일 아이파크 체크박스 생성 실패');
+                            }
+                        }, 100);
+                    }
+                } else {
+                    console.log('📱 현장정보 섹션 복사 생략 - 아이파크 체크박스만 추가');
+                    
+                    // 모바일 카드에 아이파크 체크박스와 현장정보 필드들 추가
+                    if (mobileSiteInfo) {
+                        console.log('📱 모바일 카드에 아이파크 체크박스와 현장정보 추가');
+                        
+                        // 1. 아이파크 체크박스 추가
+                        const mobileIparkContainer = document.createElement('div');
+                        mobileIparkContainer.id = 'mobileIparkCheckContainer';
+                        mobileIparkContainer.style.cssText = 'margin-bottom: var(--linear-spacing-lg);';
+                        
+                        // PC 버전 아이파크 체크박스 복사
+                        const originalIparkContainer = document.getElementById('iparkCheckContainer');
+                        
+                        if (originalIparkContainer) {
+                            const mobileIparkClone = originalIparkContainer.cloneNode(true);
+                            
+                            // ID 변경하여 모바일 버전으로 만들기
+                            const mobileIparkCheck = mobileIparkClone.querySelector('#iparkCheck');
+                            if (mobileIparkCheck) {
+                                mobileIparkCheck.id = 'mobileIparkCheck';
+                                mobileIparkCheck.name = 'mobile_ipark_check';
+                            } else {
+                                console.error('❌ 모바일 아이파크 체크박스를 찾을 수 없음');
+                            }
+                            
+                            const mobileIparkLabel = mobileIparkClone.querySelector('#iparkCheckLabel');
+                            if (mobileIparkLabel) {
+                                mobileIparkLabel.id = 'mobileIparkCheckLabel';
+                                mobileIparkLabel.setAttribute('for', 'mobileIparkCheck');
+                            } else {
+                                console.error('❌ 모바일 아이파크 라벨을 찾을 수 없음');
+                            }
+                            
+                            // mobileIparkContainer가 정의되지 않았으므로 직접 mobileSiteInfo에 추가
+                            if (mobileSiteInfo) {
+                                try {
+                                    mobileSiteInfo.appendChild(mobileIparkClone);
+                                    console.log('✅ 모바일 아이파크 체크박스 추가 성공');
+                                } catch (error) {
+                                    console.error('❌ 모바일 아이파크 체크박스 추가 실패:', error);
+                                }
+                            } else {
+                                console.error('❌ mobileSiteInfo가 null입니다');
+                            }
+                        } else {
+                            console.error('❌ PC 아이파크 컨테이너를 찾을 수 없음');
+                            
+                            // PC 아이파크 컨테이너가 없으면 직접 생성
+                            const mobileIparkContainer = document.createElement('div');
+                            mobileIparkContainer.id = 'mobileIparkCheckContainer';
+                            mobileIparkContainer.style.cssText = 'margin-bottom: var(--linear-spacing-lg);';
+                            mobileIparkContainer.innerHTML = `
+                                <div class="linear-input-group">
+                                    <label class="linear-label" for="mobileIparkCheck" id="mobileIparkCheckLabel">
+                                        <input type="checkbox" id="mobileIparkCheck" name="mobile_ipark_check" class="linear-checkbox">
+                                        <span class="linear-checkbox-mark"></span>
+                                        아이파크 신규
+                                    </label>
+                                </div>
+                            `;
+                            if (mobileSiteInfo) {
+                                try {
+                                    mobileSiteInfo.appendChild(mobileIparkContainer);
+                                    console.log('✅ 모바일 아이파크 체크박스 직접 생성 성공');
+                                } catch (error) {
+                                    console.error('❌ 모바일 아이파크 체크박스 직접 생성 실패:', error);
+                                }
+                            } else {
+                                console.error('❌ mobileSiteInfo가 null입니다');
+                            }
+                        }
+                        
+                        // 2. 현장정보 필드들 추가 (현장명, 측정일자, 측정자)
+                        const siteInfoSection = Array.from(document.querySelectorAll('.form-section')).find(section => {
+                            const hasSiteName = section.querySelector('input[name="site_name"]');
+                            const hasMeasurementDate = section.querySelector('input[name="measurement_date"]');
+                            const hasMeasurer = section.querySelector('input[name="measurer"]');
+                            return hasSiteName && hasMeasurementDate && hasMeasurer;
+                        });
+                        
+                        // 🎯 PHASE 2: 현장정보 필드 복사 비활성화 (반응형으로 통합됨)
+                        if (false && siteInfoSection) {
+                            const siteInfoClone = siteInfoSection.cloneNode(true);
+                            
+                            // 아이파크 체크박스는 제거 (이미 추가했으므로)
+                            const iparkCheckInClone = siteInfoClone.querySelector('#iparkCheckContainer');
+                            if (iparkCheckInClone) {
+                                iparkCheckInClone.remove();
+                            }
+                            
+                            if (mobileSiteInfo) {
+                                try {
+                                    mobileSiteInfo.appendChild(siteInfoClone);
+                                    console.log('✅ 현장정보 필드들 복사 완료');
+                                } catch (error) {
+                                    console.error('❌ 현장정보 필드들 복사 실패:', error);
+                                }
+                            }
+                        }
+                        
+                        // 🎯 PHASE 2: W×D×H 섹션 복사 비활성화 (반응형으로 통합됨)
+                        if (false) {
+                            const dimensionsSection = Array.from(document.querySelectorAll('.form-section')).find(section => 
+                                section.querySelector('.form-section-title')?.textContent.includes('카 내부 W x D x H')
+                            );
+                            if (dimensionsSection && mobileSiteInfo) {
+                                try {
+                                    const dimensionsClone = dimensionsSection.cloneNode(true);
+                                    mobileSiteInfo.appendChild(dimensionsClone);
+                                    console.log('✅ W×D×H 섹션 추가 완료');
+                                } catch (error) {
+                                    console.error('❌ W×D×H 섹션 추가 실패:', error);
+                                }
+                            }
+                        }
+                        
+                        // 🎯 PHASE 2: 재질 정보 복사 비활성화 (반응형으로 통합됨)
+                        if (false) {
+                            const materialsSection = Array.from(document.querySelectorAll('.form-section')).find(section => 
+                                section.querySelector('.form-section-title')?.textContent.includes('재질 정보')
+                            );
+                            if (materialsSection && mobileSiteInfo) {
+                                try {
+                                    const materialsClone = materialsSection.cloneNode(true);
+                                    mobileSiteInfo.appendChild(materialsClone);
+                                    console.log('✅ 재질 정보 추가 완료');
+                                } catch (error) {
+                                    console.error('❌ 재질 정보 추가 실패:', error);
+                                }
+                            }
+                        }
+                        
+                        // 모바일 아이파크 체크박스 표시 및 동기화
+                        setTimeout(() => {
+                            const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                            const mobileIparkCheckContainer = document.getElementById('mobileIparkCheckContainer');
+                            
+                            if (mobileIparkCheck && mobileIparkCheckContainer) {
+                                console.log('📱 모바일 아이파크 체크박스 생성 완료');
+                                mobileIparkCheck.style.display = 'block';
+                                mobileIparkCheckContainer.style.display = 'block';
+                                
+                                // PC 버전과 동기화
+                                syncMobileIparkCheckbox();
+                                
+                        // 모바일 아이파크 체크박스에 직접 이벤트 리스너 추가 (중복 방지)
+                        if (!mobileIparkCheck.hasAttribute('data-mobile-listener-added')) {
+                            mobileIparkCheck.addEventListener('change', function() {
+                                console.log('📱 모바일 아이파크 체크박스 변경:', this.checked);
+                                
+                                // 모바일 아이파크 설정 div 토글
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                if (this.checked) {
+                                    if (mobileSettingsDiv) {
+                                        mobileSettingsDiv.style.display = 'block';
+                                        console.log('📱 모바일 아이파크 설정 div 표시');
+                                    }
+                                } else {
+                                    if (mobileSettingsDiv) {
+                                        mobileSettingsDiv.style.display = 'none';
+                                        console.log('📱 모바일 아이파크 설정 div 숨김');
+                                    }
+                                }
+                                
+                                // PC 버전과 동기화 (중복 방지를 위해 플래그 설정)
+                                const pcIparkCheck = document.getElementById('iparkCheck');
+                                if (pcIparkCheck && !pcIparkCheck.hasAttribute('data-sync-in-progress')) {
+                                    pcIparkCheck.setAttribute('data-sync-in-progress', 'true');
+                                    pcIparkCheck.checked = this.checked;
+                                    
+                                    // PC 버전의 change 이벤트 발생시켜서 모든 기능 작동
+                                    const changeEvent = new Event('change', { bubbles: true });
+                                    pcIparkCheck.dispatchEvent(changeEvent);
+                                    
+                                    // 플래그 해제
+                                    setTimeout(() => {
+                                        pcIparkCheck.removeAttribute('data-sync-in-progress');
+                                    }, 100);
+                                }
+                            });
+                            
+                            // 중복 리스너 방지 플래그 설정
+                            mobileIparkCheck.setAttribute('data-mobile-listener-added', 'true');
+                            console.log('📱 모바일 아이파크 체크박스 이벤트 리스너 등록 완료 (중복 방지)');
+                        }
+                        
+                        // 모바일 아이파크 설정 버튼 이벤트 추가
+                        const mobileCancelBtn = document.getElementById('mobileIparkCancelBtn');
+                        const mobileConfirmBtn = document.getElementById('mobileIparkConfirmBtn');
+                        
+                        if (mobileCancelBtn) {
+                            mobileCancelBtn.addEventListener('click', function() {
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                if (mobileSettingsDiv) {
+                                    mobileSettingsDiv.style.display = 'none';
+                                    console.log('📱 모바일 아이파크 설정 취소');
+                                }
+                            });
+                        }
+                        
+                        if (mobileConfirmBtn) {
+                            mobileConfirmBtn.addEventListener('click', function() {
+                                const mobileSettingsDiv = document.getElementById('mobileIparkSettingsDiv');
+                                const mobilePanel39Width = document.getElementById('mobileIparkPanel39Width');
+                                const mobilePanel6Width = document.getElementById('mobileIparkPanel6Width');
+                                
+                                if (mobileSettingsDiv) {
+                                    // 입력값 검증
+                                    const panel39Width = parseInt(mobilePanel39Width?.value) || 800;
+                                    const panel6Width = parseInt(mobilePanel6Width?.value) || 1000;
+                                    
+                                    // localStorage에 저장 (PC 버전과 동일)
+                                    localStorage.setItem('iparkPanel39Width', panel39Width);
+                                    localStorage.setItem('iparkPanel6Width', panel6Width);
+                                    console.log('💾 모바일 localStorage에 저장 완료');
+                                    
+                                    // PC 버전과 동일한 자동계산 적용
+                                    if (typeof applyIparkAutoMeasurements === 'function') {
+                                        applyIparkAutoMeasurements(panel39Width, panel6Width);
+                                        console.log('🔄 모바일 자동계산 적용 완료');
+                                    } else {
+                                        console.error('❌ applyIparkAutoMeasurements 함수를 찾을 수 없습니다');
+                                    }
+                                    
+                                    // 설정 div 숨기기
+                                    mobileSettingsDiv.style.display = 'none';
+                                    
+                                    // 성공 메시지 (모바일용)
+                                    console.log('📱 모바일 아이파크 설정 완료:', {
+                                        panel39: panel39Width,
+                                        panel6: panel6Width
+                                    });
+                                    
+                                    // 간단한 성공 알림
+                                    if (typeof Swal !== 'undefined') {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '설정 완료',
+                                            text: `아이파크 자동계산이 적용되었습니다.\n(3,9번: ${panel39Width}mm, 6번: ${panel6Width}mm)`,
+                                            timer: 2000,
+                                            showConfirmButton: false,
+                                            toast: true,
+                                            position: 'top-end'
+                                        });
+                                    } else {
+                                        alert(`아이파크 설정 완료!\n3,9번: ${panel39Width}mm, 6번: ${panel6Width}mm`);
+                                    }
+                                }
+                            });
+                        }
+                            } else {
+                                console.error('📱 모바일 아이파크 체크박스 생성 실패');
+                            }
+                        }, 100);
+                    }
                 }
                 
-                // 2. W×D×H 섹션만 복사 (form-section-title로 식별)
-                const dimensionsSection = Array.from(document.querySelectorAll('.form-section')).find(section => 
-                    section.querySelector('.form-section-title')?.textContent.includes('카 내부 W x D x H')
-                );
-                if (dimensionsSection) {
-                    const dimensionsClone = dimensionsSection.cloneNode(true);
-                    document.getElementById('mobile-dimensions').appendChild(dimensionsClone);
-                }
-                
-                // 2-1. 재질 정보도 mobile-dimensions에 추가 (W×D×H 밑에)
-                const materialsSection = Array.from(document.querySelectorAll('.form-section')).find(section => 
-                    section.querySelector('.form-section-title')?.textContent.includes('재질 정보')
-                );
-                if (materialsSection) {
-                    const materialsClone = materialsSection.cloneNode(true);
-                    document.getElementById('mobile-dimensions').appendChild(materialsClone);
-                }
+                // 2. W×D×H와 재질 정보는 이미 mobile-site-info에 추가했으므로 여기서는 생략
                 
                 // 3. 판넬 시각화 복사 (전체 카드)
                 const panelVizSection = document.querySelector('.car-wall-section');
                 if (panelVizSection) {
                     const panelVizClone = panelVizSection.cloneNode(true);
-                    document.getElementById('mobile-panel-visualization').appendChild(panelVizClone);
+                    const mobilePanelVizContainer = document.getElementById('mobile-panel-visualization');
+                    if (mobilePanelVizContainer) {
+                        try {
+                            mobilePanelVizContainer.appendChild(panelVizClone);
+                            console.log('✅ 판넬 시각화 섹션 복사 완료');
+                            
+                            // 트랜섬 패널에 기본 'T' 텍스트 초기화
+                            setTimeout(() => {
+                                const mobileTransomPanel = mobilePanelVizContainer.querySelector('.panel-12');
+                                if (mobileTransomPanel && (!window.panelData || !window.panelData['12']) &&
+                                    !mobileTransomPanel.classList.contains('has-info') &&
+                                    mobileTransomPanel.children.length === 0) {
+                                    mobileTransomPanel.textContent = 'T';
+                                    console.log('✅ 모바일 트랜섬 패널 T 초기화 완료');
+                                }
+                            }, 100);
+                        } catch (error) {
+                            console.error('❌ 판넬 시각화 섹션 복사 실패:', error);
+                        }
+                    }
                 }
                 
                 // 4. 측정값 섹션은 제거됨 (JSON으로 대체)
                 
-                // 5. 재질 정보는 이미 mobile-dimensions에 포함됨
-                
-                // 6. 버튼 섹션 복사
+                // 6. 버튼 섹션 복사 - 안전한 처리
                 const buttonsSection = document.querySelector('form > div:last-child');
-                if (buttonsSection) {
-                    const buttonsClone = buttonsSection.cloneNode(true);
-                    document.getElementById('mobile-buttons').appendChild(buttonsClone);
+                const mobileButtonsContainer = document.getElementById('mobile-buttons');
+
+                if (buttonsSection && mobileButtonsContainer) {
+                    try {
+                        const buttonsClone = buttonsSection.cloneNode(true);
+                        mobileButtonsContainer.appendChild(buttonsClone);
+                        console.log('✅ 버튼 섹션 복사 완료');
+                    } catch (error) {
+                        console.error('❌ 버튼 섹션 복사 실패:', error);
+                    }
+                } else {
+                    console.error('❌ 버튼 섹션 또는 mobile-buttons 컨테이너를 찾을 수 없음');
                 }
                 
-                // hidden fields 복사
+                // hidden fields 복사 - 안전한 처리
                 const hiddenFields = document.querySelectorAll('input[type="hidden"]');
-                hiddenFields.forEach(field => {
-                    const hiddenClone = field.cloneNode(true);
-                    document.getElementById('mobile-buttons').appendChild(hiddenClone);
-                });
+                if (hiddenFields.length > 0 && mobileButtonsContainer) {
+                    hiddenFields.forEach(field => {
+                        try {
+                            const hiddenClone = field.cloneNode(true);
+                            mobileButtonsContainer.appendChild(hiddenClone);
+                        } catch (error) {
+                            console.error('❌ hidden field 복사 실패:', error);
+                        }
+                    });
+                    console.log('✅ hidden fields 복사 완료');
+                } else {
+                    console.error('❌ mobile-buttons 컨테이너를 찾을 수 없음 - hidden fields 복사 생략');
+                }
                 
                 // 모바일 카드의 날짜 입력에 간단한 달력 기능 추가
                 setTimeout(() => {
@@ -3657,7 +5182,12 @@ try {
                     }
                 }, 1000); // 더 늘려서 확실히 DOM 로딩 완료 후 실행
                 
+                // PC 버전 요소들 명시적으로 숨기기 (모바일에서)
+                hidePCVersionElements();
+                
+                // 모바일 카드 생성 완료 플래그 설정
                 mobileCardsPopulated = true;
+                console.log('📱 모바일 카드 생성 완료 - mobileCardsPopulated = true');
 
                 // 모바일 입력 필드에 이벤트 리스너 추가 (데이터 수집을 위해)
                 setTimeout(() => {
@@ -3675,18 +5205,146 @@ try {
                 }
             }
             
-            // 모바일에서만 실행
-            if (window.innerWidth <= 768) {
+            // 모바일에서만 실행 (중복 방지)
+            if (window.innerWidth <= 768 && !mobileCardsPopulated) {
+                console.log('📱 초기 모바일 환경 감지 - 카드 생성');
+                console.log('📱 창 크기:', window.innerWidth, 'x', window.innerHeight);
+                
+                // 먼저 PC 버전 요소들 숨기기
+                hidePCVersionElements();
+                
+                // 모바일 카드 강제 표시
+                const mobileCardsContainer = document.querySelector('.mobile-only-cards');
+                if (mobileCardsContainer) {
+                    mobileCardsContainer.style.display = 'block';
+                    console.log('📱 모바일 카드 컨테이너 강제 표시');
+                    
+                    // 모바일 버튼 이벤트 설정
+                    setTimeout(() => {
+                        if (typeof setupMobileButtonEvents === 'function') {
+                            setupMobileButtonEvents();
+                        }
+                    }, 300);
+                }
+                
+                // 강제로 모바일 카드 생성
+                console.log('📱 populateMobileCards 강제 호출');
                 populateMobileCards();
+                
+                // 즉시 아이파크 체크박스 생성 시도
+                setTimeout(() => {
+                    console.log('📱 즉시 아이파크 체크박스 생성 시도');
+                    createMobileIparkCheckbox();
+                }, 100);
+                
+                // 모바일 카드 내부 아이파크 체크박스 강화
+                setTimeout(() => {
+                    console.log('📱 모바일 카드 내부 아이파크 체크박스 강화');
+                    ensureMobileIparkCheckboxInCard();
+                }, 300);
+                
+                // 추가 강제 생성 (1초 후)
+                setTimeout(() => {
+                    console.log('📱 1초 후 추가 아이파크 체크박스 생성');
+                    forceCreateMobileIparkCheckbox();
+                }, 1000);
+                
+                // 모바일 카드 내부에 자연스럽게 통합 (긴급 체크박스 제거)
+                
+                // 모바일 아이파크 체크박스가 생성되었는지 여러 번 확인
+                let retryCount = 0;
+                const maxRetries = 5;
+                
+                const checkMobileIparkCheckbox = () => {
+                    const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                    const mobileIparkCheckContainer = document.getElementById('mobileIparkCheckContainer');
+                    
+                    console.log('📱 모바일 아이파크 체크박스 확인 시도:', retryCount + 1);
+                    console.log('📱 mobileIparkCheck:', mobileIparkCheck);
+                    console.log('📱 mobileIparkCheckContainer:', mobileIparkCheckContainer);
+                    
+                    if (!mobileIparkCheck && retryCount < maxRetries) {
+                        console.warn('📱 모바일 아이파크 체크박스가 생성되지 않음 - 재시도', retryCount + 1);
+                        retryCount++;
+                        
+                        // 강제로 다시 생성
+                        populateMobileCards();
+                        
+                        setTimeout(checkMobileIparkCheckbox, 1000);
+                    } else if (mobileIparkCheck) {
+                        console.log('📱 모바일 아이파크 체크박스 확인 완료');
+                    } else {
+                        console.error('📱 모바일 아이파크 체크박스 생성 최종 실패');
+                    }
+                };
+                
+                // 첫 번째 확인을 500ms 후에 실행
+                setTimeout(checkMobileIparkCheckbox, 500);
+                
+                // 추가 안전장치: 2초 후에 강제로 아이파크 체크박스 생성
+                setTimeout(() => {
+                    const mobileIparkCheck = document.getElementById('mobileIparkCheck');
+                    if (!mobileIparkCheck) {
+                        console.log('📱 2초 후 강제 아이파크 체크박스 생성');
+                        createMobileIparkCheckbox();
+                        
+                        // 모바일 카드 내부에서 재시도
+                        setTimeout(() => {
+                            const mobileIparkCheck2 = document.getElementById('mobileIparkCheck');
+                            if (!mobileIparkCheck2) {
+                                console.log('📱 모바일 카드 내부에서 아이파크 체크박스 재생성');
+                                createMobileIparkCheckbox();
+                            }
+                        }, 1000);
+                    }
+                }, 2000);
+                
+            } else if (window.innerWidth > 768) {
+                console.log('🖥️ 초기 PC 환경 감지 - PC 버전 요소들 표시');
+                
+                // PC 버전 요소들 표시
+                showPCVersionElements();
             }
             
-            // 창 크기 변경 시 처리
+            // 창 크기 변경 시 처리 (디바운싱 적용)
+            let resizeTimeout;
             window.addEventListener('resize', function() {
-                if (window.innerWidth <= 768 && !mobileCardsPopulated) {
-                    populateMobileCards();
-                } else if (window.innerWidth > 768) {
-                    mobileCardsPopulated = false;
-                }
+                console.log('📱 창 크기 변경 감지:', window.innerWidth, 'mobileCardsPopulated:', mobileCardsPopulated);
+                
+                // 디바운싱: 300ms 후에 실행
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    console.log('📱 resize 디바운싱 후 실행:', window.innerWidth);
+                    
+                    if (window.innerWidth <= 768 && !mobileCardsPopulated) {
+                        console.log('📱 모바일 환경으로 변경 - 카드 생성');
+                        
+                        // PC 버전 요소들 숨기기
+                        hidePCVersionElements();
+                        
+                        populateMobileCards();
+                        
+                        // 강제로 아이파크 체크박스 생성
+                        setTimeout(() => {
+                            forceCreateMobileIparkCheckbox();
+                        }, 500);
+                    } else if (window.innerWidth > 768) {
+                        console.log('🖥️ PC 환경으로 변경 - 플래그 리셋');
+                        mobileCardsPopulated = false;
+                        
+                        // PC 버전 요소들 표시
+                        showPCVersionElements();
+                    }
+                    
+                    // 모바일 버튼 이벤트 설정 (모바일 환경에서만)
+                    if (window.innerWidth <= 768) {
+                        setTimeout(() => {
+                            if (typeof setupMobileButtonEvents === 'function') {
+                                setupMobileButtonEvents();
+                            }
+                        }, 500);
+                    }
+                }, 300);
             });
         });
     </script>
@@ -6950,6 +8608,70 @@ try {
                 });
             }
             
+            // 모바일 버튼 이벤트 리스너 등록 함수
+            function setupMobileButtonEvents() {
+                console.log('📱 모바일 버튼 이벤트 리스너 설정 시작');
+                
+                // 측정값 검증 버튼
+                const mobileValidateBtn = document.getElementById('mobileValidateBtn');
+                if (mobileValidateBtn && !mobileValidateBtn.hasAttribute('data-mobile-listener-added')) {
+                    mobileValidateBtn.setAttribute('data-mobile-listener-added', 'true');
+                    mobileValidateBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('📱 모바일 측정값 검증 버튼 클릭');
+                        if (typeof performMeasurementValidation === 'function') {
+                            performMeasurementValidation();
+                        } else {
+                            console.error('❌ performMeasurementValidation 함수를 찾을 수 없습니다');
+                        }
+                    });
+                    console.log('📱 모바일 측정값 검증 버튼 이벤트 등록 완료');
+                }
+                
+                // 측정 저장 버튼
+                const mobileSaveBtn = document.getElementById('mobileSaveBtn');
+                if (mobileSaveBtn && !mobileSaveBtn.hasAttribute('data-mobile-listener-added')) {
+                    mobileSaveBtn.setAttribute('data-mobile-listener-added', 'true');
+                    mobileSaveBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('📱 모바일 측정 저장 버튼 클릭');
+                        
+                        // JSON 필드 업데이트 먼저 수행
+                        if (typeof window.safeUpdateJsonFields === 'function') {
+                            window.safeUpdateJsonFields('모바일 폼 제출 전');
+                        }
+                        
+                        // PC 버전과 동일한 저장 로직 실행
+                        const saveBtn = document.getElementById('saveBtn');
+                        if (saveBtn) {
+                            saveBtn.click(); // PC 버전의 저장 버튼 클릭
+                        } else {
+                            console.error('❌ PC 저장 버튼을 찾을 수 없습니다');
+                        }
+                    });
+                    console.log('📱 모바일 측정 저장 버튼 이벤트 등록 완료');
+                }
+                
+                // 돌아가기 버튼
+                const mobileBackBtn = document.getElementById('mobileBackBtn');
+                if (mobileBackBtn && !mobileBackBtn.hasAttribute('data-mobile-listener-added')) {
+                    mobileBackBtn.setAttribute('data-mobile-listener-added', 'true');
+                    mobileBackBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('📱 모바일 돌아가기 버튼 클릭');
+                        if (typeof handlePageLeaveAttempt === 'function') {
+                            handlePageLeaveAttempt('mobile-back', 'index.php');
+                        } else {
+                            console.error('❌ handlePageLeaveAttempt 함수를 찾을 수 없습니다');
+                            window.location.href = 'index.php';
+                        }
+                    });
+                    console.log('📱 모바일 돌아가기 버튼 이벤트 등록 완료');
+                }
+                
+                console.log('📱 모바일 버튼 이벤트 리스너 설정 완료');
+            }
+
             // Re-attach events when mobile cards are populated
             const originalSyncFunction = window.syncMobilePanels;
             window.syncMobilePanels = function() {
@@ -6957,6 +8679,9 @@ try {
                     originalSyncFunction();
                 }
                 setTimeout(attachPanelEvents, 100);
+                
+                // 모바일 버튼 이벤트 설정
+                setTimeout(setupMobileButtonEvents, 200);
             };
             } catch (e) {
                 console.error('DOMContentLoaded 이벤트 리스너 오류:', e);
@@ -7076,26 +8801,34 @@ try {
                 console.log('Edit mode: Loading basic form data', editData);
 
                 if (editData) {
-                    // 현장명
+                    // 현장명 (PC와 모바일 모두)
                     const siteNameInput = document.getElementById('siteName');
                     if (siteNameInput && editData.site_name) {
                         siteNameInput.value = editData.site_name;
                     }
+                    // 🎯 PHASE 2: 모바일 필드 값 설정 비활성화 (반응형으로 통합됨)
+                    // 더 이상 모바일 전용 필드가 없으므로 이 로직 불필요
+                    if (false) {
+                        const setMobileFieldValues = function() {
+                            console.log('⚠️ DEPRECATED: 모바일 필드 값 설정 로직은 더 이상 사용되지 않습니다.');
+                        };
+                        setMobileFieldValues();
+                    }
 
-                    // 측정일자
+                    // 측정일자 (PC와 모바일 모두)
                     const measurementDateInput = document.getElementById('measurementDate');
                     if (measurementDateInput && editData.measurement_date) {
                         measurementDateInput.value = editData.measurement_date;
                     }
 
-                    // 측정자 (이미 PHP에서 기본값으로 설정되었지만, 확실히 하기 위해 재설정)
+                    // 측정자 (PC와 모바일 모두)
                     const measurerInput = document.getElementById('measurer');
                     if (measurerInput && editData.measurer_name) {
                         measurerInput.value = editData.measurer_name;
                         console.log('Edit mode: Set measurer to', editData.measurer_name);
                     }
 
-                    // 카 내부 치수
+                    // 카 내부 치수 (PC와 모바일 모두)
                     const carWidthInput = document.getElementById('carInsideWidth');
                     if (carWidthInput && editData.car_inside_width) {
                         carWidthInput.value = editData.car_inside_width;
@@ -8375,13 +10108,17 @@ try {
             console.log('📱 User Agent:', navigator.userAgent);
         };
 
-        window.testIparkModal = function() {
-            console.log('📱 === 아이파크 모달 테스트 실행 ===');
+        window.testIparkDiv = function() {
+            console.log('📱 === 아이파크 div 토글 테스트 실행 ===');
             try {
-                showIparkPanelModalDOM();
-                console.log('📱 ✅ showIparkPanelModalDOM 테스트 성공');
+                if (typeof showIparkSettingsDiv === 'function') {
+                    showIparkSettingsDiv();
+                    console.log('📱 ✅ showIparkSettingsDiv 테스트 성공');
+                } else {
+                    console.error('📱 ❌ showIparkSettingsDiv 함수가 정의되지 않음');
+                }
             } catch (error) {
-                console.error('📱 ❌ showIparkPanelModalDOM 테스트 실패:', error);
+                console.error('📱 ❌ showIparkSettingsDiv 테스트 실패:', error);
             }
         };
 
@@ -8587,7 +10324,7 @@ try {
                     customClass: { popup: 'linear-swal-popup' }
                 });
             });
-        }
+        } 
     </script>
 
     <script src="assets/js/panel_measurement.js"></script>
