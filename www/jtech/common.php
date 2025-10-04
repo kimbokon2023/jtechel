@@ -1,4 +1,4 @@
-<?
+<?php
 function gap_time($start_date, $end_date) {
 	
 	// $end_date = strtotime("2021-12-10 23:50:00"); // 끝나는 시간	

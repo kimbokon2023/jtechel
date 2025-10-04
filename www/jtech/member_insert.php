@@ -13,7 +13,7 @@ $level=$_REQUEST["level"];
 $part=$_REQUEST["part"];  
 $part='jtech';  // jtech 강제 파트 지정 (오성은 오성으로 해야 함) 
 			  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
  $pdo = db_connect();
      
  if ($mode=="modify"){      

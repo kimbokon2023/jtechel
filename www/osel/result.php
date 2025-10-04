@@ -11,7 +11,7 @@ if (!isset($_SESSION["level"]) || $_SESSION["level"] > 8) {
 
 // Initialize database connection
 try {
-    $pdo = db_connect();
+    $pdo = db_connect(); 
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec("USE $DB");
 } catch (PDOException $e) {
@@ -27,6 +27,16 @@ $search_date_to = $_GET['search_date_to'] ?? date('Y-m-d');
 $search_measurer = $_GET['search_measurer'] ?? '';
 $selected_measurement = $_GET['measurement_id'] ?? '';
 
+// 디버그: 검색 파라미터를 JavaScript로 출력
+$debug_search_params = [
+    'search_site' => $search_site,
+    'search_date_from' => $search_date_from,
+    'search_date_to' => $search_date_to,
+    'search_measurer' => $search_measurer,
+    'selected_measurement' => $selected_measurement,
+    'all_get_params' => $_GET
+];
+
 // Build search query for measurement selection
 $where_conditions = [];
 $params = [];
@@ -41,21 +51,61 @@ if (!empty($search_date_from)) {
     $params[] = $search_date_from;
 }
 
-if (!empty($search_date_to)) {
-    $where_conditions[] = "measurement_date <= ?";
-    $params[] = $search_date_to;
-}
+    if (!empty($search_date_to)) {
+        $where_conditions[] = "measurement_date < DATE_ADD(?, INTERVAL 1 DAY)";
+        $params[] = $search_date_to;
+    }
 
-if (!empty($search_measurer)) {
-    $where_conditions[] = "measurer_name LIKE ?";
-    $params[] = "%{$search_measurer}%";
+if (!empty($search_measurer) && $search_measurer !== '전체 측정자') {
+    $where_conditions[] = "measurer_name = ?";
+    $params[] = $search_measurer;
 } 
 
 $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
+// 디버그: WHERE 조건을 JavaScript로 출력
+$debug_where_conditions = [
+    'where_conditions' => $where_conditions,
+    'where_clause' => $where_clause,
+    'params' => $params
+];
+
+// 디버깅: 검색 조건에 맞는 모든 레코드 확인
+$debug_all_records_stmt = $pdo->prepare("SELECT id, site_name, measurement_date, created_at FROM panel_measurements " . $where_clause . " ORDER BY created_at DESC");
+$debug_all_records_stmt->execute($params);
+$debug_all_records = $debug_all_records_stmt->fetchAll();
+error_log("DEBUG: 검색 조건에 맞는 모든 레코드 수: " . count($debug_all_records));
+foreach ($debug_all_records as $record) {
+    error_log("  - ID: {$record['id']}, 현장: {$record['site_name']}, 날짜: {$record['measurement_date']}, 생성: {$record['created_at']}");
+}
+
 try {
     // First check if table exists
     $table_check = $pdo->query("SHOW TABLES LIKE 'panel_measurements'");
+    
+    // 디버그: 전체 테이블 레코드 수 확인
+    $debug_table_info = [];
+    if ($table_check->rowCount() > 0) {
+        $total_count_stmt = $pdo->query("SELECT COUNT(*) as total FROM panel_measurements");
+        $total_count = $total_count_stmt->fetch()['total'];
+        $debug_table_info['total_count'] = $total_count;
+        
+        // 최근 10개 레코드 정보 확인
+        $recent_stmt = $pdo->query("SELECT id, site_name, measurement_date, measurer_name, created_at FROM panel_measurements ORDER BY measurement_date DESC LIMIT 10");
+        $recent_records = $recent_stmt->fetchAll();
+        $debug_table_info['recent_records'] = $recent_records;
+        
+        // ID별 중복 확인
+        $duplicate_check_stmt = $pdo->query("SELECT id, COUNT(*) as count FROM panel_measurements GROUP BY id HAVING COUNT(*) > 1");
+        $duplicate_ids = $duplicate_check_stmt->fetchAll();
+        $debug_table_info['duplicate_ids'] = $duplicate_ids;
+        
+        // 검색 조건에 맞는 모든 ID 확인
+        $all_ids_stmt = $pdo->prepare("SELECT id, site_name, measurement_date, created_at FROM panel_measurements $where_clause ORDER BY measurement_date DESC, created_at DESC");
+        $all_ids_stmt->execute($params);
+        $all_ids_records = $all_ids_stmt->fetchAll();
+        $debug_table_info['all_ids_records'] = $all_ids_records;
+    }
 
     if ($table_check->rowCount() == 0) {
         $measurements = [];
@@ -63,31 +113,10 @@ try {
         error_log("Table 'panel_measurements' does not exist");
     } else {
         error_log("Table 'panel_measurements' exists, proceeding to load data");
-        // Check if this is a group export request
-$group_export = $_GET['group_export'] ?? null;
-if ($group_export) {
-    // Get measurements from the specified group
-    $group_query = "
-        SELECT pm.id, pm.site_name, pm.measurement_date, pm.measurer_name,
-               pm.car_inside_width, pm.car_inside_depth, pm.car_inside_height,
-               pm.material_type, pm.material_thickness, pm.project_type,
-               pm.panel_corners_excluded, pm.transom_excluded,
-               pm.molding_included, pm.production_height, pm.production_height1_11,
-               pm.panel_data, pm.transom_data, pm.notes, pm.created_at, pm.updated_at,
-               COALESCE(pm.elevator_count, 1) as elevator_count
-        FROM panel_measurements pm
-        INNER JOIN site_group_members sgm ON pm.id = sgm.measurement_id
-        WHERE sgm.group_id = ? AND sgm.is_deleted = 0
-        ORDER BY pm.measurement_date DESC, pm.created_at DESC
-    ";
-    
-    $group_stmt = $pdo->prepare($group_query);
-    $group_stmt->execute([$group_export]);
-    $measurements = $group_stmt->fetchAll();
-    
-    error_log("Group export requested for group_id: $group_export, found " . count($measurements) . " measurements");
-} else {
-    // Get measurement list for selection (normal case)
+        // Always use normal search mode (ignore group_export)
+        $group_export = null; // Always null to disable group export
+        
+        // Get measurement list for selection (normal case)
     $query = "
         SELECT id, site_name, measurement_date, measurer_name,
                car_inside_width, car_inside_depth, car_inside_height,
@@ -95,19 +124,75 @@ if ($group_export) {
                panel_corners_excluded, transom_excluded,
                molding_included, production_height, production_height1_11,
                panel_data, transom_data, notes, created_at, updated_at,
-               COALESCE(elevator_count, 1) as elevator_count
+               elevator_count
         FROM panel_measurements
         $where_clause
-        ORDER BY measurement_date DESC, created_at DESC
     ";
 
+    // 디버그: 쿼리와 파라미터를 JavaScript로 출력
+    $debug_query_info = [
+        'query' => $query,
+        'where_clause' => $where_clause,
+        'params' => $params
+    ];
+    
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $measurements = $stmt->fetchAll();
+    
+    // elevator_count가 NULL인 경우 기본값 1 설정
+    foreach ($measurements as $index => $measurement) {
+        if (is_null($measurement['elevator_count'])) {
+            $measurements[$index]['elevator_count'] = 1;
+        }
+    }    
+    
+    // ID 기준으로 중복 제거 (올바른 구현)
+    $unique_measurements = [];
+    $seen_ids = [];
+
+    foreach ($measurements as $index => $measurement) {
+        
+        $id = $measurement['id'];
+        if (!isset($seen_ids[$id])) {
+            $unique_measurements[] = $measurement;
+            $seen_ids[$id] = true;
+            error_log("DEBUG: 유지된 측정 데이터 - ID: $id, 현장: {$measurement['site_name']}");            
+        } else {
+            error_log("DEBUG: 중복 제거됨 - ID: $id, 현장: {$measurement['site_name']}");
+        }
+    }
+    
+    error_log("DEBUG: 중복 제거 후 개수: " . count($unique_measurements));
+    // 중복 제거된 배열로 교체
+    $measurements = $unique_measurements;
+    
+    $debug_deduplication = [
+        'duplicate_ids' => [],
+        'duplicate_details' => [],
+        'final_count' => count($measurements),
+        'final_measurements' => array_map(function($m) {
+            return [
+                'id' => $m['id'],
+                'site_name' => $m['site_name'],
+                'measurement_date' => $m['measurement_date'],
+                'created_at' => $m['created_at']
+            ];
+        }, $measurements)
+    ];
 }
 
         // 디버깅: 측정 데이터 개수 확인
         error_log("Found " . count($measurements) . " measurements with current search criteria");
+        error_log("DEBUG: 측정 데이터 상세 정보:");
+        foreach ($measurements as $idx => $measurement) {
+            error_log("  [$idx] ID: {$measurement['id']}, 현장: {$measurement['site_name']}, 날짜: {$measurement['measurement_date']}, 생성: {$measurement['created_at']}");
+        }
+        
+        // 중복 제거 전후 비교
+        error_log("DEBUG: 중복 제거 전 개수: " . count($measurements));
+        error_log("DEBUG: 중복 제거 후 개수: " . count($measurements));
+        
         if (empty($measurements)) {
             error_log("Search parameters: site='" . $search_site . "', date_from='" . $search_date_from . "', date_to='" . $search_date_to . "', measurer='" . $search_measurer . "'");
 
@@ -119,19 +204,39 @@ if ($group_export) {
             // 검색 조건으로 데이터가 없으면 최근 10개 데이터라도 보여주기
             if ($total_count > 0) {
                 $fallback_stmt = $pdo->prepare("
-                    SELECT id, site_name, measurement_date, measurer_name,
+                    SELECT DISTINCT id, site_name, measurement_date, measurer_name,
                            car_inside_width, car_inside_depth, car_inside_height,
                            material_type, material_thickness, project_type,
                            panel_corners_excluded, transom_excluded,
                            molding_included, production_height, production_height1_11,
                            panel_data, transom_data, notes, created_at, updated_at,
-                           COALESCE(elevator_count, 1) as elevator_count
+                           elevator_count
                     FROM panel_measurements
-                    ORDER BY measurement_date DESC, created_at DESC
+                    ORDER BY measurement_date DESC
                     LIMIT 10
                 ");
                 $fallback_stmt->execute();
                 $measurements = $fallback_stmt->fetchAll();
+                
+                // elevator_count가 NULL인 경우 기본값 1 설정
+                foreach ($measurements as &$measurement) {
+                    if (is_null($measurement['elevator_count'])) {
+                        $measurement['elevator_count'] = 1;
+                    }
+                }
+                
+                // ID 기준으로 중복 제거 (fallback 쿼리용)
+                $unique_measurements = [];
+                $seen_ids = [];
+                foreach ($measurements as $measurement) {
+                    $id = $measurement['id'];
+                    if (!isset($seen_ids[$id])) {
+                        $unique_measurements[] = $measurement;
+                        $seen_ids[$id] = true;
+                    }
+                }
+                $measurements = $unique_measurements;
+                
                 error_log("Fallback: showing latest 10 measurements instead");
             }
         }
@@ -146,12 +251,17 @@ if ($group_export) {
                        panel_corners_excluded, transom_excluded,
                        molding_included, production_height, production_height1_11,
                        panel_data, make_panel_data, transom_data, notes, created_at, updated_at,
-                       COALESCE(elevator_count, 1) as elevator_count
+                       elevator_count
                 FROM panel_measurements
                 WHERE id = ?
             ");
             $selected_stmt->execute([$selected_measurement]);
             $selected_data = $selected_stmt->fetch();
+            
+            // elevator_count가 NULL인 경우 기본값 1 설정
+            if ($selected_data && is_null($selected_data['elevator_count'])) {
+                $selected_data['elevator_count'] = 1;
+            }
 
             // 디버깅: 선택된 데이터 확인
             if ($selected_data) {
@@ -160,7 +270,6 @@ if ($group_export) {
                 error_log("No data found for measurement_id: " . $selected_measurement);
             }
         }
-    }
 
     // Get unique measurers for filter
     if ($table_check && $table_check->rowCount() > 0) {
@@ -195,6 +304,14 @@ if ($selected_data) {
 
     if (!empty($selected_data['transom_data'])) {
         $transom_data = json_decode($selected_data['transom_data'], true) ?? [];
+        error_log("DEBUG: transom_data loaded from database: " . json_encode($transom_data));
+        error_log("DEBUG: transom_data type: " . gettype($transom_data));
+        error_log("DEBUG: transom_data count: " . (is_array($transom_data) ? count($transom_data) : 'not array'));
+    } else {
+        error_log("DEBUG: transom_data is empty in database");
+        error_log("DEBUG: selected_data keys: " . implode(', ', array_keys($selected_data)));
+        error_log("DEBUG: selected_data transom_data value: " . var_export($selected_data['transom_data'], true));
+        $transom_data = [];
     }
 
     // Calculate production results
@@ -261,6 +378,34 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             $materials[$material] = 0;
         }
         $materials[$material]++;
+        error_log("DEBUG: Transom 재질 추가됨 - " . $material . " (총 " . $materials[$material] . "개)");
+    } else {
+        // transom_info가 비어있어도 transom_data나 panel_data['12']에서 직접 확인
+        $transom_material = null;
+        
+        // transom_data에서 확인
+        if (!empty($transom_data)) {
+            if (isset($transom_data['12']['materialType'])) {
+                $transom_material = $transom_data['12']['materialType'];
+            } elseif (isset($transom_data['transom']['materialType'])) {
+                $transom_material = $transom_data['transom']['materialType'];
+            }
+        }
+        
+        // panel_data['12']에서 확인
+        if (!$transom_material && isset($panel_data['12']['materialType'])) {
+            $transom_material = $panel_data['12']['materialType'];
+        }
+        
+        if ($transom_material) {
+            if (!isset($materials[$transom_material])) {
+                $materials[$transom_material] = 0;
+            }
+            $materials[$transom_material]++;
+            error_log("DEBUG: Transom 재질 직접 추가됨 - " . $transom_material . " (총 " . $materials[$transom_material] . "개)");
+        } else {
+            error_log("DEBUG: Transom 정보가 비어있음 - transom_data: " . json_encode($transom_data) . ", panel_data['12']: " . json_encode($panel_data['12'] ?? null));
+        }
     }
     $results['material_summary'] = $materials;
 
@@ -1138,7 +1283,28 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border: 1px solid var(--linear-border-secondary);
         }
 
+        .material-item.has-transom {
+            border-color: var(--linear-accent-border, #0ea5e9);
+        }
+
+        .transom-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--linear-accent-bg, #0ea5e9);
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            border: 2px solid var(--linear-bg-primary);
+        }
+
         .material-icon {
+            position: relative;
             flex-shrink: 0;
             width: 40px;
             height: 40px;
@@ -1161,6 +1327,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             color: var(--linear-text-primary);
             margin: 0 0 var(--linear-spacing-xs) 0;
         }
+
+        .transom-count {
+            color: var(--linear-accent-text, #0369a1);
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
 
         .material-count {
             font-size: var(--linear-text-small);
@@ -1262,6 +1435,16 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: var(--linear-radius-sm);
         }
 
+        .dimension-item.transom-item {
+            border: 1px solid var(--linear-accent-border, #0ea5e9);
+            background: var(--linear-accent-bg, #f0f9ff);
+        }
+
+        .dimension-item.transom-item .panel-number {
+            color: var(--linear-accent-text, #0369a1);
+            font-weight: bold;
+        }
+
         .panel-number {
             font-weight: var(--linear-font-weight-semibold);
             color: var(--linear-brand-primary);
@@ -1332,6 +1515,40 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border: 1px solid var(--linear-border-secondary);
             border-radius: var(--linear-radius-md);
             padding: var(--linear-spacing-lg);
+        }
+
+        .corner-panel-item.transom-panel-item {
+            border-color: var(--linear-accent-border, #0ea5e9);
+            background: var(--linear-bg-secondary);
+            position: relative;
+        }
+
+        .corner-panel-item.transom-panel-item > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .corner-panel-item.transom-panel-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(14, 165, 233, 0.08) 0%, 
+                rgba(14, 165, 233, 0.02) 100%);
+            border-radius: var(--linear-radius-md);
+            pointer-events: none;
+        }
+
+        .corner-panel-item.transom-panel-item .panel-number {
+            color: var(--linear-accent-text, #0369a1);
+            font-weight: bold;
+        }
+
+        .corner-panel-item.transom-panel-item .corner-icon {
+            color: var(--linear-accent-text, #0369a1);
         }
 
         .corner-panel-header {
@@ -2509,6 +2726,62 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             }
         }
     </style>
+    
+    <!-- 개선된 디버그 정보를 JavaScript 콘솔에 출력 -->
+    <script>
+        // 디버그 모드 확인 (개발 환경에서만 활성화)
+        const DEBUG_MODE = <?= json_encode(isset($_GET['debug']) && $_GET['debug'] === '1') ?>;
+        
+        if (DEBUG_MODE) {
+            console.group('🔍 검색 디버그 정보');
+            
+            console.group('📋 검색 파라미터');
+            console.log('현장명:', <?= json_encode($debug_search_params['search_site']) ?>);
+            console.log('시작일:', <?= json_encode($debug_search_params['search_date_from']) ?>);
+            console.log('종료일:', <?= json_encode($debug_search_params['search_date_to']) ?>);
+            console.log('측정자:', <?= json_encode($debug_search_params['search_measurer']) ?>);
+            console.log('선택된 측정:', <?= json_encode($debug_search_params['selected_measurement']) ?>);
+            console.groupEnd();
+            
+            console.group('🔧 쿼리 정보');
+            console.log('WHERE 조건:', <?= json_encode($debug_where_conditions['where_conditions']) ?>);
+            console.log('WHERE 절:', <?= json_encode($debug_where_conditions['where_clause']) ?>);
+            console.log('파라미터:', <?= json_encode($debug_where_conditions['params']) ?>);
+            console.groupEnd();
+            
+            console.group('📊 결과 정보');
+            console.log('총 측정 데이터 수:', <?= json_encode($debug_table_info['total_count'] ?? 'N/A') ?>);
+            console.log('검색 결과 수:', <?= count($measurements) ?>);
+            console.log('중복 ID 수:', <?= json_encode($debug_table_info['duplicate_ids'] ?? []) ?>);
+            console.groupEnd();
+            
+            console.group('📝 측정 데이터 목록');
+            <?php foreach ($measurements as $idx => $measurement): ?>
+            console.log(`[${<?= $idx ?>}] ID: ${<?= json_encode($measurement['id']) ?>}, 현장: ${<?= json_encode($measurement['site_name']) ?>}, 날짜: ${<?= json_encode($measurement['measurement_date']) ?>}, 생성: ${<?= json_encode($measurement['created_at']) ?>}`);
+            <?php endforeach; ?>
+            console.groupEnd();
+            
+            console.group('🔍 중복 제거 정보');
+            console.log('중복 제거된 ID들:', <?= json_encode($debug_deduplication['duplicate_ids']) ?>);
+            console.log('중복 상세 정보:', <?= json_encode($debug_deduplication['duplicate_details']) ?>);
+            console.log('최종 측정 데이터 수:', <?= json_encode($debug_deduplication['final_count']) ?>);
+            console.groupEnd();
+            
+            console.groupEnd();
+        } else {
+            // 간단한 검색 정보만 표시
+            console.log('🔍 검색 결과:', <?= count($measurements) ?> + '건의 측정 데이터를 찾았습니다.');
+            <?php if (count($measurements) > 0): ?>
+            console.log('📅 최근 데이터:', <?= json_encode($measurements[0]['site_name']) ?> + ' (' + <?= json_encode($measurements[0]['measurement_date']) ?> + ')');
+            <?php endif; ?>
+        }
+        
+        // 검색 성능 모니터링
+        if (typeof performance !== 'undefined') {
+            const searchTime = performance.now();
+            console.log('⚡ 검색 완료 시간:', Math.round(searchTime) + 'ms');
+        }
+    </script>
 </head>
 <body>
     <?php
@@ -2608,7 +2881,14 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <div class="section-header measurement-toggle" id="measurementToggle" style="cursor: pointer; user-select: none;">
                 <i class="bi bi-list-check"></i>
                 <h3>측정 데이터 선택 (총 <?= count($measurements) ?>건)</h3>
-                <i class="bi bi-chevron-up toggle-icon" id="measurementToggleIcon" style="margin-left: auto; transition: transform 0.3s ease;"></i>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                    <?php if (count($measurements) > 0): ?>
+                        <span style="font-size: 0.9rem; color: var(--linear-text-secondary);">
+                            최근 업데이트: <?= date('Y-m-d H:i', strtotime($measurements[0]['updated_at'])) ?>
+                        </span>
+                    <?php endif; ?>
+                    <i class="bi bi-chevron-up toggle-icon" id="measurementToggleIcon" style="transition: transform 0.3s ease;"></i>
+                </div>
             </div>
 
             <!-- 선택된 측정 데이터 표시 영역 -->
@@ -2627,6 +2907,10 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                 | <?= htmlspecialchars($selected_data['project_type']) ?>
                                 <?php endif; ?>
                             </div>
+                            <div style="font-size: 0.8rem; color: var(--linear-text-tertiary); margin-top: 2px;">
+                                ID: <?= $selected_data['id'] ?> | 
+                                등록: <?= date('m-d H:i', strtotime($selected_data['created_at'])) ?>
+                            </div>
                         </div>
                         <div style="color: var(--linear-text-secondary); font-size: 0.9rem;">
                             클릭하여 다른 데이터 선택
@@ -2639,7 +2923,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <?php if (!empty($measurements)): ?>
 
                 <div class="measurement-list" id="measurementList">
-                    <?php foreach ($measurements as $measurement):
+                    <?php 
+                    error_log("DEBUG: 화면 표시 시작 - 총 측정 데이터 개수: " . count($measurements));
+                    $display_count = 0;
+                    foreach ($measurements as $index => $measurement):
+                        $display_count++;
+                        error_log("DEBUG: 화면 표시 [$index] - ID: {$measurement['id']}, 현장: {$measurement['site_name']}, 표시 순서: $display_count");
+                        
                         // Parse JSON data to count panels
                         $panel_count = 0;
                         $transom_count = 0;
@@ -2648,7 +2938,12 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                             $panel_data_temp = json_decode($measurement['panel_data'], true);
                             if ($panel_data_temp && is_array($panel_data_temp)) {
                                 $panel_count = count($panel_data_temp);
+                                error_log("DEBUG: 패널 데이터 파싱 성공 - ID: {$measurement['id']}, 패널 수: $panel_count");
+                            } else {
+                                error_log("DEBUG: 패널 데이터 파싱 실패 - ID: {$measurement['id']}, 원본 데이터: " . substr($measurement['panel_data'], 0, 100));
                             }
+                        } else {
+                            error_log("DEBUG: 패널 데이터 없음 - ID: {$measurement['id']}");
                         }
 
                         if (!empty($measurement['transom_data'])) {
@@ -2673,6 +2968,10 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                             측정일: <?= $measurement['measurement_date'] ?> |
                                             패널: <?= $total_panels ?>개
                                         </small>
+                                        <small style="display: block; color: var(--linear-text-tertiary); font-size: 0.75rem; margin-top: 1px;">
+                                            ID: <?= $measurement['id'] ?> | 
+                                            등록: <?= date('m-d H:i', strtotime($measurement['created_at'])) ?>
+                                        </small>
                                     </div>
                                     <div style="text-align: right;">
                                         <span style="font-family: monospace; font-size: 0.8rem; color: var(--linear-text-tertiary);">
@@ -2683,11 +2982,27 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                             </div>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                    <?php 
+                    error_log("DEBUG: 측정 데이터 표시 완료 - ID: {$measurement['id']}, 현장: {$measurement['site_name']}");
+                    endforeach; 
+                    error_log("DEBUG: 화면 표시 완료 - 총 표시된 데이터 개수: $display_count");
+                    ?>
                 </div>
             <?php else: ?>
                 <div class="no-data">
-                    <p>검색 조건에 맞는 측정 데이터가 없습니다.</p>
+                    <div style="text-align: center; padding: 40px 20px; color: var(--linear-text-secondary);">
+                        <i class="bi bi-search" style="font-size: 3rem; color: var(--linear-text-tertiary); margin-bottom: 20px; display: block;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--linear-text-primary);">검색 결과가 없습니다</h3>
+                        <p style="margin-bottom: 20px;">검색 조건에 맞는 측정 데이터가 없습니다.</p>
+                        <div style="font-size: 0.9rem; color: var(--linear-text-tertiary);">
+                            <p>다음과 같은 방법을 시도해보세요:</p>
+                            <ul style="text-align: left; display: inline-block; margin-top: 10px;">
+                                <li>검색 조건을 변경해보세요</li>
+                                <li>날짜 범위를 넓혀보세요</li>
+                                <li>현장명을 부분적으로 입력해보세요</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -2836,13 +3151,19 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     </div>
 
                     <!-- 저장 버튼 -->
-                    <div class="production-actions">
+                    <div class="production-actions" style="display: flex; gap: var(--linear-spacing-sm);">
                         <?php
                         require_once '../components/LinearButton.php';
                         echo LinearButton::primary('<i class="bi bi-save"></i> 설정 적용')
                             ->addAttribute('type', 'button')
                             ->addAttribute('onclick', 'applyProductionSettings()')
-                            ->addAttribute('style', 'width: 100%;');
+                            ->addAttribute('style', 'flex: 1;');
+                        ?>
+                        <?php
+                        echo LinearButton::secondary('<i class="bi bi-file-earmark-excel"></i> 엑셀 내보내기')
+                            ->addAttribute('type', 'button')
+                            ->addAttribute('onclick', 'exportToExcel()')
+                            ->addAttribute('style', 'flex: 1;');
                         ?>
                     </div>
                 </form>
@@ -3151,13 +3472,70 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         <?php if (!empty($production_results['material_summary'])): ?>
                             <div class="material-grid">
                                 <?php foreach ($production_results['material_summary'] as $material => $count): ?>
-                                <div class="material-item">
+                                <?php
+                                // 재질명이 비어있는 경우 처리
+                                $display_material = !empty($material) ? $material : '미지정';
+                                
+                                // Transom 정보 확인 - 여러 소스에서 확인
+                                $has_transom = false;
+                                
+                                // 1. transom_details에서 확인
+                                if (!empty($production_results['transom_details']) && 
+                                    ($production_results['transom_details']['material_type'] ?? '') === $material) {
+                                    $has_transom = true;
+                                }
+                                
+                                // 2. transom_data에서 직접 확인
+                                if (!$has_transom && !empty($transom_data)) {
+                                    $transom_material = null;
+                                    if (isset($transom_data['12']['materialType'])) {
+                                        $transom_material = $transom_data['12']['materialType'];
+                                    } elseif (isset($transom_data['transom']['materialType'])) {
+                                        $transom_material = $transom_data['transom']['materialType'];
+                                    }
+                                    if ($transom_material === $material) {
+                                        $has_transom = true;
+                                    }
+                                }
+                                
+                                // 3. panel_data['12']에서 확인
+                                if (!$has_transom && isset($panel_data['12']['materialType']) && 
+                                    $panel_data['12']['materialType'] === $material) {
+                                    $has_transom = true;
+                                }
+                                
+                                // 4. transom_data 존재 여부로 확인 (재질이 매치되지 않더라도 transom이 있으면 표시)
+                                if (!$has_transom && !empty($transom_data)) {
+                                    $has_transom = true;
+                                }
+                                $transom_count = 0;
+                                if ($has_transom) {
+                                    $transom_count = 1;
+                                    $panel_count = $count - 1; // transom 1개 제외
+                                } else {
+                                    $panel_count = $count;
+                                }
+                                
+                                // 디버깅을 위한 로그
+                                error_log("DEBUG: 재질별 패널 구성 - 재질: '$display_material', 총 개수: $count, 패널 개수: $panel_count, Transom 포함: " . ($has_transom ? 'Yes' : 'No'));
+                                ?>
+                                <div class="material-item <?= $has_transom ? 'has-transom' : '' ?>">
                                     <div class="material-icon">
                                         <i class="bi bi-pentagon"></i>
+                                        <?php if ($has_transom): ?>
+                                        <div class="transom-indicator" title="Transom 포함">
+                                            <i class="bi bi-triangle"></i>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="material-info">
-                                        <h5><?= htmlspecialchars($material) ?></h5>
-                                        <span class="material-count"><?= $count ?>개 패널</span>
+                                        <h5><?= htmlspecialchars($display_material) ?></h5>
+                                        <span class="material-count">
+                                            <?= $panel_count ?>개 패널
+                                            <?php if ($has_transom): ?>
+                                            <span class="transom-count">+ T 1개</span>
+                                            <?php endif; ?>
+                                        </span>
                                         <div class="material-percentage">
                                             <?php
                                             $percentage = round(($count / $production_results['total_panels']) * 100, 1);
@@ -3228,6 +3606,85 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
+                                
+                                <!-- Transom 정보 추가 -->
+                                <?php if (!empty($production_results['transom_details']) || !empty($transom_data)): ?>
+                                <?php
+                                // transom_details가 없으면 transom_data에서 직접 가져오기
+                                if (!empty($production_results['transom_details'])) {
+                                    $transom_details = $production_results['transom_details'];
+                                } else {
+                                    // transom_data에서 직접 정보 구성 (transom 전용 필드 매핑)
+                                    $transom_details = [];
+                                    if (!empty($transom_data)) {
+                                        if (isset($transom_data['12'])) {
+                                            $raw_data = $transom_data['12'];
+                                        } elseif (isset($transom_data['transom'])) {
+                                            $raw_data = $transom_data['transom'];
+                                        }
+                                        
+                                        if (isset($raw_data)) {
+                                            // transom 전용 필드 매핑
+                                            $transom_details = [
+                                                'width' => $raw_data['width'] ?? null,
+                                                'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                                'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                                'wing_value' => $raw_data['wingValue'] ?? null,
+                                                'material_type' => $raw_data['materialType'] ?? null,
+                                                'thickness' => $raw_data['thickness'] ?? null,
+                                                'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                                'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                                'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                                'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                                'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                                'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                                'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                                'notes' => $raw_data['notes'] ?? null
+                                            ];
+                                        }
+                                    } elseif (isset($panel_data['12'])) {
+                                        $raw_data = $panel_data['12'];
+                                        // transom 전용 필드 매핑
+                                        $transom_details = [
+                                            'width' => $raw_data['width'] ?? null,
+                                            'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                            'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                            'wing_value' => $raw_data['wingValue'] ?? null,
+                                            'material_type' => $raw_data['materialType'] ?? null,
+                                            'thickness' => $raw_data['thickness'] ?? null,
+                                            'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                            'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                            'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                            'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                            'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                            'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                            'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                            'notes' => $raw_data['notes'] ?? null
+                                        ];
+                                    }
+                                }
+                                $elevator_count = isset($selected_data['elevator_count']) ? intval($selected_data['elevator_count']) : 1;
+                                ?>
+                                <div class="dimension-item transom-item">
+                                    <div class="panel-number">Transom</div>
+                                    <div class="dimension-specs">
+                                        <span class="dimension-size">
+                                            <?php if ($transom_details['width']): ?>
+                                                <?= number_format($transom_details['width']) ?>mm (가로)
+                                                <?php if ($transom_details['plate_height']): ?>
+                                                    × <?= number_format($transom_details['plate_height']) ?>mm (막판높이)
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <span style="color: var(--linear-text-tertiary);">치수 미지정</span>
+                                            <?php endif; ?>
+                                        </span>
+                                    </div>
+                                    <div class="quantity-info">
+                                        <span class="quantity-label-item">수량/대수</span>
+                                        <span class="quantity-value-item"><?= $elevator_count ?></span>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <?php endif; ?>
@@ -3294,13 +3751,145 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                 </div>
                             </div>
                             <?php endforeach; ?>
+                            
+                            <!-- Transom 정보 추가 -->
+                            <?php if (!empty($production_results['transom_details']) || !empty($transom_data)): ?>
+                            <?php
+                            // transom_details가 없으면 transom_data에서 직접 가져오기
+                            if (!empty($production_results['transom_details'])) {
+                                $transom_details = $production_results['transom_details'];
+                            } else {
+                                // transom_data에서 직접 정보 구성 (transom 전용 필드 매핑)
+                                $transom_details = [];
+                                if (!empty($transom_data)) {
+                                    if (isset($transom_data['12'])) {
+                                        $raw_data = $transom_data['12'];
+                                    } elseif (isset($transom_data['transom'])) {
+                                        $raw_data = $transom_data['transom'];
+                                    }
+                                    
+                                    if (isset($raw_data)) {
+                                        // transom 전용 필드 매핑
+                                        $transom_details = [
+                                            'width' => $raw_data['width'] ?? null,
+                                            'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                            'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                            'wing_value' => $raw_data['wingValue'] ?? null,
+                                            'material_type' => $raw_data['materialType'] ?? null,
+                                            'thickness' => $raw_data['thickness'] ?? null,
+                                            'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                            'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                            'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                            'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                            'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                            'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                            'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                            'notes' => $raw_data['notes'] ?? null
+                                        ];
+                                    }
+                                } elseif (isset($panel_data['12'])) {
+                                    $raw_data = $panel_data['12'];
+                                    // transom 전용 필드 매핑
+                                    $transom_details = [
+                                        'width' => $raw_data['width'] ?? null,
+                                        'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                        'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                        'wing_value' => $raw_data['wingValue'] ?? null,
+                                        'material_type' => $raw_data['materialType'] ?? null,
+                                        'thickness' => $raw_data['thickness'] ?? null,
+                                        'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                        'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                        'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                        'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                        'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                        'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                        'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                        'notes' => $raw_data['notes'] ?? null
+                                    ];
+                                }
+                            }
+                            ?>
+                            <div class="corner-panel-item transom-panel-item">
+                                <div class="corner-panel-header">
+                                    <div class="panel-indicator">
+                                        <span class="panel-number">T</span>
+                                        <span class="panel-type">Transom</span>
+                                    </div>
+                                    <div class="corner-icon">
+                                        <i class="bi bi-triangle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="corner-specifications">
+                                    <?php if ($transom_details['width'] || $transom_details['plate_height']): ?>
+                                    <div class="spec-group dimensions">
+                                        <h6><i class="bi bi-aspect-ratio"></i> 치수</h6>
+                                        <?php if ($transom_details['width']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">가로</span>
+                                            <span class="spec-value"><?= number_format($transom_details['width']) ?>mm</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if ($transom_details['plate_height']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">막판높이</span>
+                                            <span class="spec-value"><?= number_format($transom_details['plate_height']) ?>mm</span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($transom_details['material_type'] || $transom_details['thickness']): ?>
+                                    <div class="spec-group material">
+                                        <h6><i class="bi bi-layers"></i> 재질</h6>
+                                        <?php if ($transom_details['material_type']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">재질</span>
+                                            <span class="spec-value"><?= htmlspecialchars($transom_details['material_type']) ?></span>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if ($transom_details['thickness']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">두께</span>
+                                            <span class="spec-value"><?= htmlspecialchars($transom_details['thickness']) ?>t</span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($transom_details['plate_height'] || $transom_details['bottom_depth'] || $transom_details['wing_value']): ?>
+                                    <div class="spec-group special">
+                                        <h6><i class="bi bi-gear"></i> 특수 사양</h6>
+                                        <?php if ($transom_details['plate_height']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">막판높이</span>
+                                            <span class="spec-value"><?= $transom_details['plate_height'] ?>mm</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if ($transom_details['bottom_depth']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">밑면깊이(JD)</span>
+                                            <span class="spec-value"><?= $transom_details['bottom_depth'] ?>mm</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        <?php if ($transom_details['wing_value']): ?>
+                                        <div class="spec-item">
+                                            <span class="spec-label">날개값</span>
+                                            <span class="spec-value"><?= $transom_details['wing_value'] ?>mm</span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
                 <?php endif; ?>
 
                 <!-- Transom Details -->
-                <?php if (!empty($production_results['transom_details'])): ?>
+                <?php if (!empty($production_results['transom_details']) || !empty($transom_data)): ?>
                 <div class="result-card enhanced transom-details">
                     <div class="card-header">
                         <h4><i class="bi bi-triangle"></i> Transom 상세 분석</h4>
@@ -3308,18 +3897,73 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     </div>
                     <div class="card-content">
                         <?php
-                        $transom_details = $production_results['transom_details'];
+                        // transom_details가 없으면 transom_data에서 직접 가져오기
+                        if (!empty($production_results['transom_details'])) {
+                            $transom_details = $production_results['transom_details'];
+                        } else {
+                            // transom_data에서 직접 정보 구성 (transom 전용 필드 매핑)
+                            $transom_details = [];
+                            if (!empty($transom_data)) {
+                                if (isset($transom_data['12'])) {
+                                    $raw_data = $transom_data['12'];
+                                } elseif (isset($transom_data['transom'])) {
+                                    $raw_data = $transom_data['transom'];
+                                }
+                                
+                                if (isset($raw_data)) {
+                                    // transom 전용 필드 매핑
+                                    $transom_details = [
+                                        'width' => $raw_data['width'] ?? null,
+                                        'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                        'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                        'wing_value' => $raw_data['wingValue'] ?? null,
+                                        'material_type' => $raw_data['materialType'] ?? null,
+                                        'thickness' => $raw_data['thickness'] ?? null,
+                                        'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                        'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                        'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                        'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                        'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                        'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                        'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                        'notes' => $raw_data['notes'] ?? null
+                                    ];
+                                }
+                            } elseif (isset($panel_data['12'])) {
+                                $raw_data = $panel_data['12'];
+                                // transom 전용 필드 매핑
+                                $transom_details = [
+                                    'width' => $raw_data['width'] ?? null,
+                                    'plate_height' => $raw_data['transomPlateHeight'] ?? null,
+                                    'bottom_depth' => $raw_data['bottomDepthJD'] ?? null,
+                                    'wing_value' => $raw_data['wingValue'] ?? null,
+                                    'material_type' => $raw_data['materialType'] ?? null,
+                                    'thickness' => $raw_data['thickness'] ?? null,
+                                    'cpi_drilling_width' => $raw_data['cpiDrillingWidth'] ?? null,
+                                    'cpi_drilling_height' => $raw_data['cpiDrillingHeight'] ?? null,
+                                    'cpi_drilling_height_from_bottom' => $raw_data['cpiDrillingHeightFromBottom'] ?? null,
+                                    'drilling_width' => $raw_data['drillingWidth'] ?? null,
+                                    'drilling_height' => $raw_data['drillingHeight'] ?? null,
+                                    'drilling_from_floor' => $raw_data['drillingFromFloor'] ?? null,
+                                    'drilling_from_entrance' => $raw_data['drillingFromEntrance'] ?? null,
+                                    'notes' => $raw_data['notes'] ?? null
+                                ];
+                            }
+                        }
                         ?>
 
                         <!-- 기본 정보 섹션 -->
                         <div class="transom-basic-info">
                             <div class="transom-overview">
                                 <div class="transom-size">
-                                    <?php if ($transom_details['width'] || $transom_details['height']): ?>
+                                    <?php if ($transom_details['width'] || $transom_details['plate_height']): ?>
                                     <div class="size-display">
                                         <i class="bi bi-aspect-ratio"></i>
                                         <span class="size-value">
-                                            <?= !empty($transom_details['width']) ? number_format($transom_details['width']) : '0' ?>×<?= !empty($transom_details['height']) ? number_format($transom_details['height']) : '0' ?>mm
+                                            <?= !empty($transom_details['width']) ? number_format($transom_details['width']) : '0' ?>mm
+                                            <?php if ($transom_details['plate_height']): ?>
+                                                × <?= number_format($transom_details['plate_height']) ?>mm
+                                            <?php endif; ?>
                                         </span>
                                         <span class="size-label">Transom 크기</span>
                                     </div>
@@ -3616,11 +4260,17 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             }
         });
 
-        // 검색 토글 기능
+        // 검색 토글 기능 개선
         document.addEventListener('DOMContentLoaded', function() {
             const searchToggle = document.getElementById('searchToggle');
             const searchForm = document.getElementById('searchForm');
             const toggleIcon = document.getElementById('toggleIcon');
+
+            // 요소 존재 확인
+            if (!searchToggle || !searchForm || !toggleIcon) {
+                console.error('검색 폼 요소를 찾을 수 없습니다.');
+                return;
+            }
 
             // 초기 상태: 검색 조건이 있으면 열림, 없으면 닫힘
             const hasSearchParams = new URLSearchParams(window.location.search).get('search_site') ||
@@ -3638,15 +4288,17 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 toggleIcon.classList.add('rotated');
             }
 
-            // 클릭 이벤트 리스너 추가
+            // 클릭 이벤트 리스너 추가 (이벤트 위임 사용)
             searchToggle.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 toggleSearchForm();
             });
 
             // 터치 이벤트도 지원 (모바일)
             searchToggle.addEventListener('touchend', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 toggleSearchForm();
             });
 
@@ -3656,9 +4308,11 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 if (isExpanded) {
                     searchForm.classList.remove('collapsed');
                     toggleIcon.classList.remove('rotated');
+                    console.log('검색 폼이 열렸습니다.');
                 } else {
                     searchForm.classList.add('collapsed');
                     toggleIcon.classList.add('rotated');
+                    console.log('검색 폼이 닫혔습니다.');
                 }
 
                 // 상태를 localStorage에 저장
@@ -3669,6 +4323,107 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && isExpanded) {
                     toggleSearchForm();
+                }
+            });
+
+            // 검색 폼 제출 시 유효성 검사 및 로딩 상태 표시
+            searchForm.addEventListener('submit', function(e) {
+                // 유효성 검사
+                const searchSite = document.getElementById('searchSite').value.trim();
+                const searchDateFrom = document.getElementById('searchDateFrom').value;
+                const searchDateTo = document.getElementById('searchDateTo').value;
+                
+                // 날짜 유효성 검사
+                if (searchDateFrom && searchDateTo) {
+                    const fromDate = new Date(searchDateFrom);
+                    const toDate = new Date(searchDateTo);
+                    
+                    if (fromDate > toDate) {
+                        e.preventDefault();
+                        alert('시작일은 종료일보다 이전이어야 합니다.');
+                        return false;
+                    }
+                    
+                    // 날짜 범위가 너무 넓은지 확인 (1년 이상)
+                    const diffTime = Math.abs(toDate - fromDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays > 365) {
+                        if (!confirm('검색 기간이 1년을 초과합니다. 계속하시겠습니까?')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }
+                
+                // 검색 조건이 하나도 없는 경우 확인
+                if (!searchSite && !searchDateFrom && !searchDateTo && !document.getElementById('searchMeasurer').value) {
+                    if (!confirm('검색 조건이 없습니다. 모든 데이터를 조회하시겠습니까?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+                
+                const submitButton = searchForm.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="bi bi-hourglass-split"></i> 검색 중...';
+                    
+                    // 3초 후 버튼 복원 (타임아웃 방지)
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i class="bi bi-search"></i> 검색';
+                    }, 3000);
+                }
+            });
+            
+            // 실시간 검색 조건 유효성 검사
+            const searchDateFrom = document.getElementById('searchDateFrom');
+            const searchDateTo = document.getElementById('searchDateTo');
+            
+            function validateDateRange() {
+                if (searchDateFrom.value && searchDateTo.value) {
+                    const fromDate = new Date(searchDateFrom.value);
+                    const toDate = new Date(searchDateTo.value);
+                    
+                    if (fromDate > toDate) {
+                        searchDateTo.setCustomValidity('종료일은 시작일보다 이후여야 합니다.');
+                        searchDateTo.style.borderColor = 'var(--linear-error-border)';
+                    } else {
+                        searchDateTo.setCustomValidity('');
+                        searchDateTo.style.borderColor = '';
+                    }
+                } else {
+                    searchDateTo.setCustomValidity('');
+                    searchDateTo.style.borderColor = '';
+                }
+            }
+            
+            searchDateFrom.addEventListener('change', validateDateRange);
+            searchDateTo.addEventListener('change', validateDateRange);
+            
+            // 키보드 단축키 기능
+            document.addEventListener('keydown', function(e) {
+                // Ctrl + F: 검색 폼 포커스
+                if (e.ctrlKey && e.key === 'f') {
+                    e.preventDefault();
+                    if (isExpanded) {
+                        document.getElementById('searchSite').focus();
+                    } else {
+                        toggleSearchForm();
+                        setTimeout(() => {
+                            document.getElementById('searchSite').focus();
+                        }, 300);
+                    }
+                }
+                
+                // Enter: 검색 실행 (검색 폼이 열려있을 때)
+                if (e.key === 'Enter' && isExpanded && e.target.tagName !== 'BUTTON') {
+                    const activeElement = document.activeElement;
+                    if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'SELECT')) {
+                        e.preventDefault();
+                        searchForm.submit();
+                    }
                 }
             });
         });
@@ -4816,22 +5571,6 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
 
 
-        function exportToExcel() {
-            // 확인 대화상자 없이 바로 Excel 다운로드 실행
-            const measurementId = new URLSearchParams(window.location.search).get('measurement_id');
-
-            if (!measurementId) {
-                alert('측정 데이터를 먼저 선택해주세요.');
-                return;
-            }
-
-            // 현재 페이지의 설정 상태 가져오기
-            const moldingIncluded = document.getElementById('moldingIncluded').checked ? 1 : 0;
-            const panelCornersExcluded = document.getElementById('panelCornersExcluded').checked ? 1 : 0;
-
-            // Excel 파일 다운로드 (현재 설정 포함)
-            window.location.href = `export_production_results.php?measurement_id=${measurementId}&molding_included=${moldingIncluded}&panel_corners_excluded=${panelCornersExcluded}`;
-        }
 
         function copyResultLink() {
             const currentUrl = window.location.href;
@@ -4982,6 +5721,12 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             const selectedData = <?= json_encode($selected_data) ?>;
             const panelData = <?= json_encode($panel_data) ?>;
             const transomData = <?= json_encode($transom_data) ?>;
+            
+            console.log('🔍 DEBUG: selectedData 전체 구조:', selectedData);
+            console.log('🔍 DEBUG: selectedData.transom_data 원본:', selectedData.transom_data);
+            console.log('🔍 DEBUG: PHP에서 로드된 transomData:', transomData);
+            console.log('🔍 DEBUG: transomData 타입:', typeof transomData);
+            console.log('🔍 DEBUG: transomData 길이:', Array.isArray(transomData) ? transomData.length : Object.keys(transomData).length);
 
 
             // Apply project settings to panel visibility
@@ -5014,9 +5759,17 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             // 패널 시각화 다시 렌더링
             const panelData = <?= json_encode($selected_data['panel_data']) ?>;
             const transomData = <?= json_encode($selected_data['transom_data']) ?>;
+            console.log('🔍 DEBUG: selected_data에서 로드된 transomData:', transomData);
+            console.log('🔍 DEBUG: transomData 타입:', typeof transomData);
+            console.log('🔍 DEBUG: transomData 길이:', Array.isArray(transomData) ? transomData.length : Object.keys(transomData).length);
             
-            if (panelData && transomData) {
+            // transom 데이터가 존재하면 렌더링 (빈 객체여도 처리)
+            if (panelData) {
+                console.log('🔍 DEBUG: renderPanelVisualization 호출 전 - panelData:', panelData);
+                console.log('🔍 DEBUG: renderPanelVisualization 호출 전 - transomData:', transomData);
                 renderPanelVisualization(panelData, transomData);
+            } else {
+                console.log('⚠️ DEBUG: panelData가 없어서 렌더링을 건너뜀');
             }
 
             // 패널별 상세 치수도 업데이트 (새로고침으로 인해 서버에서 다시 계산됨)
@@ -5075,8 +5828,44 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
         function renderPanelVisualization(panelData, transomData) {
             // Combine panel and transom data
             const allData = { ...panelData };
-            if (transomData && transomData['12']) {
-                allData['12'] = transomData['12'];
+            
+            // transom 데이터 처리 - 더 강력한 검증 및 디버깅
+            if (transomData && typeof transomData === 'object') {
+                console.log('🔍 DEBUG: transomData 존재:', transomData);
+                console.log('🔍 DEBUG: transomData 타입:', typeof transomData);
+                console.log('🔍 DEBUG: transomData 길이:', Array.isArray(transomData) ? transomData.length : Object.keys(transomData).length);
+                
+                // 빈 배열이나 빈 객체 체크
+                const isEmpty = Array.isArray(transomData) ? transomData.length === 0 : Object.keys(transomData).length === 0;
+                
+                if (isEmpty) {
+                    console.log('⚠️ DEBUG: transomData가 비어있음 (빈 배열 또는 빈 객체)');
+                } else {
+                    // transom 데이터의 모든 키 확인
+                    const availableKeys = Object.keys(transomData);
+                    console.log('🔍 DEBUG: transomData 사용 가능한 키들:', availableKeys);
+                    
+                    if (transomData['12']) {
+                        allData['12'] = transomData['12'];
+                        console.log('✅ DEBUG: transom 데이터 적용됨 (12 키):', transomData['12']);
+                    } else if (transomData['transom']) {
+                        allData['12'] = transomData['transom'];
+                        console.log('✅ DEBUG: transom 데이터 적용됨 (transom 키):', transomData['transom']);
+                    } else {
+                        console.log('⚠️ DEBUG: transom 데이터에 12 또는 transom 키가 없음');
+                        console.log('🔍 DEBUG: transom 데이터 구조:', JSON.stringify(transomData, null, 2));
+                        
+                        // 다른 가능한 키들 확인
+                        const possibleKeys = availableKeys.filter(key => 
+                            key.includes('transom') || key.includes('12') || key.includes('transom')
+                        );
+                        if (possibleKeys.length > 0) {
+                            console.log('🔍 DEBUG: 가능한 transom 관련 키들:', possibleKeys);
+                        }
+                    }
+                }
+            } else {
+                console.log('⚠️ DEBUG: transomData가 null, undefined 또는 객체가 아님:', transomData);
             }
 
             Object.keys(allData).forEach(panelNumber => {
@@ -5173,8 +5962,14 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
         function addPanelHoverEffects(panelData, transomData) {
             const allData = { ...panelData };
-            if (transomData && transomData['12']) {
-                allData['12'] = transomData['12'];
+            
+            // transom 데이터 처리 - '12' 키 또는 'transom' 키 모두 지원
+            if (transomData) {
+                if (transomData['12']) {
+                    allData['12'] = transomData['12'];
+                } else if (transomData['transom']) {
+                    allData['12'] = transomData['transom'];
+                }
             }
 
             Object.keys(allData).forEach(panelNumber => {
@@ -5409,7 +6204,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     }
                 });
             });
-
+ 
             function positionTooltip(tooltip, event, element) {
                 const rect = element.getBoundingClientRect();
                 const tooltipRect = tooltip.getBoundingClientRect();
@@ -5701,7 +6496,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         }
                     }
                 }).then((result) => {
-                    if (result.isConfirmed) {
+                    if (result.isConfirmed) { 
                         // 로딩 표시
                         Swal.fire({
                             title: 'Excel 파일 생성 중...',
@@ -5744,7 +6539,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <?php else: ?>
             alert('내보낼 데이터가 없습니다.');
             <?php endif; ?>
-        }
+        } 
     </script>
 </body>
-</html> 
+</html>  

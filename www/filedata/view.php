@@ -1,7 +1,10 @@
  <?php
  session_start(); 
    
- $file_dir = 'C:\xampp\htdocs\data\\'; 
+ // 환경별 기본 URL 설정
+ require_once '../config/environment.php';
+ 
+ $file_dir = '../data/'; 
   
  $num=$_REQUEST["num"];
    

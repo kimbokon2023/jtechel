@@ -1,6 +1,11 @@
 <?php
-    session_start();
-    $root_dir = $_SERVER['DOCUMENT_ROOT'];
+    // 환경별 기본 URL 설정
+    require_once '../config/environment.php';
+    
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    $root_dir = '..';
 ?> 
  
 <style>
@@ -588,7 +593,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <!-- 🚀 Modern Brand -->
-            <a class="navbar-brand" href="http://j-techel.co.kr/game/index.php?home=1">
+            <a class="navbar-brand" href="<?php echo getBaseUrl(); ?>/game/index.php?home=1">
                 <i class="bi bi-lightning-charge-fill me-2"></i>YH 시스템
             </a>
         
@@ -602,7 +607,7 @@
                 <ul class="navbar-nav me-auto">
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="http://j-techel.co.kr/game/index.php?home=1">
+                        <a class="nav-link" href="<?php echo getBaseUrl(); ?>/game/index.php?home=1">
                             <i class="bi bi-house-door-fill"></i>
                             <span>홈</span>
                         </a>
@@ -651,7 +656,7 @@
                             <span>공통</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <?php if($level=='1') {  ?>
+                            <?php if(isset($_SESSION["level"]) && $_SESSION["level"]=='1') {  ?>
                            <li><a class="dropdown-item" href="./logdata.php">
                                <i class="bi bi-journal-text"></i>Log 기록
                            </a></li>

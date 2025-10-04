@@ -1,12 +1,15 @@
 <?php
  session_start();
 
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
+
  $level= $_SESSION["level"];
  $user_name= $_SESSION["name"];
  if(!isset($_SESSION["level"]) || $level>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(2);
-	          header("Location:http://j-techel.co.kr/login/login_form.php"); 
+	          header("Location:" . getBaseUrl() . "/login/login_form.php"); 
          exit;
    }
    
@@ -29,7 +32,7 @@ if($itemname=="secondord")
 
  ?>
  
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php include '../../mywork/load.php' ?>
 
  <title> 발주처검색 </title> 
  </head>
@@ -38,7 +41,7 @@ if($itemname=="secondord")
  <?php 
 
 if(isset($_REQUEST["search"]))   //목록표에 제목,이름 등 나오는 부분
- $search=$_REQUEST["search"];
+ $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : '';
   
 isset($_REQUEST["whichRadio"])  ? $whichRadio = $_REQUEST["whichRadio"] : $whichRadio="1";   
   
@@ -50,7 +53,7 @@ $pdo = db_connect();
  // $find="firstord";	    //검색할때 고정시킬 부분 저장 ex) 전체/공사담당/건설사 등
  if(isset($_REQUEST["page"])) // $_REQUEST["page"]값이 없을 때에는 1로 지정 
  {
-    $page=$_REQUEST["page"];  // 페이지 번호
+    $page = isset($_REQUEST["page"]) ? $_REQUEST["page"] : '';  // 페이지 번호
  }
   else
   {
@@ -86,20 +89,17 @@ if($search==""){
   
   //  print $sql;
    
-	 try{  
-	  $allstmh = $pdo->query($sqlcon);         // 검색 조건에 맞는 쿼리 전체 개수
-      $temp2=$allstmh->rowCount();  
-	  $stmh = $pdo->query($sql);            // 검색조건에 맞는글 stmh
-      $recCount=$stmh->rowCount();
-	      
-	  $total_row = $temp2;     // 전체 글수	    
-         					 
-     $total_page = ceil($total_row / $scale); // 검색 전체 페이지 블록 수
-	 $current_page = ceil($page/$page_scale); //현재 페이지 블록 위치계산			 
-   		 
-			?>
-		 
-		 
+	try{  
+		$allstmh = $pdo->query($sqlcon);         // 검색 조건에 맞는 쿼리 전체 개수
+		$temp2=$allstmh->rowCount();  
+		$stmh = $pdo->query($sql);            // 검색조건에 맞는글 stmh
+		$recCount=$stmh->rowCount();
+
+		$total_row = $temp2;     // 전체 글수	    
+							
+		$total_page = ceil($total_row / $scale); // 검색 전체 페이지 블록 수
+		$current_page = ceil($page/$page_scale); //현재 페이지 블록 위치계산			    		 
+	?>	 
 <body>
 
 <form name="board_form" id="board_form"  method="post" action="list.php?mode=search&search=<?=$search?>&itemname=<?=$itemname?>&whichRadio=<?=$whichRadio?>">  
@@ -150,10 +150,9 @@ if($search==""){
 			<input  type="radio" checked  name=whichRadio value="3">  	  &nbsp;  
 		<?php } ?>	
 	</div>
-    <div class="d-flex col-sm-12 mb-3 mt-2 justify-content-center align-items-center">  		
-	     
-			   <input type="text" name="search" id="search" value="<?=$search?>" onkeydown="JavaScript:SearchEnter();" placeholder="검색어"> 
-				<button type="button" id="searchBtn" class="btn btn-dark  btn-sm "  > <ion-icon name="search-outline"></ion-icon> </button>	&nbsp;&nbsp;
+    <div class="d-flex col-sm-12 mb-3 mt-2 justify-content-center align-items-center">  			     
+		<input type="text" name="search" id="search" value="<?=$search?>" onkeydown="JavaScript:SearchEnter();" placeholder="검색어"> 
+		<button type="button" id="searchBtn" class="btn btn-dark  btn-sm "  > <ion-icon name="search-outline"></ion-icon> </button>	&nbsp;&nbsp;
 		</div>
 	<div class="d-flex mb-1 mt-1 justify-content-center align-items-center">     
 	   
@@ -343,12 +342,7 @@ function sel_item(num){
 		  choice.push('#secondordman');
 		  choice.push('#secondordmantel');
 	   }
-	
-	// console.log(num);
-	// console.log(arr1);
-	// console.log(arr2);
-	// console.log(arr3);
-	
+		
 	// radio 버튼 체크된 값 받기
 	let whichRadio = $('input[name="whichRadio"]:checked').val();
 	

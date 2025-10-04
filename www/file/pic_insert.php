@@ -1,5 +1,8 @@
  <?php session_start();  
- 
+
+ // 환경별 기본 URL 설정
+ require_once '../config/environment.php';
+
  include "../php/common.php";
 
  if(isset($_REQUEST["num"]))
@@ -143,7 +146,7 @@ if($filename !='') {
      // insert
 		try{		 
 			$pdo->beginTransaction();   
-			$sql = "insert into mirae8440.picuploads ";
+			$sql = "insert into jtechel.picuploads ";
 			$sql .=" (tablename, item, parentnum, picname) " ;        
 			$sql .=" values(?, ?, ?, ?) " ;        
 			   
@@ -173,7 +176,7 @@ if($filename !='') {
  require_once("../lib/mydb.php");
  $pdo = db_connect();
  $pdo->beginTransaction();
- $sql = "insert into mirae8440.logdata(data) values(?) " ;
+ $sql = "insert into jtechel.logdata(data) values(?) " ;
  $stmh = $pdo->prepare($sql); 
  $stmh->bindValue(1, $data, PDO::PARAM_STR);   
  $stmh->execute();

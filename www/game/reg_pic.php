@@ -1,8 +1,11 @@
 <meta charset="utf-8">
  
  <?php
+ // 환경별 기본 URL 설정
+ require_once '../config/environment.php';
+ 
  session_start(); 
-  
+ 
  $num=$_REQUEST["num"]; 
  $parent=$num;
  

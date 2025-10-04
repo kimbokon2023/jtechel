@@ -87,6 +87,29 @@ function hasTransomData($transom_data) {
     return false;
 }
 
+// 현장명에서 엘리베이터 대수 추출 함수
+function extractElevatorCount($site_name) {
+    // 패턴 1: #1~#14 형태 (1부터 14까지)
+    if (preg_match('/#(\d+)~#(\d+)/', $site_name, $matches)) {
+        $start = intval($matches[1]);
+        $end = intval($matches[2]);
+        return $end - $start + 1;
+    }
+    
+    // 패턴 2: #15(장애인용) 형태 (단일 엘리베이터)
+    if (preg_match('/#(\d+)/', $site_name, $matches)) {
+        return 1;
+    }
+    
+    // 패턴 3: 숫자만 있는 경우
+    if (preg_match('/(\d+)대/', $site_name, $matches)) {
+        return intval($matches[1]);
+    }
+    
+    // 기본값: 1대
+    return 1;
+}
+
 // Check authentication
 if (!isset($_SESSION["level"]) || $_SESSION["level"] > 8) {
     header("Location: ../login/login_form.php");
@@ -260,6 +283,7 @@ try {
     foreach ($sites as &$site) {
         $site['actual_panel_count'] = calculateActualPanelCount($site['latest_panel_data'], $site['latest_transom_data']);
         $site['has_transom'] = hasTransomData($site['latest_transom_data']);
+        $site['elevator_count'] = extractElevatorCount($site['site_name']);
         
     }
     unset($site); // 참조 제거
@@ -1151,10 +1175,11 @@ require_once '../components/LinearNavigation.php';
                 <?php if (!empty($search)): ?>
                     <p>검색 조건에 맞는 현장이 없습니다. 다른 검색어를 시도해보세요.</p>
                 <?php else: ?>
-                    <p>새로운 현장을 등록하여 시작하세요.</p>
-                    <a href="site_management.php" style="text-decoration: none;">
-                        <?= LinearButton::primary('<i class="bi bi-plus-lg"></i> 첫 현장 등록하기') ?>
-                    </a>
+                    <p>현장 정보는 측정 데이터에서 자동으로 생성됩니다.</p>
+                    <p style="color: var(--linear-text-secondary); font-size: 0.9rem; margin-top: 8px;">
+                        <i class="bi bi-info-circle"></i> 
+                        <a href="panel_measurement.php" style="color: var(--linear-primary); text-decoration: none;">판넬 측정</a>을 통해 새로운 현장을 추가할 수 있습니다.
+                    </p>
                 <?php endif; ?>
             </div>
         <?php else: ?>
@@ -1220,7 +1245,7 @@ require_once '../components/LinearNavigation.php';
                                         <div style="font-size: 0.8rem; color: var(--linear-brand-primary); margin-top: 2px;">+ Transom</div>
                                     <?php endif; ?>
                                     <br><small style="color: var(--linear-text-secondary, #3c4149);">
-                                        <?= $site['measurement_sessions'] ?>대
+                                        <?= $site['elevator_count'] ?>대
                                     </small>
                                 <?php else: ?>
                                     <div class="badge warning">미측정</div>
@@ -1267,7 +1292,7 @@ require_once '../components/LinearNavigation.php';
                                     <?php if ($site['has_transom']): ?>
                                         <div style="font-size: 0.7rem; color: var(--linear-brand-primary); margin-top: 2px; text-align: right;">+ Transom</div>
                                     <?php endif; ?>
-                                    <div class="panel-count"><?= $site['measurement_sessions'] ?>대</div>
+                                    <div class="panel-count"><?= $site['elevator_count'] ?>대</div>
                                 <?php else: ?>
                                     <div class="badge warning">미측정</div>
                                 <?php endif; ?>

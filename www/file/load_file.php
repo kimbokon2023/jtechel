@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문
 
 isset($_REQUEST["id"])  ? $id=$_REQUEST["id"] :   $id=''; 
@@ -14,7 +17,7 @@ $pdo = db_connect();
 $now = date("Y-m-d");	     // 현재 날짜와 크거나 같으면 출고예정으로 구분
 $nowtime = date("H:i:s");	 // 현재시간	
 
-$sql=" select * from mirae8440.fileuploads where tablename ='$tablename' and item ='$item' and parentid ='$id' ";	
+$sql=" select * from jtechel.fileuploads where tablename ='$tablename' and item ='$item' and parentid ='$id' ";	
 
 $recid=0; 
 $id_arr=array(); 

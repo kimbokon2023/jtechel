@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 
 ini_set('display_errors', 'On');
@@ -30,7 +33,7 @@ $mark_arr[$index] = $isChecked;
 $_SESSION["mark_arr"] = $mark_arr;
 
 // 데이터베이스에 저장
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 
 try {

@@ -1,8 +1,11 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 
 // 사용자 권한 체크

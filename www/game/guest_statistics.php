@@ -1,6 +1,10 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start(); 
 
 $level= $_SESSION["level"];
@@ -14,7 +18,7 @@ $branch = isset($_COOKIE['branch']) ? $_COOKIE['branch'] : '전체';
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -86,7 +90,7 @@ $pdo = db_connect();
 <title>YH 회원 통계</title>
 
 <?php
-	$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+	$root_dir = '..' ;
 ?>
 
 

@@ -1,12 +1,21 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
-include 'ini.php';    
-session_start(); 
+include 'ini.php';
+// 공통 함수 로드
+if (!class_exists('CommonFunctionsLoaded')) {
+    require_once __DIR__ . '/../common/functions.php';
+    if (!class_exists('CommonFunctionsLoaded')) {
+        class CommonFunctionsLoaded {}
+    }
+}
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/login/login_form.php"); 
+         redirect('login/login_form.php'); 
          exit;
    }  
 
@@ -50,7 +59,7 @@ session_start();
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style1.css?v=1">
   
-<script src="http://j-techel.co.kr/common.js"></script>  
+<?php echo js('common.js'); ?>  
 
 </head>
 <body>
@@ -99,7 +108,7 @@ session_start();
 					<span class="number">01</span>
 					<h3 class="mt-3"> EL 카 판넬 측정 </h3>
 					<p class="mt-3 mb-2">스마트한 판넬 측정 시스템</p>
-					<a href="http://j-techel.co.kr/osel/index.php" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i> 엘리베이터 카 월 판넬 측정 시스템</a>
+					<a href="<?php echo url('osel/index.php'); ?>" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i> 엘리베이터 카 월 판넬 측정 시스템</a>
 				</div>
 			</div>
 			<div class="col-lg-3 col-md-6">
@@ -126,7 +135,7 @@ session_start();
 					<span class="number">04</span>
 					<h3 class="mt-3">종합일정관리</h3>
 					<p class="mt-3 mb-4"> 수주/발주 세부 일정관리 </p>
-					<a href="http://j-techel.co.kr/jtech/schedule.php" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i>more Details</a>
+					<a href="<?php echo url('jtech/schedule.php'); ?>" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i>more Details</a>
 				</div>
 			</div>           
 		</div> 

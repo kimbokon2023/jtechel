@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 // Linear Components Demo Page
 // 모든 컴포넌트를 import
 require_once 'LinearComponent.php';

@@ -1,5 +1,9 @@
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+include 'load.php' 
+?>
 
 <title> JK-테크 수주 리스트 </title>
 <style>

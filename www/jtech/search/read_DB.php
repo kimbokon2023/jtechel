@@ -2,6 +2,9 @@
  
  <?php
  session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
   
  $num=$_REQUEST["num"];
  $search=$_REQUEST["search"];  //검색어

@@ -1,11 +1,17 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
-session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
 ini_set('display_errors','1');  // 화면에 warning 없애기	  1은 보이기
 
 // 지점 선택 헬퍼 사용
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 require_once('branch_select_helper.php');
 $branch = isset($_COOKIE['branch']) ? $_COOKIE['branch'] : (intval($_SESSION["level"]) <= 3 ? '전체' : getFirstActiveBranch($pdo));
@@ -20,7 +26,7 @@ $id= $_SESSION["userid"];
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -50,7 +56,7 @@ for($i=0; $i<sizeof($mAgent); $i++){
 <title>YH 시스템 지출 상세내역 조회</title>
 
 <?php
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ?>
 
@@ -426,11 +432,11 @@ $total5 = 0;
 
 // while 루프 예시
 while ($row = $stmh->fetch(PDO::FETCH_ASSOC)) {
-    $text1 = $row["text1"] * 1000;
-    $text2 = $row["text2"] * 1000;
-    $text3 = $row["text3"] * 1000;
-    $text4 = $row["text4"] * 1000;
-    $text5 = $row["text5"] * 1000;
+    $text1 = (is_numeric($row["text1"]) ? floatval($row["text1"]) : 0) * 1000;
+    $text2 = (is_numeric($row["text2"]) ? floatval($row["text2"]) : 0) * 1000;
+    $text3 = (is_numeric($row["text3"]) ? floatval($row["text3"]) : 0) * 1000;
+    $text4 = (is_numeric($row["text4"]) ? floatval($row["text4"]) : 0) * 1000;
+    $text5 = (is_numeric($row["text5"]) ? floatval($row["text5"]) : 0) * 1000;
 
     $total4 += $text1 +  $text2 +  $text3 +  $text4 +  $text5 ; 
     

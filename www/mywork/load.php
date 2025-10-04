@@ -1,6 +1,11 @@
 <?php 
 
-session_start(); 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
 
 // 이름으로 구분해서 조회되도록 만듬
 $user_name = $_SESSION["name"];
@@ -13,13 +18,11 @@ header ("Pragma: no-cache"); // HTTP/1.0
 header("Expires: 0"); // rfc2616 - Section 14.21   
 //header("Refresh:0");  // reload refresh  
 
-$Path = "http://j-techel.co.kr/mywork/";
+$Path = getBaseUrl() . "/mywork/";
 
-$rootPath = "http://j-techel.co.kr/";
+$rootPath = getBaseUrl() . "/";
 
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
-
-include $root_dir . '/mywork/common.php';
+include 'common.php';
 
 // 모바일 사용여부 확인하는 루틴
 $mAgent = array("iPhone","iPod","Android","Blackberry", 
@@ -32,7 +35,7 @@ for($i=0; $i<sizeof($mAgent); $i++){
     }
 }
 
-require_once($root_dir . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();	
 
 ?>

@@ -1,5 +1,8 @@
 <?php 
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문
 
 ini_set('display_errors','1');  // 화면에 warning 없애기
@@ -7,7 +10,7 @@ ini_set('display_errors','1');  // 화면에 warning 없애기
 
 isset($_REQUEST["branch"])  ? $branch = $_REQUEST["branch"] :   $branch=""; 
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();	
 
 $guest_name = array();

@@ -1,4 +1,7 @@
-<?
+<?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 
 // 시공팀장별로 권한을 주기위함

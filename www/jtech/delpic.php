@@ -1,5 +1,8 @@
 <?php
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문
 
 isset($_REQUEST["picname"])  ? $picname=$_REQUEST["picname"] : $picname=''; 

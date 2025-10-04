@@ -1,7 +1,13 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
-session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
 ini_set('display_errors','1');  
 
 // 데이터베이스에서 첫 번째 활성 지점 가져오기
@@ -22,7 +28,7 @@ $savedbranch = isset($_COOKIE['branch']) ? $_COOKIE['branch'] : $defaultBranch;
 $level= intval($_SESSION["level"]);
 $user_name= $_SESSION["name"];
 $id= $_SESSION["userid"];
-$sessionbranch = $_SESSION["branch"];
+$sessionbranch = isset($_SESSION["branch"]) ? $_SESSION["branch"] : $defaultBranch;
 
 // 직원들은 해당 지점만 선택가능하게 만든다.
 if($level > 3)
@@ -31,7 +37,7 @@ if($level > 3)
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -124,7 +130,7 @@ if ($rowCount == 0 && date('H:i') >= '00:00') {
 <title>YH 시스템</title>
 
 <?php
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ?>
 
@@ -175,8 +181,8 @@ $root_dir = $_SERVER['DOCUMENT_ROOT'] ;
 
 <link rel="stylesheet" href="<?$root_dir?>/css/style.css">
   
-<script src="http://j-techel.co.kr/common.js"></script>  
-<script src="http://j-techel.co.kr/js/date.js"></script>   <!-- 기간을 설정하는 관련 js 포함 -->
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script>  
+<script src="<?php echo getBaseUrl(); ?>/js/date.js"></script>   <!-- 기간을 설정하는 관련 js 포함 -->
 
 </head>
 
@@ -205,9 +211,7 @@ $root_dir = $_SERVER['DOCUMENT_ROOT'] ;
 	font-weight:normal;
 }	
 
-
 /* 우측배너 제작 */
-
 .sideBanner {
   position: absolute;
   width: calc(100vw - 90vw);
@@ -1163,7 +1167,8 @@ $nowday = date("Y-m-d");   // 현재일자 변수지정
 <div class="row row-cols-auto mt-5 mb-5 justify-content-center align-items-center"> 
  <?php
  
- 
+
+   $Bigsearch = isset($search) ? $search : "";
    $BigsearchTag = str_replace(' ','|',$Bigsearch);
  
 	if($page!=1 && $page>$page_scale){

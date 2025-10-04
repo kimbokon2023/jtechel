@@ -1,11 +1,14 @@
  <?php
   session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
   
  $level= $_SESSION["level"];
  if(!isset($_SESSION["level"]) || $level>=5) {
          echo "<script> alert('관리자 승인이 필요합니다.') </script>";
 		 sleep(2);
-         header ("Location:http://j-techel.co.kr/login/logout.php");
+         header ("Location:" . getBaseUrl() . "/login/logout.php");
          exit;
    }   
   
@@ -40,7 +43,7 @@ for($i=1;$i<=9;$i++)
 
 ?>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php include '../../mywork/load.php' ?>
 
 <title> <?=$itemtitle?> </title>
 
@@ -115,52 +118,47 @@ text-decoration:none;
 
 <div class="d-flex mb-1 bt-1 p-2 mt-1 justify-content-center">    		
 	
-					<fieldset class="groupbox-border"> 		
-					<legend class="groupbox-border"> <?=$itemtitle?>
-						&nbsp;	&nbsp;	&nbsp;	&nbsp;
-						<button type="button" id="saveBtn"  class="btn btn-primary btn-sm"> 저장 </button>	&nbsp;       
-						<button type="button"  class="btn btn-secondary btn-sm" onclick="self.close();" > 창닫기 </button>	&nbsp;  
-					</legend> 										
-				
-					<div class="input-group p-1 mb-1">																		  						  
-						  <span class="input-group-text ">  <?=$companydes?>&nbsp; 회사명&nbsp;&nbsp; </span>
-						  <input type="text"  class="form-control" name="item1" id="item1"  value="<?=$item1?>"  > 							  
-						</div> 
-					<div class="input-group p-1 mb-1">																		  						  
-						  <span class="input-group-text ">  <?=$companydes?>&nbsp; 담당자&nbsp;&nbsp; </span>
-						  <input type="text"  class="form-control" name="item2" id="item2"  value="<?=$item2?>"  > 							  
-						</div> 
-					<div class="input-group p-1 mb-1">																		  						  
-						  <span class="input-group-text ">  <?=$companydes?>&nbsp; 연락처&nbsp;&nbsp; </span>
-						  <input type="text"  class="form-control" name="item3" id="item3"value="<?=$item3?>"  > 							  
-						</div> 
-					</fieldset>	
+	<fieldset class="groupbox-border"> 		
+	<legend class="groupbox-border"> <?=$itemtitle?>
+		&nbsp;	&nbsp;	&nbsp;	&nbsp;
+		<button type="button" id="saveBtn"  class="btn btn-primary btn-sm"> 저장 </button>	&nbsp;       
+		<button type="button"  class="btn btn-secondary btn-sm" onclick="self.close();" > 창닫기 </button>	&nbsp;  
+	</legend> 										
+
+	<div class="input-group p-1 mb-1">																		  						  
+			<span class="input-group-text ">  <?=$companydes?>&nbsp; 회사명&nbsp;&nbsp; </span>
+			<input type="text"  class="form-control" name="item1" id="item1"  value="<?=$item1?>"  > 							  
+		</div> 
+	<div class="input-group p-1 mb-1">																		  						  
+			<span class="input-group-text ">  <?=$companydes?>&nbsp; 담당자&nbsp;&nbsp; </span>
+			<input type="text"  class="form-control" name="item2" id="item2"  value="<?=$item2?>"  > 							  
+		</div> 
+	<div class="input-group p-1 mb-1">																		  						  
+			<span class="input-group-text ">  <?=$companydes?>&nbsp; 연락처&nbsp;&nbsp; </span>
+			<input type="text"  class="form-control" name="item3" id="item3"value="<?=$item3?>"  > 							  
+		</div> 
+	</fieldset>	
 </div>
 
 </div>
 </div>
 </div>
 
-
-		</form>
-	 	  
-	  
+</form>
 <script>
-
-$(document).ready(function(){
-		
+$(document).ready(function(){		
 	$("#saveBtn").click(function(){      // DATA 저장버튼 누름
-		var num = $("#num").val();  	
-		
-					// 결재상신이 아닌경우 수정안됨	 
-					if(Number(num)>0) 
-							   $("#mode").val('modify');     
-							  else
-								  $("#mode").val('insert');     
-							  
-					// 자료 삽입/수정하는 모듈		  
-					Fninsert();						
-	 }); 
+	var num = $("#num").val();  	
+
+	// 결재상신이 아닌경우 수정안됨	 
+	if(Number(num)>0) 
+				$("#mode").val('modify');     
+				else
+					$("#mode").val('insert');     
+				
+	// 자료 삽입/수정하는 모듈		  
+	Fninsert();						
+	}); 
 		 
 
 	// 삽입/수정하는 모듈 
@@ -194,20 +192,8 @@ $(document).ready(function(){
 				console.log( jqxhr , status , error );
 						} 			      		
 		   });		
-
-		// else
-		  // {
-		  // tmp='보고자만 결재상신 상태가 아닌 경우 수정이 가능합니다.';		
-		  // $('#alertmsg').html(tmp); 			  
-			// $('#myModal').modal('show');  
-		  // }
 	 }
-			 
-			 
-		 
-	
 });
-
 </script> 
-	</body>
- </html>
+</body>
+</html>

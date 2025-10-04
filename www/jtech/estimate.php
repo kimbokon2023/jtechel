@@ -1,7 +1,10 @@
 <meta charset="utf-8">
  
 <?php
-session_start(); 
+session_start();
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php'; 
 
 $level= $_SESSION["level"];
 $id_name= $_SESSION["name"];   

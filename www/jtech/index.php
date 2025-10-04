@@ -3,10 +3,16 @@
 include 'ini.php';    
 session_start(); 
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+// 로그인 페이지 URL 설정
+$login_url = getBaseUrl() . '/login/login_form.php';
+
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/login/login_form.php"); 
+         header("Location: " . $login_url); 
          exit;
    }  
 
@@ -51,7 +57,7 @@ session_start();
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style1.css?v=1">
   
-<script src="http://j-techel.co.kr/common.js"></script>  
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script>  
 
 </head>
 <body>
@@ -119,7 +125,7 @@ session_start();
 					<span class="number">03</span>
 					<h3 class="mt-3">종합일정관리</h3>
 					<p class="mt-3 mb-4"> 수주/발주 세부 일정관리 </p>
-					<a href="http://j-techel.co.kr/jtech/schedule.php" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i>more Details</a>
+					<a href="<?php echo getBaseUrl(); ?>/jtech/schedule.php" class="text-color text-uppercase font-size-13 letter-spacing font-weight-bold"><i class="ti-minus mr-2 "></i>more Details</a>
 				</div>
 			</div>           
 		</div> 

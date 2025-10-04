@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 ?>
 
@@ -17,20 +20,14 @@ session_start();
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script> 
-
     <title> 시스템 로그인</title>
-
   </head>
 
-  <body cellpadding="0" cellspacing="0" width="100%" height="100%" align="center">
-	
-	
-	
-	<?php
-
+<body cellpadding="0" cellspacing="0" width="100%" height="100%">
+<?php
 $id=$_REQUEST["uid"];
 $pw=$_REQUEST["upw"];
-require_once("../lib/mydb.php");
+require_once("../../lib/mydb.php");
 $pdo=db_connect();
 
 try{
@@ -84,7 +81,7 @@ history.back();
 	}
   	
  $data=date("Y-m-d H:i:s") . " - " . $_SESSION["userid"] . " - " . $_SESSION["name"] ;	
- require_once("../lib/mydb.php");
+ require_once("../../lib/mydb.php");
  $pdo = db_connect();
  $pdo->beginTransaction();
  $sql = "insert into jtechel.logdata(data) values(?) " ;
@@ -102,25 +99,11 @@ history.back();
 	exit;  
 	}  
 	
-	
-// 김재구 팀장 오성이면
-  	if($_SESSION["userid"]=='9225' || $_SESSION["part"]=='mywork' )  
-	{
-       header ("Location:../mywork/index.php");
-	exit;  
-	} 		
-	
-// 제이테크 관련 아이디가 있으면
-  	if(isset($_SESSION["userid"]))  
-	{
-       header ("Location:../jtech/index.php");
-	exit;  
-	} 	
-   
-	else if($_SESSION["level"]>3) {
-			   header ("Location:../index.php");
-				exit;  
-				}
+  
+	if($_SESSION["level"]>3) {
+		header ("Location:../index.php");
+		exit;  
+	}
 }
 
 ?>

@@ -2,6 +2,9 @@
 
 session_start(); 
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 // 현재 시간으로부터 캐시를 만료시킴
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
@@ -24,13 +27,61 @@ for($i=0; $i<sizeof($mAgent); $i++){
 
 
 // 스케줄에서 띄울때는 네이바를 나타내지 않는다. navibar=1 이면 나타내지 않음
-$navibar=$_REQUEST["navibar"];
+$navibar = isset($_REQUEST["navibar"]) ? $_REQUEST["navibar"] : '';
   
  // $file_dir = './uploads/'; 
  
 include "_request.php";
 
-$URLsave = "http://j-techel.co.kr/mywork/viewpic.php?num=" . $num;
+// Initialize all form variables to prevent undefined variable notices
+$update_log = isset($update_log) ? $update_log : '';
+$tablename = isset($tablename) ? $tablename : '';
+$item = isset($item) ? $item : '';
+$page = isset($page) ? $page : 1;
+$scale = isset($scale) ? $scale : 50;
+$piclist = isset($piclist) ? $piclist : '{}';
+$tmpKey = isset($tmpKey) ? $tmpKey : '';
+
+// Initialize form field variables
+$pjnum = isset($pjnum) ? $pjnum : '';
+$workplacename = isset($workplacename) ? $workplacename : '';
+$address = isset($address) ? $address : '';
+$firstord = isset($firstord) ? $firstord : '';
+$firstordman = isset($firstordman) ? $firstordman : '';
+$firstordmantel = isset($firstordmantel) ? $firstordmantel : '';
+$secondord = isset($secondord) ? $secondord : '';
+$secondordman = isset($secondordman) ? $secondordman : '';
+$secondordmantel = isset($secondordmantel) ? $secondordmantel : '';
+$chargedman = isset($chargedman) ? $chargedman : '';
+$chargedmantel = isset($chargedmantel) ? $chargedmantel : '';
+$measureday = isset($measureday) ? $measureday : '';
+$workday = isset($workday) ? $workday : '';
+$doneday = isset($doneday) ? $doneday : '';
+$demand = isset($demand) ? $demand : '';
+$donedemand = isset($donedemand) ? $donedemand : '';
+$regist_day = isset($regist_day) ? $regist_day : '';
+$material1 = isset($material1) ? $material1 : '';
+$material2 = isset($material2) ? $material2 : '';
+$material3 = isset($material3) ? $material3 : '';
+$material4 = isset($material4) ? $material4 : '';
+$material5 = isset($material5) ? $material5 : '';
+$memo = isset($memo) ? $memo : '';
+$memo2 = isset($memo2) ? $memo2 : '';
+
+// Initialize customer-related variables
+$customer_date = isset($customer_date) ? $customer_date : '';
+$customer_company = isset($customer_company) ? $customer_company : '';
+$customer_address = isset($customer_address) ? $customer_address : '';
+$customer_group = isset($customer_group) ? $customer_group : '';
+$customer_name = isset($customer_name) ? $customer_name : '';
+$customer_worklist1 = isset($customer_worklist1) ? $customer_worklist1 : '';
+$customer_worklist2 = isset($customer_worklist2) ? $customer_worklist2 : '';
+$image_url = isset($image_url) ? $image_url : '';
+$year = isset($year) ? $year : '';
+$month = isset($month) ? $month : '';
+$day = isset($day) ? $day : '';
+
+$URLsave = getBaseUrl() . "/mywork/viewpic.php?num=" . $num;
 
 require_once("../lib/mydb.php");
 $pdo = db_connect();
@@ -178,6 +229,9 @@ sort($worker_arr);  // 오름차순으로 배열 정렬
 $worker_arr = array_unique($worker_arr);      
 sort($worker_arr);  // 오름차순으로 배열 정렬  
 
+
+// worker 변수가 정의되어 있는지 확인
+$worker = isset($worker) ? $worker : '';
 
 if(!in_array($worker, $worker_arr))   // 배열값에 없으면 넣어준다
 		array_push($worker_arr,$worker);	 // 마지막에 공백하나 넣기
@@ -818,6 +872,14 @@ function createImageInputAndButton($counter, $type, $btnColor, $picData) {
     echo '<div style="display:none;">';
     echo '<input type="file" multiple accept=".gif, .jpg, .png" id="'.$type.'Input_'.$counter.'" onchange="FileProcess(\''.$type.'\', '.$counter.', this)">';
     echo '</div>';
+  // 모바일 기기인지 체크하는 코드 추가
+  $chkMobile = false;
+  if (isset($_SERVER['HTTP_USER_AGENT'])) {
+      $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+      if (preg_match('/android|iphone|ipad|ipod|blackberry|windows phone|opera mini|mobile/i', $userAgent)) {
+          $chkMobile = true;
+      }
+  }
   if ($chkMobile)   
 	   {		
 			echo '<div class="col text-center align-items-center mt-1 mb-1">';
@@ -1445,7 +1507,7 @@ window.delPicFn = function(uniqueId, picName, itemType) {
 							
 				  // 순서가 중요함 이동할 주소가 먼저 나와야 함 (모달창보다 먼저 나와야 화면에 나타냄)
 				  setTimeout(function() {
-						location.href='http://j-techel.co.kr/mywork/list.php';	
+						location.href='<?php echo getBaseUrl(); ?>/mywork/list.php';	
 				   }, 1500);
 				  
 				  // 메시지 창 띄우기  문구, 해당초

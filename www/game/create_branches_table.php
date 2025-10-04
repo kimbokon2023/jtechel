@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 
@@ -7,7 +10,7 @@ if(!isset($_SESSION["level"]) || $_SESSION["level"] != '1') {
     die('관리자만 실행 가능합니다.');
 }
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 
 try {

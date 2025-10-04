@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 $check = isset($_COOKIE['check']) ? $_COOKIE['check'] : 'false';
 $lastdate = isset($_COOKIE['lastdate']) ? $_COOKIE['lastdate'] : 'false';
 
@@ -8,7 +11,7 @@ $level= $_SESSION["level"];
 $user_name= $_SESSION["name"];
 										  
 isset($_REQUEST["id"])  ? $id=$_REQUEST["id"] :   $id=''; 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();	
 
 	
@@ -52,7 +55,7 @@ else
  
 ?>  
   
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php include 'load.php' ?>
  
   
 <title> 회원관리(등록/수정) </title> 

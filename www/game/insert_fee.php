@@ -2,6 +2,9 @@
 /// 개별로 신청하는 것에 대한 DB처리 구간 ///
 /// 개별로 신청하는 것에 대한 DB처리 구간 ///
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();   
 
 $level= $_SESSION["level"];
@@ -26,7 +29,7 @@ $memo=$_REQUEST["memo"];
 $receivable=$_REQUEST["receivable"];
 
 		  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
      
  if ($mode=="modify"){      

@@ -1,7 +1,13 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
-session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
 
 $level= $_SESSION["level"];
 $user_name= $_SESSION["name"];
@@ -11,7 +17,7 @@ ini_set('display_errors','0');  // 화면에 warning 없애기
 
  if($level!==1) {
 	 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -26,7 +32,7 @@ for($i=0; $i<sizeof($mAgent); $i++){
     }
 }  
 
-$root_dir = $_SERVER['DOCUMENT_ROOT'];
+$root_dir = '..';
 ?>
 <!DOCTYPE html>
 <html lang="ko">

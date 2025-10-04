@@ -1,4 +1,10 @@
 <?php
+// 강력한 출력 버퍼 관리 - 로컬 환경 대응
+while (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
+
 require_once '../lib/mydb.php';
 session_start();
 $DB = 'jtechel';
@@ -101,9 +107,45 @@ try {
 }
 
 // PhpSpreadsheet를 사용한 Excel 생성
-require_once '../PHPExcel_1.8.0/Classes/PHPExcel.php';
+// Check for required libraries - 환경별 경로 설정
+require_once '../config/environment.php';
 
+$excel_lib_path = null;
+if (isLocalEnvironment()) {
+    // 로컬 환경
+    $excel_lib_path = '../PHPExcel_1.8.0/Classes/PHPExcel.php';
+} else {
+    // 서버 환경 - 가능한 경로들을 순서대로 확인
+    $possible_paths = [
+        '../PHPExcel_1.8.0/Classes/PHPExcel.php',
+        './PHPExcel_1.8.0/Classes/PHPExcel.php',
+        '/home/jtechel/public_html/PHPExcel_1.8.0/Classes/PHPExcel.php',
+        dirname(__FILE__) . '/../PHPExcel_1.8.0/Classes/PHPExcel.php'
+    ];
+    
+    foreach ($possible_paths as $path) {
+        if (file_exists($path)) {
+            $excel_lib_path = $path;
+            break;
+        }
+    }
+}
+
+if (!$excel_lib_path || !file_exists($excel_lib_path)) {
+    error_log("PHPExcel 라이브러리를 찾을 수 없습니다. 시도한 경로들: " . implode(', ', $possible_paths ?? [$excel_lib_path]));
+    die('PHPExcel 라이브러리를 찾을 수 없습니다. 관리자에게 문의하세요.');
+}
+
+require_once $excel_lib_path;
+
+// 디버깅: PHPExcel 라이브러리 로드 확인
+error_log("=== export_measurements.php 디버깅 시작 ===");
+error_log("PHPExcel 라이브러리 경로: " . $excel_lib_path);
+error_log("PHPExcel 클래스 존재 여부: " . (class_exists('PHPExcel') ? 'YES' : 'NO'));
+
+error_log("PHPExcel 객체 생성 시도...");
 $objPHPExcel = new PHPExcel();
+error_log("PHPExcel 객체 생성 성공!");
 $objPHPExcel->getProperties()->setCreator("OSEL Panel Measurement System")
                             ->setLastModifiedBy("OSEL Panel Measurement System")
                             ->setTitle("Panel Measurements")
@@ -274,22 +316,21 @@ $detailHeaders = [
     'T1' => '1,11전면 날개',
     'U1' => '1,11후면 두께',
     'V1' => '1,11후면 날개',
-    'W1' => 'TR 가로',
-    'X1' => 'TR 세로',
-    'Y1' => 'TR 막판높이',
-    'Z1' => 'TR 밑면깊이JD',
-    'AA1' => 'TR 날개값',
-    'AB1' => 'TR CPI타공 가로',
-    'AC1' => 'TR CPI타공 세로',
-    'AD1' => 'TR CPI타공높이',
-    'AE1' => 'TR 비고',
-    'AF1' => '패널 특이사항',
+        'W1' => 'TR 가로',
+        'X1' => 'TR 막판높이',
+    'Y1' => 'TR 밑면깊이JD',
+    'Z1' => 'TR 날개값',
+    'AA1' => 'TR CPI타공 가로',
+    'AB1' => 'TR CPI타공 세로',
+    'AC1' => 'TR CPI타공높이',
+    'AD1' => 'TR 비고',
+    'AE1' => '패널 특이사항',
 ];
 
 foreach ($detailHeaders as $cell => $value) {
     $detailSheet->setCellValue($cell, $value);
 }
-$detailSheet->getStyle('A1:AF1')->applyFromArray($headerStyle);
+$detailSheet->getStyle('A1:AE1')->applyFromArray($headerStyle);
 
 // 세부정보 데이터 입력
 $detailRow = 2;
@@ -343,19 +384,31 @@ foreach ($measurements as $measurement) {
             // 패널번호: transom은 별도 행으로 표시하지 않으므로 패널 데이터에서는 1~11만
             $detailSheet->setCellValue('K' . $detailRow, $panelNum);
             $panelIndex = is_numeric($panelNum) ? (int)$panelNum : (int)preg_replace('/\D+/', '', (string)$panelNum);
-            $detailSheet->setCellValue('L' . $detailRow, ($panelIndex === 1 || $panelIndex === 11) ? ($panelInfo['panel_type_detail'] ?? '') : '');
+            // 패널 타입 - 두 가지 필드명 모두 지원
+            $panelType = $panelInfo['panelType'] ?? $panelInfo['panel_type_detail'] ?? '';
+            $detailSheet->setCellValue('L' . $detailRow, ($panelIndex === 1 || $panelIndex === 11) ? $panelType : '');
             $detailSheet->setCellValue('M' . $detailRow, ($panelInfo['width'] ?? 0) == 0 ? '' : ($panelInfo['width'] ?? ''));
             $detailSheet->setCellValue('N' . $detailRow, ($panelInfo['height'] ?? 0) == 0 ? '' : ($panelInfo['height'] ?? ''));
-            // Drilling fields
-            $detailSheet->setCellValue('O' . $detailRow, (($panelInfo['drillingWidth'] ?? '') === '' || ($panelInfo['drillingWidth'] ?? 0) == 0) ? '' : ($panelInfo['drillingWidth'] ?? ''));
-            $detailSheet->setCellValue('P' . $detailRow, (($panelInfo['drillingHeight'] ?? '') === '' || ($panelInfo['drillingHeight'] ?? 0) == 0) ? '' : ($panelInfo['drillingHeight'] ?? ''));
-            $detailSheet->setCellValue('Q' . $detailRow, (($panelInfo['drillingFromFloor'] ?? '') === '' || ($panelInfo['drillingFromFloor'] ?? 0) == 0) ? '' : ($panelInfo['drillingFromFloor'] ?? ''));
-            $detailSheet->setCellValue('R' . $detailRow, (($panelInfo['drillingFromEntrance'] ?? '') === '' || ($panelInfo['drillingFromEntrance'] ?? 0) == 0) ? '' : ($panelInfo['drillingFromEntrance'] ?? ''));
-            // Corner details for 1,11
-            $detailSheet->setCellValue('S' . $detailRow, ($panelInfo['frontThickness'] ?? 0) == 0 ? '' : ($panelInfo['frontThickness'] ?? ''));
-            $detailSheet->setCellValue('T' . $detailRow, ($panelInfo['frontWing'] ?? 0) == 0 ? '' : ($panelInfo['frontWing'] ?? ''));
-            $detailSheet->setCellValue('U' . $detailRow, ($panelInfo['backThickness'] ?? 0) == 0 ? '' : ($panelInfo['backThickness'] ?? ''));
-            $detailSheet->setCellValue('V' . $detailRow, ($panelInfo['backWing'] ?? 0) == 0 ? '' : ($panelInfo['backWing'] ?? ''));
+            // Drilling fields - 두 가지 필드명 모두 지원
+            $drillingWidth = $panelInfo['drilling_width'] ?? $panelInfo['drillingWidth'] ?? '';
+            $drillingHeight = $panelInfo['drilling_height'] ?? $panelInfo['drillingHeight'] ?? '';
+            $drillingFromFloor = $panelInfo['drilling_from_floor'] ?? $panelInfo['drillingFromFloor'] ?? '';
+            $drillingFromEntrance = $panelInfo['drilling_from_entrance'] ?? $panelInfo['drillingFromEntrance'] ?? '';
+            
+            $detailSheet->setCellValue('O' . $detailRow, (empty($drillingWidth) || $drillingWidth == 0) ? '' : $drillingWidth);
+            $detailSheet->setCellValue('P' . $detailRow, (empty($drillingHeight) || $drillingHeight == 0) ? '' : $drillingHeight);
+            $detailSheet->setCellValue('Q' . $detailRow, (empty($drillingFromFloor) || $drillingFromFloor == 0) ? '' : $drillingFromFloor);
+            $detailSheet->setCellValue('R' . $detailRow, (empty($drillingFromEntrance) || $drillingFromEntrance == 0) ? '' : $drillingFromEntrance);
+            // Corner details for 1,11 - 두 가지 필드명 모두 지원
+            $frontThickness = $panelInfo['front_thickness'] ?? $panelInfo['frontThickness'] ?? '';
+            $frontWing = $panelInfo['front_wing'] ?? $panelInfo['frontWing'] ?? '';
+            $backThickness = $panelInfo['back_thickness'] ?? $panelInfo['backThickness'] ?? '';
+            $backWing = $panelInfo['back_wing'] ?? $panelInfo['backWing'] ?? '';
+            
+            $detailSheet->setCellValue('S' . $detailRow, (empty($frontThickness) || $frontThickness == 0) ? '' : $frontThickness);
+            $detailSheet->setCellValue('T' . $detailRow, (empty($frontWing) || $frontWing == 0) ? '' : $frontWing);
+            $detailSheet->setCellValue('U' . $detailRow, (empty($backThickness) || $backThickness == 0) ? '' : $backThickness);
+            $detailSheet->setCellValue('V' . $detailRow, (empty($backWing) || $backWing == 0) ? '' : $backWing);
             // 패널번호 1~11번은 TR 관련 컬럼을 비워둠 (transom만 표시)
             // 패널 번호를 다시 한번 정확히 계산
             $currentPanelNum = is_numeric($panelNum) ? (int)$panelNum : (int)preg_replace('/\D+/', '', (string)$panelNum);
@@ -378,17 +431,19 @@ foreach ($measurements as $measurement) {
             // 1~11번 패널은 무조건 TR 컬럼을 비워둠 (transom만 표시)
             if ($currentPanelNum >= 1 && $currentPanelNum <= 11) {
                 error_log("DEBUG: 패널 " . $currentPanelNum . "번 - TR 컬럼 비우기");
-                foreach (['W','X','Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                foreach (['W','X','Y','Z','AA','AB','AC','AD'] as $col) {
                     $detailSheet->setCellValue($col . $detailRow, '');
                 }
             } else {
                 // 12번 이상 패널은 기존 로직 유지
                 error_log("DEBUG: 패널 " . $currentPanelNum . "번 - TR 컬럼 유지");
-                foreach (['W','X','Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                foreach (['W','X','Y','Z','AA','AB','AC','AD'] as $col) {
                     $detailSheet->setCellValue($col . $detailRow, '');
                 }
             }
-            $detailSheet->setCellValue('AF' . $detailRow, $panelInfo['specialNotes'] ?? '');
+            // 패널 특이사항 - 두 가지 필드명 모두 지원
+            $specialNotes = $panelInfo['notes'] ?? $panelInfo['specialNotes'] ?? '';
+            $detailSheet->setCellValue('AE' . $detailRow, $specialNotes);
             $detailRow++;
         }
         // 패널들 출력 후, Transom 데이터가 있으면 별도 행 추가
@@ -420,17 +475,16 @@ foreach ($measurements as $measurement) {
             $detailSheet->setCellValue('T' . $detailRow, '');
             $detailSheet->setCellValue('U' . $detailRow, '');
             $detailSheet->setCellValue('V' . $detailRow, '');
-            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑
+            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑 (TR 세로 제거됨)
             $detailSheet->setCellValue('W' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('X' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
-            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
-            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
-            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
-            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
-            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
-            $detailSheet->setCellValue('AD' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
-            $detailSheet->setCellValue('AE' . $detailRow, $transomData['notes'] ?? '');
-            $detailSheet->setCellValue('AF' . $detailRow, '');
+            $detailSheet->setCellValue('X' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
+            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
+            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
+            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
+            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
+            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
+            $detailSheet->setCellValue('AD' . $detailRow, $transomData['notes'] ?? '');
+            $detailSheet->setCellValue('AE' . $detailRow, '');
             $detailRow++;
         }
     } else {
@@ -473,17 +527,16 @@ foreach ($measurements as $measurement) {
             $detailSheet->setCellValue('T' . $detailRow, '');
             $detailSheet->setCellValue('U' . $detailRow, '');
             $detailSheet->setCellValue('V' . $detailRow, '');
-            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑 (패널 데이터가 없는 경우)
+            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑 (패널 데이터가 없는 경우, TR 세로 제거됨)
             $detailSheet->setCellValue('W' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('X' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
-            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
-            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
-            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
-            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
-            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
-            $detailSheet->setCellValue('AD' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
-            $detailSheet->setCellValue('AE' . $detailRow, $transomData['notes'] ?? '');
-            $detailSheet->setCellValue('AF' . $detailRow, '');
+            $detailSheet->setCellValue('X' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
+            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
+            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
+            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
+            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
+            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
+            $detailSheet->setCellValue('AD' . $detailRow, $transomData['notes'] ?? '');
+            $detailSheet->setCellValue('AE' . $detailRow, '');
             $detailRow++;
         }
 
@@ -499,8 +552,8 @@ foreach (range('A','Z') as $columnID) {
     $detailSheet->getColumnDimension($columnID)->setAutoSize(false);
     $detailSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
 }
-// AA-AF 컬럼도 설정
-foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF'] as $columnID) {
+// AA-AE 컬럼도 설정 (AF 제거됨)
+foreach (['AA', 'AB', 'AC', 'AD', 'AE'] as $columnID) {
     $detailSheet->getColumnDimension($columnID)->setAutoSize(false);
     $detailSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
 }
@@ -511,7 +564,7 @@ $detailWideColumns = [
     'C' => 30,  // 현장명
     'D' => 12,  // 측정일자
     'E' => 12,  // 측정자
-    'K' => 12,  // 패널 번호
+    'K' => 12,  // 패널 번호 
     'L' => 15,  // 패널 타입
     'O' => 14,  // 타공 가로
     'P' => 14,  // 타공 세로
@@ -520,27 +573,105 @@ $detailWideColumns = [
     'AB' => 18, // Transom CPI타공 가로
     'AC' => 18, // Transom CPI타공 세로
     'AD' => 18, // Transom CPI타공높이
-    'AE' => 20, // Transom 비고
-    'AF' => 30  // 패널 특이사항
+    'AE' => 30  // 패널 특이사항
 ];
 foreach ($detailWideColumns as $col => $width) {
     $detailSheet->getColumnDimension($col)->setWidth($width);
 }
 
-// 파일명 생성
-$filename = 'panel_measurements_' . date('Y-m-d_H-i-s') . '.xlsx';
+// 파일명 생성 (브라우저 호환성 강화)
+$filename = 'Measurement_Data_' . date('Y-m-d_H-i-s') . '.xlsx';
 
+// 강화된 디버깅: 파일명과 헤더 정보
+error_log("=== 엑셀 내보내기 디버깅 시작 ===");
+error_log("생성된 파일명: " . $filename);
+error_log("현재 출력 버퍼 레벨: " . ob_get_level());
+error_log("현재 출력 버퍼 내용 길이: " . strlen(ob_get_contents()));
+error_log("현재 시간: " . date('Y-m-d H:i:s'));
+error_log("PHP 버전: " . phpversion());
+error_log("서버 소프트웨어: " . $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown');
+
+// 모든 출력 버퍼 강제 정리
+while (ob_get_level()) {
+    ob_end_clean();
+}
+error_log("모든 출력 버퍼 정리 완료");
+ 
 // Excel 파일 생성 및 다운로드
+// 디버깅: Writer 생성 및 저장
+error_log("PHPExcel Writer 생성 시도...");
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+error_log("PHPExcel Writer 생성 성공!");
 
-// 헤더 설정
+// 헤더 전송 전 완전한 출력 버퍼 정리 (로컬 환경 대응)
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+error_log("=== 헤더 전송 시작 ===");
+error_log("헤더 전송 전 출력 버퍼 레벨: " . ob_get_level());
+
+// 파일 크기 먼저 계산
+$temp_file = tempnam(sys_get_temp_dir(), 'excel_debug_');
+$objWriter->save($temp_file);
+$file_size = filesize($temp_file);
+error_log("생성된 Excel 파일 크기: " . $file_size . " bytes");
+error_log("임시 파일 경로: " . $temp_file);
+
+// 파일 크기가 유효한지 확인
+if ($file_size === false || $file_size < 1000) {
+    error_log("경고: 파일 크기가 너무 작습니다. " . $file_size);
+    $file_size = 10240; // 기본값 설정
+}
+
+// 브라우저 호환성을 위한 최종 헤더 설정
+header('HTTP/1.1 200 OK');
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="' . $filename . '"');
-header('Cache-Control: max-age=0');
-header('Cache-Control: max-age=1');
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-header('Cache-Control: cache, must-revalidate');
-header('Pragma: public');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+header('Content-Length: ' . $file_size);
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+header('Accept-Ranges: bytes');
+header('Connection: close');
+header('X-Content-Type-Options: nosniff');
+header('X-Download-Options: noopen');
+error_log("최종 헤더 전송 완료: filename=" . $filename);
 
-$objWriter->save('php://output'); 
+// 로컬 환경에서 추가 안전장치
+if (ob_get_level()) {
+    ob_end_clean();
+}
+
+error_log("=== Excel 파일 출력 시작 ===");
+error_log("출력 전 최종 버퍼 상태 - 레벨: " . ob_get_level());
+
+// 로컬 환경에서 추가 안전장치
+if (ob_get_level()) {
+    ob_end_clean();
+    error_log("최종 출력 전 버퍼 정리 완료");
+}
+
+// 임시 파일이 이미 생성되었으므로 재사용
+
+// 직접 파일 읽기 및 출력 (브라우저 호환성 강화)
+error_log("임시 파일에서 직접 읽기 시작...");
+$file_content = file_get_contents($temp_file);
+$actual_size = strlen($file_content);
+error_log("실제 읽은 파일 크기: " . $actual_size . " bytes");
+
+// 바이너리 모드로 출력
+if (ob_get_level()) {
+    ob_end_clean();
+}
+
+// 직접 파일 내용 출력
+print($file_content);
+error_log("파일 내용 직접 출력 완료!");
+
+// 임시 파일 삭제
+unlink($temp_file);
+error_log("임시 파일 삭제 완료");
+
+error_log("=== Excel 파일 출력 완료 ===");
+exit; 

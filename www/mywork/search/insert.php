@@ -1,5 +1,8 @@
 <?php   
 session_start();    
+
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
   
 $level= $_SESSION["level"];
 $user_name= $_SESSION["name"];
@@ -32,7 +35,7 @@ if(isset($_REQUEST["item9"])) array_push($fieldarr, 'item9')     ;
 // array_push($fieldarr, 'filename1');
 // array_push($fieldarr, 'filename2');
 
-array_push($strarr, $_REQUEST["itemname"]);
+array_push($strarr, isset($_REQUEST["itemname"]) ? $_REQUEST["itemname"] : '');
 if(isset($_REQUEST["item1"])) array_push($strarr, $_REQUEST["item1"])     ; 
 if(isset($_REQUEST["item2"])) array_push($strarr, $_REQUEST["item2"])     ; 
 if(isset($_REQUEST["item3"])) array_push($strarr, $_REQUEST["item3"])     ; 
@@ -151,15 +154,4 @@ if($mode=="modify")
 }
 
 echo $num;
-
-// echo "<script> document.getElementById('num').value='" . $num . "'; </script>";   // 부모창에 num 기록
-
-// var_dump($_FILES['upfile']['name']);
-//var_dump($fieldarr]);
-//var_dump($strarr);
-
- ?>
- 
-
- 
-
+?>

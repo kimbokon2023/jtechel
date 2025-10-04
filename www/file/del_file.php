@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문
 
 isset($_REQUEST["savename"])  ? $savename=$_REQUEST["savename"] : $savename=''; 
@@ -14,7 +17,7 @@ $pdo = db_connect();
     
    try{									
      $pdo->beginTransaction();
-     $sql = "delete from mirae8440.fileuploads where savename = ?";  
+     $sql = "delete from jtechel.fileuploads where savename = ?";  
      $stmh = $pdo->prepare($sql);
      $stmh->bindValue(1,$savename,PDO::PARAM_STR);      
      $stmh->execute();  

@@ -1,15 +1,18 @@
-<?
+<?php
 session_start(); 
 
 header('Content-Type: text/html; charset=utf-8');
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 $level= $_SESSION["level"];
-$user_name= $_SESSION["name"];  
+$user_name= $_SESSION["name"];   
 
  if(!isset($_SESSION["level"]) || $level>8) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(2);
-         header ("Location:http://j-techel.co.kr/login/logout.php");
+         header ("Location: " . getBaseUrl() . "/login/logout.php");
          exit;
    } 
 

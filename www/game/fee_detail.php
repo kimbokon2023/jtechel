@@ -1,7 +1,13 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
-session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
 ini_set('display_errors','1');  // 화면에 warning 없애기	  1은 보이기
 
 require_once('branch_select_helper.php');
@@ -16,7 +22,7 @@ $id= $_SESSION["userid"];
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -46,7 +52,7 @@ for($i=0; $i<sizeof($mAgent); $i++){
 <title>YH 시스템 지출 상세내역 조회</title>
 
 <?php
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ?>
 
@@ -433,12 +439,12 @@ $total6 = 0;
 
 // while 루프 예시
 while ($row = $stmh->fetch(PDO::FETCH_ASSOC)) {
-    $text1 = $row["text1"] * 1000;
-    $text2 = $row["text2"] * 1000;
-    $text3 = $row["text3"] * 1000;
-    $text4 = $row["text4"] * 1000;
-    $text5 = $row["text5"] * 1000;
-    $text6 = $row["text6"] * 1000;
+    $text1 = (is_numeric($row["text1"]) ? floatval($row["text1"]) : 0) * 1000;
+    $text2 = (is_numeric($row["text2"]) ? floatval($row["text2"]) : 0) * 1000;
+    $text3 = (is_numeric($row["text3"]) ? floatval($row["text3"]) : 0) * 1000;
+    $text4 = (is_numeric($row["text4"]) ? floatval($row["text4"]) : 0) * 1000;
+    $text5 = (is_numeric($row["text5"]) ? floatval($row["text5"]) : 0) * 1000;
+    $text6 = (is_numeric($row["text6"]) ? floatval($row["text6"]) : 0) * 1000;
 
     $total1 += $text1;
     $total2 += $text2;
@@ -506,12 +512,12 @@ while ($row = $stmh->fetch(PDO::FETCH_ASSOC)) {
     $total0 = 0;
     $registedate = $row["registedate"];
 
-    $text1 = $row["text1"] * 1000;
-    $text2 = $row["text2"] * 1000;
-    $text3 = $row["text3"] * 1000;
-    $text4 = $row["text4"] * 1000;
-    $text5 = $row["text5"] * 1000;
-    $text6 = $row["text6"] * 1000;
+    $text1 = (is_numeric($row["text1"]) ? floatval($row["text1"]) : 0) * 1000;
+    $text2 = (is_numeric($row["text2"]) ? floatval($row["text2"]) : 0) * 1000;
+    $text3 = (is_numeric($row["text3"]) ? floatval($row["text3"]) : 0) * 1000;
+    $text4 = (is_numeric($row["text4"]) ? floatval($row["text4"]) : 0) * 1000;
+    $text5 = (is_numeric($row["text5"]) ? floatval($row["text5"]) : 0) * 1000;
+    $text6 = (is_numeric($row["text6"]) ? floatval($row["text6"]) : 0) * 1000;
 
     $total1 += $text1;
     $total2 += $text2;
@@ -550,6 +556,7 @@ echo '</table>';
   print "오류: ".$Exception->getMessage();
   }  
    // 페이지 구분 블럭의 첫 페이지 수 계산 ($start_page)
+      $current_page = isset($current_page) ? $current_page : 1;
       $start_page = ($current_page - 1) * $page_scale + 1;
    // 페이지 구분 블럭의 마지막 페이지 수 계산 ($end_page)
       $end_page = $start_page + $page_scale - 1;  
@@ -562,9 +569,13 @@ echo '</table>';
 <div class="row row-cols-auto mt-5 mb-5 justify-content-center align-items-center"> 
  <?php
  
- 
+
+   $Bigsearch = isset($search) ? $search : "";
    $BigsearchTag = str_replace(' ','|',$Bigsearch);
- 
+   
+   // total_page 변수 초기화
+   $total_page = isset($total_page) ? $total_page : 1;
+
 	if($page!=1 && $page>$page_scale){
               $prev_page = $page - $page_scale;    
               // 이전 페이지값은 해당 페이지 수에서 리스트에 표시될 페이지수 만큼 감소

@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
+
 session_start();
 ?>
 
@@ -22,15 +25,13 @@ session_start();
 
   </head>
 
-  <body cellpadding="0" cellspacing="0" width="100%" height="100%" align="center">
+  <body cellpadding="0" cellspacing="0" width="100%" height="100%;" >
 	
-	
-	
-	<?php
+<?php
 
 $id=$_REQUEST["uid"];
 $pw=$_REQUEST["upw"];
-require_once("../lib/mydb.php");
+require_once("../../lib/mydb.php");
 $pdo=db_connect();
 
 try{
@@ -84,7 +85,7 @@ history.back();
 	}
   	
  $data=date("Y-m-d H:i:s") . " - " . $_SESSION["userid"] . " - " . $_SESSION["name"] ;	
- require_once("../lib/mydb.php");
+ require_once("../../lib/mydb.php");
  $pdo = db_connect();
  $pdo->beginTransaction();
  $sql = "insert into jtechel.gamelog(data) values(?) " ;

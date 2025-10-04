@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
@@ -24,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 try {
     // 데이터베이스 연결
-    require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+    require_once("../lib/mydb.php");
     $pdo = db_connect();
     
     // 데이터베이스 연결 확인

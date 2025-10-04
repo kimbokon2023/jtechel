@@ -2,6 +2,9 @@
 
 session_start(); 
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 // 이름으로 구분해서 조회되도록 만듬
 $user_name = $_SESSION["name"];
 $level = $_SESSION["level"];
@@ -15,7 +18,7 @@ header("Expires: 0"); // rfc2616 - Section 14.21
 
 $root_dir = $_SERVER['DOCUMENT_ROOT'] ;
 
-include $root_dir . '/jtech/common.php';
+include 'common.php';
 
 // 모바일 사용여부 확인하는 루틴
 $mAgent = array("iPhone","iPod","Android","Blackberry", 

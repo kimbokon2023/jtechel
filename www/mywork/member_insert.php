@@ -2,18 +2,21 @@
 
 session_start();   
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문  
 
 isset($_REQUEST["mode"])  ? $mode = $_REQUEST["mode"] : $mode=""; 
 isset($_REQUEST["id"])  ? $id = $_REQUEST["id"] : $id=""; 
 
-$pass=$_REQUEST["pass"];  
-$name=$_REQUEST["name"];  
-$level=$_REQUEST["level"];  
-$part=$_REQUEST["part"];  
+$pass = isset($_REQUEST["pass"]) ? $_REQUEST["pass"] : '';  
+$name = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';  
+$level = isset($_REQUEST["level"]) ? $_REQUEST["level"] : '';  
+$part = isset($_REQUEST["part"]) ? $_REQUEST["part"] : '';  
 $part='mywork';  // jtech 강제 파트 지정 (오성은 오성으로 해야 함) 
 			  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
  $pdo = db_connect();
      
  if ($mode=="modify"){      

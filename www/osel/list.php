@@ -35,6 +35,29 @@ function calculateActualPanelCount($panel_data, $transom_data) {
     return $panel_count;
 }
 
+// 현장명에서 엘리베이터 대수 추출 함수
+function extractElevatorCount($site_name) {
+    // 패턴 1: #1~#14 형태 (1부터 14까지)
+    if (preg_match('/#(\d+)~#(\d+)/', $site_name, $matches)) {
+        $start = intval($matches[1]);
+        $end = intval($matches[2]);
+        return $end - $start + 1;
+    }
+    
+    // 패턴 2: #15(장애인용) 형태 (단일 엘리베이터)
+    if (preg_match('/#(\d+)/', $site_name, $matches)) {
+        return 1;
+    }
+    
+    // 패턴 3: 숫자만 있는 경우
+    if (preg_match('/(\d+)대/', $site_name, $matches)) {
+        return intval($matches[1]);
+    }
+    
+    // 기본값: 1대
+    return 1;
+}
+
 // Check authentication
 if (!isset($_SESSION["level"]) || $_SESSION["level"] > 8) { 
     header("Location: ../login/login_form.php");
@@ -136,9 +159,10 @@ try {
         $stmt->execute(array_merge($params, [$per_page, $offset]));
         $measurements = $stmt->fetchAll();
 
-        // 각 측정 데이터의 실제 패널 개수 계산
+        // 각 측정 데이터의 실제 패널 개수 계산 및 엘리베이터 대수 추가
         foreach ($measurements as &$measurement) {
             $measurement['actual_panel_count'] = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data']);
+            $measurement['elevator_count'] = extractElevatorCount($measurement['site_name']);
         }
         unset($measurement); // 참조 제거
     }
@@ -612,10 +636,10 @@ try {
                                 </th>
                                 <th>현장명/측정자</th>
                                 <th>측정일자</th>
-                                <th>카 치수/재질</th>
+                                <th>카치수/대수/재질</th>
                                 <th>측정 판넬</th>
-                                <th>판넬 수</th>
-                                <th>등록일시</th>
+                                <th>판넬</th>
+                                <th>등록</th>
                                 <th>작업</th>
                             </tr>
                         </thead>
@@ -658,6 +682,7 @@ try {
                                 <td><?= date('Y-m-d', strtotime($measurement['measurement_date'])) ?></td>
                                 <td>
                                     <div><strong>W<?= $measurement['car_inside_width'] ?>D<?= $measurement['car_inside_depth'] ?>H<?= $measurement['car_inside_height'] ?></strong></div>
+                                    <div><strong><?= $measurement['elevator_count'] ?>대</strong></div>
                                     <?php if (!empty($measurement['material_type'])): ?>
                                         <small class="text-muted"><?= htmlspecialchars($measurement['material_type']) ?>
                                         <?php if (!empty($measurement['material_thickness'])): ?>
@@ -923,6 +948,7 @@ try {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
+                            id: measurementId,
                             site_name: siteName,
                             measurement_date: measurementDate
                         })

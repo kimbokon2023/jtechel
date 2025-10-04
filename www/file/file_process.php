@@ -1,6 +1,9 @@
  <?php   
  session_start(); 
- 
+
+ // 환경별 기본 URL 설정
+ require_once '../config/environment.php';
+
  if(isset($_REQUEST["num"]))
     $num=$_REQUEST["num"]; 
 
@@ -22,7 +25,7 @@
  $pdo = db_connect();      
  
  try{
-     $sql = "select * from mirae8440.work where num=?";
+     $sql = "select * from jtechel.work where num=?";
      $stmh = $pdo->prepare($sql);  
      $stmh->bindValue(1, $num, PDO::PARAM_STR);      
      $stmh->execute();            
@@ -39,7 +42,7 @@
  
 	try{
         $pdo->beginTransaction();   
-        $sql = "update mirae8440.work set measureday=?, update_log=?  where num=?  LIMIT 1";            
+        $sql = "update jtechel.work set measureday=?, update_log=?  where num=?  LIMIT 1";            
 	   
      $stmh = $pdo->prepare($sql); 
      $stmh->bindValue(1, $measureday, PDO::PARAM_STR);         

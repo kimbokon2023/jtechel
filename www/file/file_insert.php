@@ -1,5 +1,8 @@
  <?php session_start();  
- 
+
+ // 환경별 기본 URL 설정
+ require_once '../config/environment.php';
+
  /*  파일 및 이미지를 서버에 올리기 위한 통합 모듈 제작
  서버 저장위치 : 일반 첨부파일 이미지 함께 사용 fileuploads
  fileuploads 필드구성 (id, tablename, item, parentid, realname, savename) 
@@ -149,7 +152,7 @@ if($filename !='') {
 // insert
 		try{		 
 			$pdo->beginTransaction();   
-			$sql = "insert into mirae8440.fileuploads ";
+			$sql = "insert into jtechel.fileuploads ";
 			$sql .=" (tablename, item, parentid, realname, savename) " ;        
 			$sql .=" values(?, ?, ?, ?, ?) " ;        
 			   
@@ -213,7 +216,7 @@ else
 		// insert
 				try{		 
 					$pdo->beginTransaction();   
-					$sql = "insert into mirae8440.fileuploads ";
+					$sql = "insert into jtechel.fileuploads ";
 					$sql .=" (tablename, item, parentid, realname, savename) " ;        
 					$sql .=" values(?, ?, ?, ?, ?) " ;        
 					   
@@ -246,7 +249,7 @@ else
  require_once("../lib/mydb.php");
  $pdo = db_connect();
  $pdo->beginTransaction();
- $sql = "insert into mirae8440.logdata(data) values(?) " ;
+ $sql = "insert into jtechel.logdata(data) values(?) " ;
  $stmh = $pdo->prepare($sql); 
  $stmh->bindValue(1, $data, PDO::PARAM_STR);   
  $stmh->execute();

@@ -57,10 +57,14 @@ class PanelMeasurement {
         const panelNumber = panelElement.getAttribute('data-panel');
         this.selectedPanel = panelNumber;
         
-        // Update UI
-        document.getElementById('selectedPanel').value = panelNumber;
-        document.getElementById('selectedPanelNumber').textContent = panelNumber;
-        document.getElementById('selectedPanelInfo').style.display = 'block';
+        // Update UI - Check if elements exist before accessing
+        const selectedPanelInput = document.getElementById('selectedPanel');
+        const selectedPanelNumber = document.getElementById('selectedPanelNumber');
+        const selectedPanelInfo = document.getElementById('selectedPanelInfo');
+        
+        if (selectedPanelInput) selectedPanelInput.value = panelNumber;
+        if (selectedPanelNumber) selectedPanelNumber.textContent = panelNumber;
+        if (selectedPanelInfo) selectedPanelInfo.style.display = 'block';
         
         // Load existing measurements for this panel if any
         this.loadPanelMeasurements(panelNumber);
@@ -194,11 +198,13 @@ class PanelMeasurement {
 
         if (allValid) {
             this.showAlert('success', '모든 측정값이 유효합니다. 저장할 수 있습니다.');
-            document.getElementById('saveBtn').disabled = false;
+            const saveBtn = document.getElementById('saveBtn');
+            if (saveBtn) saveBtn.disabled = false;
             return true;
         } else {
             this.showAlert('error', '입력값을 확인해주세요. 잘못된 값이 있습니다.');
-            document.getElementById('saveBtn').disabled = true;
+            const saveBtn = document.getElementById('saveBtn');
+            if (saveBtn) saveBtn.disabled = true;
             return false;
         }
     }
@@ -214,6 +220,8 @@ class PanelMeasurement {
         
         // Show loading state
         const submitBtn = document.getElementById('saveBtn');
+        if (!submitBtn) return;
+        
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 저장 중...';
         submitBtn.disabled = true;
@@ -240,8 +248,10 @@ class PanelMeasurement {
             this.showAlert('error', '서버와의 통신 중 오류가 발생했습니다.');
         })
         .finally(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         });
     }
 
@@ -271,16 +281,23 @@ class PanelMeasurement {
     }
 
     resetForm() {
-        document.getElementById('measurementForm').reset();
+        const form = document.getElementById('measurementForm');
+        const selectedPanelInfo = document.getElementById('selectedPanelInfo');
+        const saveBtn = document.getElementById('saveBtn');
+        
+        if (form) form.reset();
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('selected'));
-        document.getElementById('selectedPanelInfo').style.display = 'none';
-        document.getElementById('saveBtn').disabled = true;
+        if (selectedPanelInfo) selectedPanelInfo.style.display = 'none';
+        if (saveBtn) saveBtn.disabled = true;
         this.selectedPanel = null;
         // Auto-save localStorage removal not needed
     }
 
     loadPanelMeasurements(panelNumber) {
-        const siteName = document.getElementById('siteName').value;
+        const siteNameInput = document.getElementById('siteName');
+        if (!siteNameInput) return;
+        
+        const siteName = siteNameInput.value;
         if (!siteName) return;
 
         fetch(`get_panel_data.php?site_name=${encodeURIComponent(siteName)}&panel_number=${panelNumber}`)
@@ -288,11 +305,17 @@ class PanelMeasurement {
         .then(data => {
             if (data.success && data.measurements) {
                 const measurements = data.measurements;
-                if (measurements.panel_width) document.getElementById('panelWidth').value = measurements.panel_width;
-                if (measurements.panel_height) document.getElementById('panelHeight').value = measurements.panel_height;
-                if (measurements.panel_thickness) document.getElementById('panelThickness').value = measurements.panel_thickness;
-                if (measurements.material_type) document.getElementById('materialType').value = measurements.material_type;
-                if (measurements.notes) document.getElementById('notes').value = measurements.notes;
+                const panelWidth = document.getElementById('panelWidth');
+                const panelHeight = document.getElementById('panelHeight');
+                const panelThickness = document.getElementById('panelThickness');
+                const materialType = document.getElementById('materialType');
+                const notes = document.getElementById('notes');
+                
+                if (measurements.panel_width && panelWidth) panelWidth.value = measurements.panel_width;
+                if (measurements.panel_height && panelHeight) panelHeight.value = measurements.panel_height;
+                if (measurements.panel_thickness && panelThickness) panelThickness.value = measurements.panel_thickness;
+                if (measurements.material_type && materialType) materialType.value = measurements.material_type;
+                if (measurements.notes && notes) notes.value = measurements.notes;
                 
                 this.showAlert('info', '기존 측정 데이터를 불러왔습니다.');
             }

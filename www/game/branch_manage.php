@@ -1,15 +1,18 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 
 // 권한 체크
 if(!isset($_SESSION["level"]) || $_SESSION["level"] > 5) {
     sleep(1);
-    header("Location:http://j-techel.co.kr/login/login_form.php");
+    header("Location:" . getBaseUrl() . "/login/login_form.php");
     exit;
 }
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 ?>
 
@@ -37,7 +40,7 @@ $pdo = db_connect();
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/game/myheader.php'; ?>
+    <?php include 'myheader.php'; ?>
 
     <div class="container" >
         <div class="row">

@@ -3,6 +3,9 @@
     { 
         session_start(); 
     } 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
     
   if(isset($_REQUEST["num"]))  //수정 버튼을 클릭해서 호출했는지 체크
    $num=$_REQUEST["num"];
@@ -71,7 +74,7 @@
 
 ?>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php include 'load.php' ?>
 
 <title> 고객 작업확인서 출력</title>
 <?PHP

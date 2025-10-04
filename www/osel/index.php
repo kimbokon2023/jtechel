@@ -510,21 +510,16 @@ try {
                     <i class="bi bi-building"></i>
                 </div>
                 <h4 class="card-title">현장 관리</h4>
-                <p class="card-description">현장을 등록하고 기존 현장 정보를 관리</p>
+                <p class="card-description">기존 현장 정보를 관리하고 측정 데이터를 확인</p>
                 <div style="display: flex; gap: var(--linear-spacing-sm, 8px); justify-content: center; flex-wrap: wrap;">
-                    <a href="site_management.php" style="text-decoration: none;">
-                        <?php
-                        echo LinearButton::primary('현장 등록');
-                        ?>
-                    </a>
                     <a href="site_list.php" style="text-decoration: none;">
                         <?php
-                        echo LinearButton::secondary('현장 리스트');
+                        echo LinearButton::primary('현장 리스트');
                         ?>
                     </a>
                     <a href="list.php" style="text-decoration: none;">
                         <?php
-                        echo LinearButton::outline('측정보기(엑셀변환)');
+                        echo LinearButton::secondary('측정보기(엑셀변환)');
                         ?>
                     </a>
                 </div>
@@ -540,12 +535,12 @@ try {
                 <div style="display: flex; gap: var(--linear-spacing-sm, 8px); justify-content: center; flex-wrap: wrap;">
                     <a href="result.php" style="text-decoration: none;">
                         <?php
-                        echo LinearButton::primary('제작사이즈 생성');
+                        echo LinearButton::primary('개별현장');
                         ?>
                     </a>
                     <a href="site_groups.php" style="text-decoration: none;">
                         <?php
-                        echo LinearButton::secondary('현장그룹 제작생성');
+                        echo LinearButton::secondary('현장 묶음(그룹)');
                         ?>
                     </a>
                 </div>

@@ -1,0 +1,70 @@
+name: Deploy to j-techel.co.kr via FTP
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ftp-deploy
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 1
+
+      - name: Verify deploy source (./www/)
+        run: |
+          test -d ./www || (echo "::error::www/ not found" && exit 1)
+          find ./www -maxdepth 2 -type f | head -n 20
+          
+      - name: Create empty .gitkeep files for empty directories
+        run: |
+          find ./www -type d -empty -exec touch {}/.gitkeep \;
+          
+      - name: Verify FTP connection and permissions
+        run: |
+          echo "FTP 서버 연결 및 권한 확인을 위한 정보:"
+          echo "서버: ${{ secrets.FTP_SERVER }}"
+          echo "사용자: ${{ secrets.FTP_USERNAME }}"
+          echo "대상 경로: ${{ secrets.FTP_REMOTE_DIR }}"
+
+      - name: Deploy (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        continue-on-error: true
+        id: ftp-deploy
+        with:
+          server:     ${{ secrets.FTP_SERVER }}     # FTP 서버 호스트명
+          username:   ${{ secrets.FTP_USERNAME }}   # FTP 사용자명
+          password:   ${{ secrets.FTP_PASSWORD }}   # FTP 비밀번호
+          protocol:   ftp                          
+          port:       ${{ secrets.FTP_PORT }}       # FTP 포트
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }} # 웹 호스팅 루트 경로
+          local-dir:  "./www/"
+          state-name: "ftp-deploy-sync-state.json"  # 점파일 금지 서버 대응
+          log-level:  verbose                       # 상세 로그로 디버깅 
+          dry-run:    false                         # 실제 배포 실행
+          exclude: |
+            **/.git/**
+            **/.git*
+            **/.github/**
+            **/.vscode/**
+            **/.idea/**
+            **/.history/**
+            **/.cache/**
+            **/.cursor/**
+            **/.claude/**
+            **/node_modules/**            
+            **/*.md
+            **/*.yml
+            **/*.yaml
+            **/*.lock 
+            **/.DS_Store
+            **/Thumbs.db            
+            **/uploads/**
+            **/storage/**
+            **/lib/**             

@@ -68,8 +68,8 @@ if (isset($_POST['transom_data'])) {
     error_log("transom_data length: " . strlen($_POST['transom_data']));
 }
 $project_type = trim($_POST['project_type'] ?? '신규');
-$panel_corners_excluded = intval($_POST['panel_corners_excluded'] ?? 1);
-$transom_excluded = intval($_POST['transom_excluded'] ?? 0);
+$panel_corners_excluded = isset($_POST['panel_corners_excluded']) ? intval($_POST['panel_corners_excluded']) : 0;
+$transom_excluded = isset($_POST['transom_excluded']) ? intval($_POST['transom_excluded']) : 0;
 $elevator_count = intval($_POST['elevator_count'] ?? 1);
 $ipark_check = intval($_POST['ipark_check'] ?? 0);
 
@@ -82,13 +82,12 @@ if (isset($_POST['project_type'])) {
     error_log("project_type type: " . gettype($_POST['project_type']));
 }
 
-// DEBUG: Log transom_excluded POST data
-error_log("=== TRANSOM_EXCLUDED DEBUG ===");
+// DEBUG: Log checkbox POST data
+error_log("=== CHECKBOX DEBUG ===");
+error_log("Raw _POST['panel_corners_excluded']: " . (isset($_POST['panel_corners_excluded']) ? "'" . $_POST['panel_corners_excluded'] . "'" : 'NOT_SET'));
+error_log("Parsed panel_corners_excluded: " . $panel_corners_excluded);
 error_log("Raw _POST['transom_excluded']: " . (isset($_POST['transom_excluded']) ? "'" . $_POST['transom_excluded'] . "'" : 'NOT_SET'));
 error_log("Parsed transom_excluded: " . $transom_excluded);
-if (isset($_POST['transom_excluded'])) {
-    error_log("transom_excluded type: " . gettype($_POST['transom_excluded']));
-}
 
 // Page leave protection - redirect handling
 $redirect_after_save = trim($_POST['redirect_after_save'] ?? '');
@@ -182,7 +181,7 @@ if (!empty($panel_data)) {
     $decoded_panel = json_decode($panel_data, true);
     if (is_array($decoded_panel)) {
         // 1,11번 패널 제외 체크박스가 체크되어 있으면 1번, 11번 패널 데이터 제거
-        if ($panel_corners_excluded === '1' || $panel_corners_excluded === 1) {
+        if ($panel_corners_excluded == 1) {
             unset($decoded_panel['1']);
             unset($decoded_panel['11']);
             error_log("패널 저장: 1,11번 패널 제외 체크박스로 인해 1,11번 패널 데이터 제거됨");
@@ -195,7 +194,7 @@ if (!empty($panel_data)) {
 }
 
 // 트랜섬 제외 체크박스가 체크되어 있으면 트랜섬 데이터 제거
-if ($transom_excluded === '1' || $transom_excluded === 1) {
+if ($transom_excluded == 1) {
     $transom_data = '{}'; // 빈 JSON 객체로 설정
     error_log("패널 저장: 트랜섬 제외 체크박스로 인해 트랜섬 데이터 제거됨");
 }

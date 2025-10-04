@@ -4,6 +4,8 @@ if(isset($_REQUEST["search"]))   //목록표에 제목,이름 등 나오는 부�
 	 $search=$_REQUEST["search"];
 if(isset($_REQUEST["separate_date"]))   //출고일 완료일
 	 $separate_date=$_REQUEST["separate_date"];	 
+else
+	 $separate_date="1";  // 기본값 설정
 	 
 if(isset($_REQUEST["list"]))   //목록표에 제목,이름 등 나오는 부분
 	 $list=$_REQUEST["list"];
@@ -37,17 +39,17 @@ if(isset($_REQUEST["scale"])) // $_REQUEST["scale"]값이 없을 때에는 1로 
   else 
      $mode="";     
  
- $cursort=$_REQUEST["cursort"];    // 현재 정렬모드 지정
- 
- $done_check_val=$_REQUEST["done_check_val"];    // 입고완료제외
- $done_check=$_REQUEST["done_check"];    // 입고완료제외
+ $cursort=isset($_REQUEST["cursort"]) ? $_REQUEST["cursort"] : "";    // 현재 정렬모드 지정
+
+ $done_check_val=isset($_REQUEST["done_check_val"]) ? $_REQUEST["done_check_val"] : "";    // 입고완료제외
+ $done_check=isset($_REQUEST["done_check"]) ? $_REQUEST["done_check"] : "";    // 입고완료제외
 
  
   if($separate_date=="") $separate_date="1";
- 
+
  // 기간을 정하는 구간
-$fromdate=$_REQUEST["fromdate"];	 
-$todate=$_REQUEST["todate"];	
+$fromdate=isset($_REQUEST["fromdate"]) ? $_REQUEST["fromdate"] : "";	 
+$todate=isset($_REQUEST["todate"]) ? $_REQUEST["todate"] : "";
 
 
 require_once("../lib/mydb.php");

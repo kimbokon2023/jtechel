@@ -15,7 +15,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec("USE $DB");
 } catch (PDOException $e) {
-    die("데이터베이스 연결에 실패했습니다.");
+    die("데이터베이스 연결에 실패했습니다."); 
 }
 
 // Handle AJAX requests
@@ -111,16 +111,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 foreach ($measurement_ids as $measurement_id) {
                     $measurement_id = intval($measurement_id);
                     
-                    // 이미 그룹에 속해있는지 확인
-                    $stmt = $pdo->prepare("SELECT id FROM site_group_members WHERE group_id = ? AND measurement_id = ? AND is_deleted = 0");
-                    $stmt->execute([$group_id, $measurement_id]);
-                    
-                    if (!$stmt->fetch()) {
-                        $stmt = $pdo->prepare("INSERT INTO site_group_members (group_id, measurement_id, added_by) VALUES (?, ?, ?)");
-                        $stmt->execute([$group_id, $measurement_id, $_SESSION['name'] ?? 'admin']);
-                        $added_count++;
-                    } else {
-                        $already_exists_count++;
+                    try {
+                        // 이미 그룹에 속해있는지 확인 (소프트 삭제 포함)
+                        $stmt = $pdo->prepare("SELECT id FROM site_group_members WHERE group_id = ? AND measurement_id = ?");
+                        $stmt->execute([$group_id, $measurement_id]);
+                        $existing = $stmt->fetch();
+                        
+                        if ($existing) {
+                            // 이미 존재하는 경우, 삭제된 상태인지 확인
+                            $stmt = $pdo->prepare("SELECT is_deleted FROM site_group_members WHERE id = ?");
+                            $stmt->execute([$existing['id']]);
+                            $is_deleted = $stmt->fetchColumn();
+                            
+                            if ($is_deleted == 1) {
+                                // 삭제된 상태라면 다시 활성화
+                                $stmt = $pdo->prepare("UPDATE site_group_members SET is_deleted = 0, deleted_at = NULL, deleted_by = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+                                $stmt->execute([$existing['id']]);
+                                $added_count++;
+                            } else {
+                                // 이미 활성 상태
+                                $already_exists_count++;
+                            }
+                        } else {
+                            // 존재하지 않는 경우 새로 추가
+                            $stmt = $pdo->prepare("INSERT INTO site_group_members (group_id, measurement_id, added_by) VALUES (?, ?, ?)");
+                            $stmt->execute([$group_id, $measurement_id, $_SESSION['name'] ?? 'admin']);
+                            $added_count++;
+                        }
+                    } catch (PDOException $e) {
+                        // 고유 제약 조건 위반 등의 오류 처리
+                        if ($e->getCode() == '23000') {
+                            $already_exists_count++;
+                        } else {
+                            error_log("Database error in add_measurements_to_group: " . $e->getMessage());
+                            $already_exists_count++;
+                        }
                     }
                 }
                 
@@ -129,7 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $message .= " ({$already_exists_count}개는 이미 그룹에 속해있습니다.)";
                 }
                 
-                echo json_encode(['success' => true, 'message' => $message]);
+                // 현재 그룹의 활성 현장 개수 조회
+                $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM site_group_members WHERE group_id = ? AND is_deleted = 0");
+                $count_stmt->execute([$group_id]);
+                $new_count = $count_stmt->fetchColumn();
+                
+                echo json_encode(['success' => true, 'message' => $message, 'new_count' => $new_count]);
                 break;
                 
             case 'remove_measurement_from_group':
@@ -144,7 +174,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt = $pdo->prepare("UPDATE site_group_members SET is_deleted = 1, deleted_at = CURRENT_TIMESTAMP, deleted_by = ? WHERE group_id = ? AND measurement_id = ?");
                 $stmt->execute([$_SESSION['name'] ?? 'admin', $group_id, $measurement_id]);
                 
-                echo json_encode(['success' => true, 'message' => '현장이 그룹에서 제거되었습니다.']);
+                // 현재 그룹의 활성 현장 개수 조회
+                $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM site_group_members WHERE group_id = ? AND is_deleted = 0");
+                $count_stmt->execute([$group_id]);
+                $new_count = $count_stmt->fetchColumn();
+                
+                echo json_encode(['success' => true, 'message' => '현장이 그룹에서 제거되었습니다.', 'new_count' => $new_count]);
+                break;
+                
+            case 'get_group_measurements':
+                error_log("=== get_group_measurements 액션 시작 ===");
+                error_log("POST 데이터: " . print_r($_POST, true));
+                
+                $group_id = intval($_POST['group_id'] ?? 0);
+                error_log("그룹 ID: " . $group_id);
+                
+                if ($group_id <= 0) {
+                    error_log("오류: 유효하지 않은 그룹 ID");
+                    echo json_encode(['success' => false, 'message' => '유효하지 않은 그룹 ID입니다.']);
+                    exit;
+                }
+                
+                error_log("SQL 쿼리 실행 시작");
+                $stmt = $pdo->prepare("
+                    SELECT pm.*, sgm.created_at as added_to_group_at
+                    FROM panel_measurements pm
+                    INNER JOIN site_group_members sgm ON pm.id = sgm.measurement_id
+                    WHERE sgm.group_id = ? AND sgm.is_deleted = 0
+                    ORDER BY sgm.created_at DESC
+                ");
+                $stmt->execute([$group_id]);
+                $measurements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                error_log("측정 데이터 조회 완료: " . count($measurements) . "개");
+                if (!empty($measurements)) {
+                    error_log("첫 번째 측정 데이터 샘플: " . print_r($measurements[0], true));
+                }
+                
+                $response = ['success' => true, 'measurements' => $measurements];
+                error_log("응답 데이터: " . json_encode($response));
+                
+                echo json_encode($response);
+                break;
+                
+            case 'update_group':
+                $group_id = intval($_POST['group_id'] ?? 0);
+                $group_name = trim($_POST['group_name'] ?? '');
+                $group_description = trim($_POST['group_description'] ?? '');
+                
+                if ($group_id <= 0) {
+                    echo json_encode(['success' => false, 'message' => '유효하지 않은 그룹 ID입니다.']);
+                    exit;
+                }
+                
+                if (empty($group_name)) {
+                    echo json_encode(['success' => false, 'message' => '그룹명을 입력해주세요.']);
+                    exit;
+                }
+                
+                try {
+                    // 중복 그룹명 확인 (자기 자신 제외)
+                    $stmt = $pdo->prepare("SELECT id FROM site_groups WHERE group_name = ? AND id != ? AND is_deleted = 0");
+                    $stmt->execute([$group_name, $group_id]);
+                    if ($stmt->fetch()) {
+                        echo json_encode(['success' => false, 'message' => '이미 존재하는 그룹명입니다.']);
+                        exit;
+                    }
+                    
+                    // 그룹 정보 업데이트
+                    $stmt = $pdo->prepare("UPDATE site_groups SET group_name = ?, group_description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND is_deleted = 0");
+                    $stmt->execute([$group_name, $group_description, $group_id]);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        echo json_encode(['success' => true, 'message' => '그룹이 수정되었습니다.']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => '그룹을 찾을 수 없거나 수정할 수 없습니다.']);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => '그룹 수정 중 오류가 발생했습니다: ' . $e->getMessage()]);
+                }
                 break;
                 
             default:
@@ -190,11 +298,11 @@ $group_measurements = [];
 
 if ($selected_group_id) {
     $group_measurements_stmt = $pdo->prepare("
-        SELECT pm.*, sgm.added_at as added_to_group_at
+        SELECT pm.*, sgm.created_at as added_to_group_at
         FROM panel_measurements pm
         INNER JOIN site_group_members sgm ON pm.id = sgm.measurement_id
         WHERE sgm.group_id = ? AND sgm.is_deleted = 0
-        ORDER BY sgm.added_at DESC
+        ORDER BY sgm.created_at DESC
     ");
     $group_measurements_stmt->execute([$selected_group_id]);
     $group_measurements = $group_measurements_stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -206,7 +314,7 @@ if ($selected_group_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>현장 그룹 관리 - J-TECH</title>
+    <title>현장 그룹 제작치수 관리</title>
     
     <!-- Linear Theme CSS -->
     <link rel="stylesheet" href="../components/linear-theme.css">
@@ -594,7 +702,7 @@ if ($selected_group_id) {
             z-index: 1055 !important;
             overflow: auto !important;
             outline: 0 !important;
-            display: flex !important;
+            display: none !important; /* 기본적으로 숨김 */
             align-items: center !important;
             justify-content: center !important;
             padding: 1.75rem !important;
@@ -627,7 +735,9 @@ if ($selected_group_id) {
             position: relative !important;
             width: auto !important;
             margin: 0 auto !important;
-            max-width: 800px !important;
+            max-width: 1000px !important;
+            min-width: 800px !important;
+            max-height: 700px !important;
             pointer-events: none !important;
             display: flex !important;
             align-items: center !important;
@@ -639,6 +749,7 @@ if ($selected_group_id) {
             display: flex !important;
             flex-direction: column !important;
             width: 100% !important;
+            max-height: 700px !important;
             pointer-events: auto !important;
             background-color: var(--linear-bg-secondary) !important;
             background-clip: padding-box !important;
@@ -647,22 +758,24 @@ if ($selected_group_id) {
             outline: 0 !important;
         }
 
-        .modal-content {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-        }
 
         .modal-header {
             border-bottom: 1px solid var(--linear-border-primary);
             background: var(--linear-bg-tertiary);
+            padding: var(--linear-spacing-xl) var(--linear-spacing-2xl);
         }
 
         .modal-body {
             background: var(--linear-bg-secondary);
+            padding: var(--linear-spacing-lg);
+            overflow-y: auto;
+            flex: 1;
         }
 
         .modal-footer {
             border-top: 1px solid var(--linear-border-primary);
             background: var(--linear-bg-tertiary);
+            padding: var(--linear-spacing-xl) var(--linear-spacing-2xl);
         }
 
         .modal-title {
@@ -688,15 +801,29 @@ if ($selected_group_id) {
             box-shadow: 0 0 0 0.2rem rgba(var(--linear-brand-primary-rgb), 0.25);
         }
 
+
+        /* 모달 내부 폼 요소 패딩 */
         .modal .form-label {
             color: var(--linear-text-primary);
             font-weight: var(--linear-font-weight-medium);
+            margin-bottom: var(--linear-spacing-xs);
         }
 
-        /* 모달 스크롤 영역 */
-        .modal-body {
-            max-height: 70vh;
-            overflow-y: auto;
+        .modal .form-control {
+            margin-bottom: var(--linear-spacing-sm);
+            padding: var(--linear-spacing-sm) var(--linear-spacing-md);
+        }
+
+        .modal .row {
+            margin-bottom: var(--linear-spacing-sm);
+        }
+
+        .modal .mb-3 {
+            margin-bottom: var(--linear-spacing-md);
+        }
+
+        .modal .mb-4 {
+            margin-bottom: var(--linear-spacing-lg);
         }
 
         /* 모달 중앙 정렬 */
@@ -727,10 +854,39 @@ if ($selected_group_id) {
             .modal-dialog {
                 margin: 0 !important;
                 max-width: calc(100vw - 1rem) !important;
+                min-width: calc(100vw - 1rem) !important;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: var(--linear-spacing-lg) !important;
             }
             
             .modal-body {
                 max-height: 60vh;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .modal-dialog {
+                max-width: 900px !important;
+                min-width: 700px !important;
+                max-height: 650px !important;
+            }
+            
+            .modal-content {
+                max-height: 650px !important;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .modal-dialog {
+                max-height: 700px !important;
+            }
+            
+            .modal-content {
+                max-height: 700px !important;
             }
         }
     </style>
@@ -748,9 +904,7 @@ if ($selected_group_id) {
     )
     ->addAction('
         <button type="button" id="themeToggleBtn" class="linear-btn linear-btn-ghost linear-btn-sm"
-                style="margin-right: 0.5rem; min-width: 40px; min-height: 40px;" 
-                data-linear-theme-toggle=\'{"showIcons": true, "showLabels": false}\'
-                title="테마 변경">
+                style="margin-right: 0.5rem; min-width: 40px; min-height: 40px;" title="테마 변경">
             <span id="themeIcon">🌙</span>
         </button>
     ')
@@ -766,11 +920,11 @@ if ($selected_group_id) {
         <nav class="breadcrumb">
             <a href="index.php">대시보드</a>
             <span class="breadcrumb-separator">/</span>
-            <span>현장 그룹 관리</span>
+            <span>현장 그룹 제작관리</span>
         </nav>
 
         <h2 class="page-title">
-            <i class="bi bi-collection"></i> 현장 그룹 관리
+            <i class="bi bi-collection"></i> 현장 그룹 제작치수 관리
         </h2>
 
         <!-- 그룹 검색 및 관리 -->
@@ -789,7 +943,7 @@ if ($selected_group_id) {
                                placeholder="그룹명 검색" onkeyup="filterGroups()">
                     </div>
                     <div>
-                        <label for="searchMemberCount">멤버 수</label>
+                        <label for="searchMemberCount">현장 수</label>
                         <select id="searchMemberCount" name="search_member_count" onchange="filterGroups()">
                             <option value="">전체</option>
                             <option value="0">빈 그룹 (0개)</option>
@@ -1019,7 +1173,7 @@ if ($selected_group_id) {
                                 </div>
                                 <div class="col-md-4">
                                     <select id="siteDateFilter" class="form-control" onchange="searchSites()">
-                                        <option value="">전체 기간</option>
+                                        <option value="all">전체 기간</option>
                                         <option value="today">오늘</option>
                                         <option value="week">최근 1주</option>
                                         <option value="month">최근 1개월</option>
@@ -1030,14 +1184,14 @@ if ($selected_group_id) {
                         </div>
                         
                         <!-- 검색 결과 -->
-                        <div id="siteSearchResults" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-border-radius-sm); padding: var(--linear-spacing-sm); background: var(--linear-bg-primary);">
+                        <div id="siteSearchResults" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-border-radius-sm); padding: var(--linear-spacing-sm); background: var(--linear-bg-primary);">
                             <!-- 검색 결과가 여기에 표시됩니다 -->
                         </div>
                         
                         <!-- 선택된 현장 목록 -->
                         <div class="mt-3" id="selectedSitesSection" style="display: none;">
                             <label class="form-label">선택된 현장 (<span id="selectedCount">0</span>개)</label>
-                            <div id="selectedSitesList" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-border-radius-sm); padding: var(--linear-spacing-sm); background: var(--linear-bg-primary);">
+                            <div id="selectedSitesList" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-border-radius-sm); padding: var(--linear-spacing-sm); background: var(--linear-bg-primary);">
                                 <!-- 선택된 현장들이 여기에 표시됩니다 -->
                             </div>
                         </div>
@@ -1067,7 +1221,7 @@ if ($selected_group_id) {
                     <div class="mb-3">
                         <input type="text" class="form-control" id="measurementSearch" placeholder="현장명으로 검색...">
                     </div>
-                    <div id="measurementList" style="max-height: 400px; overflow-y: auto;">
+                    <div id="measurementList" style="max-height: 350px; overflow-y: auto; padding: var(--linear-spacing-sm); border: 1px solid var(--linear-border-primary); border-radius: var(--linear-border-radius-sm); background: var(--linear-bg-primary);">
                         <!-- JavaScript로 동적 생성 -->
                     </div>
                 </div>
@@ -1085,25 +1239,81 @@ if ($selected_group_id) {
     <script>
         // 테마 토글 기능 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            // Linear 테마 시스템이 자동으로 버튼을 초기화하므로
-            // 추가적인 수동 처리는 필요하지 않습니다.
-            // 단, 테마 변경 시 추가 작업이 필요한 경우에만 이벤트 리스너를 추가합니다.
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
             
-            document.addEventListener('themechange', function(event) {
-                console.log('테마 변경됨:', event.detail);
-                // 필요시 추가 로직을 여기에 구현
+            if (!themeToggleBtn || !themeIcon) return;
+            
+            // 테마 상태 관리
+            let currentTheme = localStorage.getItem('linear-theme') || 'auto';
+            
+            // 아이콘 업데이트 함수
+            function updateIcon() {
+                const icons = {
+                    'light': '☀️',
+                    'dark': '🌙', 
+                    'auto': '🌓'
+                };
+                themeIcon.textContent = icons[currentTheme] || '🌙';
+                
+                const titles = {
+                    'light': '라이트 모드 (다크 모드로 변경)',
+                    'dark': '다크 모드 (자동 모드로 변경)', 
+                    'auto': '자동 모드 (라이트 모드로 변경)'
+                };
+                themeToggleBtn.title = titles[currentTheme] || '테마 변경';
+            }
+            
+            // 테마 적용 함수
+            function applyTheme(theme) {
+                if (theme === 'auto') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', theme);
+                }
+                currentTheme = theme;
+                localStorage.setItem('linear-theme', theme);
+                updateIcon();
+            }
+            
+            // 초기 테마 적용
+            applyTheme(currentTheme); 
+            
+            // 버튼 클릭 이벤트
+            themeToggleBtn.addEventListener('click', function() {
+                const themeOrder = ['light', 'dark', 'auto'];
+                const currentIndex = themeOrder.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % themeOrder.length;
+                applyTheme(themeOrder[nextIndex]);
             });
             
             // 모든 모달 요소를 강제로 숨김 상태로 설정
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
-                modal.classList.remove('show');
-                modal.classList.add('fade');
+                // 모든 Bootstrap 모달 클래스 제거
+                modal.classList.remove('show', 'fade');
+                
+                // 모든 인라인 스타일 제거
                 modal.style.display = 'none';
+                modal.style.position = '';
+                modal.style.top = '';
+                modal.style.left = '';
+                modal.style.width = '';
+                modal.style.height = '';
+                modal.style.zIndex = '';
+                modal.style.overflow = '';
                 modal.style.alignItems = '';
                 modal.style.justifyContent = '';
+                modal.style.padding = '';
+                
+                // ARIA 속성 설정
                 modal.setAttribute('aria-hidden', 'true');
                 modal.removeAttribute('aria-modal');
+                
+                // Bootstrap 모달 인스턴스가 있다면 숨김
+                if (modal._bsModal) {
+                    modal._bsModal.hide();
+                }
             });
             
             // 백드롭 제거
@@ -1121,6 +1331,9 @@ if ($selected_group_id) {
             
             // 검색 토글 기능 초기화
             initializeGroupSearch();
+            
+            // 페이지 로드 시 모든 모달 강제 숨김
+            forceHideAllModals();
         });
         
         // 모달 초기화 함수
@@ -1135,13 +1348,29 @@ if ($selected_group_id) {
                 modal.removeEventListener('hide.bs.modal', arguments.callee);
                 
                 // 모달이 숨겨진 상태로 초기화
-                modal.classList.remove('show');
-                modal.classList.remove('fade');
+                modal.classList.remove('show', 'fade');
+                
+                // 모든 인라인 스타일 제거
                 modal.style.display = 'none';
+                modal.style.position = '';
+                modal.style.top = '';
+                modal.style.left = '';
+                modal.style.width = '';
+                modal.style.height = '';
+                modal.style.zIndex = '';
+                modal.style.overflow = '';
                 modal.style.alignItems = '';
                 modal.style.justifyContent = '';
+                modal.style.padding = '';
+                
+                // ARIA 속성 설정
                 modal.setAttribute('aria-hidden', 'true');
                 modal.removeAttribute('aria-modal');
+                
+                // Bootstrap 모달 인스턴스가 있다면 숨김
+                if (modal._bsModal) {
+                    modal._bsModal.hide();
+                }
                 
                 // 백드롭 제거
                 const backdrops = document.querySelectorAll('.modal-backdrop');
@@ -1164,6 +1393,39 @@ if ($selected_group_id) {
             });
         }
         
+        // 모든 모달을 강제로 숨기는 함수
+        function forceHideAllModals() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                // Bootstrap 클래스 제거
+                modal.classList.remove('show', 'fade');
+                
+                // 모든 스타일 초기화
+                modal.style.cssText = '';
+                
+                // ARIA 속성 초기화
+                modal.setAttribute('aria-hidden', 'true');
+                modal.removeAttribute('aria-modal');
+                modal.removeAttribute('style');
+                
+                // Bootstrap 모달 인스턴스 정리
+                if (modal._bsModal) {
+                    modal._bsModal.dispose();
+                    delete modal._bsModal;
+                }
+            });
+            
+            // 모든 백드롭 제거
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                backdrop.remove();
+            });
+            
+            // body 클래스 정리
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
+
         // 모든 모달을 닫는 함수
         function closeAllModals() {
             // 모든 모달 요소 가져오기
@@ -1247,26 +1509,41 @@ if ($selected_group_id) {
                     const matchesName = measurement.site_name.toLowerCase().includes(searchTerm);
                     const matchesMeasurer = measurement.measurer_name.toLowerCase().includes(searchTerm);
                     matches = matchesName || matchesMeasurer;
+                    if (!matches) {
+                        return false;
+                    }
                 }
                 
                 // 날짜 필터
-                if (dateFilter && matches) {
+                if (dateFilter && dateFilter !== 'all' && matches) {
+                    if (!measurement.measurement_date) {
+                        return false;
+                    }
+                    
                     const measurementDate = new Date(measurement.measurement_date);
                     const now = new Date();
-                    const daysDiff = Math.floor((now - measurementDate) / (1000 * 60 * 60 * 24));
+                    
+                    // 오늘 날짜의 시작과 끝 시간 설정
+                    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
                     
                     switch (dateFilter) {
                         case 'today':
-                            matches = daysDiff === 0;
+                            // 오늘 날짜와 정확히 일치하는지 확인
+                            const isToday = measurementDate >= todayStart && measurementDate <= todayEnd;
+                            matches = isToday;
                             break;
                         case 'week':
-                            matches = daysDiff <= 7;
+                            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                            matches = measurementDate >= weekAgo;
                             break;
                         case 'month':
-                            matches = daysDiff <= 30;
+                            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                            matches = measurementDate >= monthAgo;
                             break;
                         case 'quarter':
-                            matches = daysDiff <= 90;
+                            const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+                            matches = measurementDate >= quarterAgo;
                             break;
                     }
                 }
@@ -1471,6 +1748,12 @@ if ($selected_group_id) {
 
         // 그룹 선택
         function selectGroup(groupId) {
+            // 이미 선택된 그룹을 클릭한 경우 선택 해제
+            if (currentGroupId === groupId) {
+                clearGroupSelection();
+                return;
+            }
+            
             currentGroupId = groupId;
             
             // 모든 그룹 카드에서 selected 클래스 제거
@@ -1481,14 +1764,240 @@ if ($selected_group_id) {
             // 선택된 그룹 카드에 selected 클래스 추가
             document.querySelector(`[data-group-id="${groupId}"]`).classList.add('selected');
             
-            // 페이지 새로고침하여 해당 그룹의 현장 목록 표시
-            window.location.href = `site_groups.php?group_id=${groupId}`;
+            // AJAX로 그룹의 현장 목록 가져오기
+            loadGroupMeasurements(groupId);
+        }
+
+        // 그룹 선택 해제
+        function clearGroupSelection() {
+            currentGroupId = null;
+            
+            // 모든 그룹 카드에서 selected 클래스 제거
+            document.querySelectorAll('.group-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 기본 "그룹 선택" 화면으로 돌아가기
+            const rightCard = document.querySelector('.content-grid .linear-card:last-child');
+            if (rightCard) {
+                rightCard.innerHTML = `
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="bi bi-arrow-left-circle"></i>
+                            그룹 선택
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-arrow-left-circle"></i>
+                            </div>
+                            <div class="empty-state-title">그룹을 선택해주세요</div>
+                            <div class="empty-state-description">왼쪽에서 그룹을 선택하면 해당 그룹의 현장 목록을 볼 수 있습니다.</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 그룹의 현장 목록을 AJAX로 로드
+        function loadGroupMeasurements(groupId) {
+            const formData = new FormData();
+            formData.append('action', 'get_group_measurements');
+            formData.append('group_id', groupId);
+
+            fetch('site_groups.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayGroupMeasurements(data.measurements);
+                } else {
+                    console.error('Error loading group measurements:', data.message);
+                    displayGroupMeasurements([]);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                displayGroupMeasurements([]);
+            });
+        }
+
+        // 그룹 현장 목록 표시
+        function displayGroupMeasurements(measurements) {
+            const rightCard = document.querySelector('.content-grid .linear-card:last-child');
+            if (!rightCard) return;
+
+            // 선택된 그룹 정보 가져오기
+            const selectedGroupCard = document.querySelector('.group-card.selected');
+            if (!selectedGroupCard) return;
+
+            const groupName = selectedGroupCard.querySelector('.group-name').textContent;
+            const groupDescription = selectedGroupCard.querySelector('.group-description')?.textContent || '';
+
+            if (measurements.length === 0) {
+                // 그룹 현장 개수 업데이트 (0개)
+                updateGroupMemberCount(currentGroupId, 0);
+                
+                rightCard.innerHTML = `
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="bi bi-building"></i>
+                            ${groupName}
+                        </h2>
+                        <p class="card-subtitle">${groupDescription || '설명 없음'}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
+                            <div class="empty-state-title">현장이 없습니다</div>
+                            <div class="empty-state-description">이 그룹에는 아직 현장이 추가되지 않았습니다.</div>
+                            <div style="margin-top: var(--linear-spacing-lg);">
+                                <button type="button" class="linear-btn linear-btn-primary" onclick="showAddMeasurementsModal()">
+                                    <i class="bi bi-plus-circle"></i> 현장 추가
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = measurements.map(measurement => `
+                <div class="measurement-item" style="display: flex; align-items: center; justify-content: space-between; padding: var(--linear-spacing-md); border-bottom: 1px solid var(--linear-border-secondary);">
+                    <div class="measurement-info" style="flex: 1;">
+                        <h4 style="margin: 0 0 var(--linear-spacing-xs) 0; font-size: var(--linear-text-lg); font-weight: var(--linear-font-weight-semibold); color: var(--linear-text-primary);">${measurement.site_name}</h4>
+                        <p style="margin: 0 0 var(--linear-spacing-xs) 0; font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">측정일: ${measurement.measurement_date} | 측정자: ${measurement.measurer_name}</p>
+                        ${measurement.car_inside_width ? `<p style="margin: 0; font-size: var(--linear-text-sm); color: var(--linear-text-tertiary);">크기: ${measurement.car_inside_width}×${measurement.car_inside_depth}×${measurement.car_inside_height}mm</p>` : ''}
+                    </div>
+                    <div class="measurement-actions" style="margin-left: var(--linear-spacing-md);">
+                        <button type="button" class="linear-btn linear-btn-danger linear-btn-sm" 
+                                onclick="removeMeasurementFromGroup(${measurement.id})" 
+                                style="min-width: 80px;">
+                            <i class="bi bi-trash"></i> 제거
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 그룹 현장 개수 업데이트
+            updateGroupMemberCount(currentGroupId, measurements.length);
+
+            rightCard.innerHTML = `
+                <div class="card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 class="card-title">
+                                <i class="bi bi-building"></i>
+                                ${groupName}
+                            </h2>
+                            <p class="card-subtitle">${groupDescription || '설명 없음'}</p>
+                        </div>
+                        <div>
+                            <button type="button" class="linear-btn linear-btn-primary linear-btn-sm" onclick="showAddMeasurementsModal()">
+                                <i class="bi bi-plus-circle"></i> 현장 추가
+                            </button>
+                            <button type="button" class="linear-btn linear-btn-secondary linear-btn-sm" onclick="editGroup(${currentGroupId})">
+                                <i class="bi bi-pencil"></i> 그룹 수정
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div style="padding: var(--linear-spacing-lg); border-bottom: 1px solid var(--linear-border-secondary); background: var(--linear-bg-tertiary);">
+                        <h3 style="margin: 0; font-size: var(--linear-text-lg); color: var(--linear-text-primary);">
+                            <i class="bi bi-list-ul"></i> 현장 목록 (${measurements.length}개)
+                        </h3>
+                    </div>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${html}
+                    </div>
+                    <div style="padding: var(--linear-spacing-lg); border-top: 1px solid var(--linear-border-secondary); background: var(--linear-bg-tertiary);">
+                        <button type="button" class="linear-btn linear-btn-primary" onclick="exportCurrentGroupToExcel()">
+                            <i class="bi bi-file-excel"></i> 그룹 엑셀 내보내기
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 그룹 현장 개수 업데이트
+        function updateGroupMemberCount(groupId, newCount) {
+            const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+            if (groupCard) {
+                const memberCountElement = groupCard.querySelector('.group-stats span');
+                if (memberCountElement) {
+                    memberCountElement.innerHTML = `<i class="bi bi-building"></i> ${newCount}개 현장`;
+                }
+            }
+        }
+
+        // 그룹 엑셀 내보내기 (현재 선택된 그룹)
+        function exportCurrentGroupToExcel() {
+            if (!currentGroupId) {
+                Swal.fire('오류', '그룹이 선택되지 않았습니다.', 'error');
+                return;
+            }
+
+            // 현재 선택된 그룹의 현장들을 엑셀로 내보내기
+            exportGroupToExcel(currentGroupId);
+        }
+
+        // 그룹에서 현장 제거
+        function removeMeasurementFromGroup(measurementId) {
+            if (!currentGroupId) {
+                Swal.fire('오류', '그룹이 선택되지 않았습니다.', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: '현장 제거',
+                text: '이 현장을 그룹에서 제거하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '제거',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData();
+                    formData.append('action', 'remove_measurement_from_group');
+                    formData.append('group_id', currentGroupId);
+                    formData.append('measurement_id', measurementId);
+
+                    fetch('site_groups.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('제거됨', data.message, 'success');
+                            // 현재 그룹의 현장 목록 새로고침
+                            loadGroupMeasurements(currentGroupId);
+                            // 그룹 현장 개수 업데이트
+                            updateGroupMemberCount(currentGroupId, data.new_count || 0);
+                        } else {
+                            Swal.fire('오류', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('오류', '현장 제거 중 오류가 발생했습니다.', 'error');
+                    });
+                }
+            });
         }
 
         // 그룹 생성 모달 표시
         function showCreateGroupModal() {
-            // 먼저 모든 모달을 정리
-            closeAllModals();
+            // 먼저 모든 모달을 강제로 정리
+            forceHideAllModals();
             
             // 선택된 현장 초기화
             selectedSites = [];
@@ -1501,7 +2010,7 @@ if ($selected_group_id) {
                     document.getElementById('groupName').value = '';
                     document.getElementById('groupDescription').value = '';
                     document.getElementById('siteSearchInput').value = '';
-                    document.getElementById('siteDateFilter').value = '';
+                    document.getElementById('siteDateFilter').value = 'all';
                     
                     // 선택된 현장 목록 숨기기
                     document.getElementById('selectedSitesSection').style.display = 'none';
@@ -1516,8 +2025,8 @@ if ($selected_group_id) {
                     modalElement.style.justifyContent = 'center';
                     
                     const modal = new bootstrap.Modal(modalElement, {
-                        backdrop: true,
-                        keyboard: true,
+                        backdrop: 'static',
+                        keyboard: false,
                         focus: true
                     });
                     
@@ -1554,6 +2063,12 @@ if ($selected_group_id) {
             .then(data => {
                 if (data.success) {
                     Swal.fire('성공', data.message, 'success').then(() => {
+                        // 모달 닫기
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('createGroupModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+                        // 그룹 목록 새로고침
                         location.reload();
                     });
                 } else {
@@ -1569,6 +2084,87 @@ if ($selected_group_id) {
         // 기존 그룹 생성 함수 (호환성 유지)
         function createGroup() {
             createGroupWithSites();
+        }
+
+        // 그룹 수정
+        function editGroup(groupId) {
+            // 현재 그룹 정보 가져오기
+            const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+            if (!groupCard) {
+                Swal.fire('오류', '그룹 정보를 찾을 수 없습니다.', 'error');
+                return;
+            }
+
+            const groupName = groupCard.querySelector('.group-name').textContent;
+            const groupDescription = groupCard.querySelector('.group-description')?.textContent || '';
+
+            // 수정 모달 표시 (새 그룹 생성 모달을 재사용)
+            Swal.fire({
+                title: '그룹 수정',
+                html: `
+                    <div style="text-align: left;">
+                        <div style="margin-bottom: 15px;">
+                            <label for="editGroupName" style="display: block; margin-bottom: 5px; font-weight: bold;">그룹명 *</label>
+                            <input type="text" id="editGroupName" class="swal2-input" value="${groupName}" placeholder="그룹명" style="width: 80%;">
+                        </div>
+                        <div>
+                            <label for="editGroupDescription" style="display: block; margin-bottom: 5px; font-weight: bold;">그룹 설명</label>
+                            <textarea id="editGroupDescription" class="swal2-textarea" placeholder="그룹 설명을 입력하세요" style="width: 80%; height: 45px; resize: none;">${groupDescription}</textarea>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '수정',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                preConfirm: () => {
+                    const newName = document.getElementById('editGroupName').value.trim();
+                    const newDescription = document.getElementById('editGroupDescription').value.trim();
+                    
+                    if (!newName) {
+                        Swal.showValidationMessage('그룹명을 입력해주세요.');
+                        return false;
+                    }
+                    
+                    if (newName === groupName && newDescription === groupDescription) {
+                        Swal.showValidationMessage('변경된 내용이 없습니다.');
+                        return false;
+                    }
+                    
+                    return {
+                        name: newName,
+                        description: newDescription
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData();
+                    formData.append('action', 'update_group');
+                    formData.append('group_id', groupId);
+                    formData.append('group_name', result.value.name);
+                    formData.append('group_description', result.value.description);
+
+                    fetch('site_groups.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('수정됨', data.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('오류', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('오류', '그룹 수정 중 오류가 발생했습니다.', 'error');
+                    });
+                }
+            });
         }
 
         // 그룹 삭제
@@ -1612,8 +2208,17 @@ if ($selected_group_id) {
 
         // 현장 추가 모달 표시
         function showAddMeasurementsModal(groupId) {
-            // 먼저 모든 모달을 정리
-            closeAllModals();
+            // 그룹 ID가 전달되지 않은 경우 현재 선택된 그룹 사용
+            if (!groupId) {
+                if (!currentGroupId) {
+                    Swal.fire('알림', '그룹을 먼저 선택해주세요.', 'warning');
+                    return;
+                }
+                groupId = currentGroupId;
+            }
+            
+            // 먼저 모든 모달을 강제로 정리
+            forceHideAllModals();
             
             currentGroupId = groupId;
             
@@ -1631,8 +2236,8 @@ if ($selected_group_id) {
                     modalElement.style.justifyContent = 'center';
                     
                     const modal = new bootstrap.Modal(modalElement, {
-                        backdrop: true,
-                        keyboard: true,
+                        backdrop: 'static',
+                        keyboard: false,
                         focus: true
                     });
                     
@@ -1646,33 +2251,84 @@ if ($selected_group_id) {
             const measurementList = document.getElementById('measurementList');
             const searchTerm = document.getElementById('measurementSearch').value.toLowerCase();
             
-            // PHP에서 전달된 measurements 데이터 사용
-            const measurements = <?= json_encode($measurements) ?>;
+            if (!currentGroupId) {
+                measurementList.innerHTML = '<div style="text-align: center; color: var(--linear-text-secondary); padding: var(--linear-spacing-lg);">그룹을 먼저 선택해주세요.</div>';
+                return;
+            }
             
-            let html = '';
-            measurements.forEach(measurement => {
-                if (measurement.site_name.toLowerCase().includes(searchTerm)) {
-                    html += `
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" 
-                                   value="${measurement.id}" id="measurement_${measurement.id}">
-                            <label class="form-check-label" for="measurement_${measurement.id}">
-                                <strong>${measurement.site_name}</strong>
-                                <small class="text-muted d-block">
-                                    ${measurement.measurement_date} | ${measurement.measurer_name}
-                                    ${measurement.group_names ? ' | 그룹: ' + measurement.group_names : ''}
-                                </small>
-                            </label>
-                        </div>
-                    `;
+            // 현재 그룹에 속한 현장들을 AJAX로 가져오기
+            const formData = new FormData();
+            formData.append('action', 'get_group_measurements');
+            formData.append('group_id', currentGroupId);
+
+            fetch('site_groups.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const currentGroupMeasurements = data.measurements;
+                    const currentGroupMeasurementIds = currentGroupMeasurements.map(m => m.id);
+                    
+                    // PHP에서 전달된 measurements 데이터 사용
+                    const measurements = <?= json_encode($measurements) ?>;
+                    
+                    let html = '';
+                    let availableCount = 0;
+                    
+                    measurements.forEach(measurement => {
+                        if (measurement.site_name.toLowerCase().includes(searchTerm)) {
+                            // 현재 그룹에 이미 속한 현장인지 확인
+                            const isInCurrentGroup = currentGroupMeasurementIds.includes(measurement.id);
+                            
+                            if (!isInCurrentGroup) {
+                                availableCount++;
+                                const groupInfo = measurement.group_names && measurement.group_names.trim() !== '' 
+                                    ? `<div style="font-size: var(--linear-text-xs); color: var(--linear-text-tertiary); margin-top: 2px;">그룹: ${measurement.group_names}</div>` 
+                                    : '';
+                                
+                                html += `
+                                    <div class="measurement-item" style="padding: var(--linear-spacing-sm); border-bottom: 1px solid var(--linear-border-secondary); display: flex; align-items: center; gap: var(--linear-spacing-sm);">
+                                        <input type="checkbox" value="${measurement.id}" id="measurement_${measurement.id}" style="flex-shrink: 0;">
+                                        <label for="measurement_${measurement.id}" style="flex: 1; cursor: pointer; margin: 0;">
+                                            <div style="font-weight: var(--linear-font-weight-medium); color: var(--linear-text-primary);">
+                                                ${measurement.site_name}
+                                            </div>
+                                            <div style="font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">
+                                                ${measurement.measurement_date} | ${measurement.measurer_name}
+                                                ${measurement.car_inside_width ? ` | ${measurement.car_inside_width}×${measurement.car_inside_depth}×${measurement.car_inside_height}mm` : ''}
+                                            </div>
+                                            ${groupInfo}
+                                        </label>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                    
+                    if (availableCount === 0) {
+                        html = '<div style="text-align: center; color: var(--linear-text-secondary); padding: var(--linear-spacing-lg);">추가 가능한 현장이 없습니다.</div>';
+                    }
+                    
+                    measurementList.innerHTML = html;
+                } else {
+                    measurementList.innerHTML = '<div style="text-align: center; color: var(--linear-text-danger); padding: var(--linear-spacing-lg);">현장 목록을 불러올 수 없습니다.</div>';
                 }
+            })
+            .catch(error => {
+                console.error('Error loading group measurements:', error);
+                measurementList.innerHTML = '<div style="text-align: center; color: var(--linear-text-danger); padding: var(--linear-spacing-lg);">오류가 발생했습니다.</div>';
             });
-            
-            measurementList.innerHTML = html;
         }
 
         // 현장 추가
         function addSelectedMeasurements() {
+            if (!currentGroupId) {
+                Swal.fire('오류', '그룹이 선택되지 않았습니다.', 'error');
+                return;
+            }
+            
             const checkboxes = document.querySelectorAll('#measurementList input[type="checkbox"]:checked');
             const measurementIds = Array.from(checkboxes).map(cb => cb.value);
             
@@ -1694,7 +2350,15 @@ if ($selected_group_id) {
             .then(data => {
                 if (data.success) {
                     Swal.fire('성공', data.message, 'success').then(() => {
-                        location.reload();
+                        // 모달 닫기
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addMeasurementsModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+                        // 현재 그룹의 현장 목록 새로고침
+                        loadGroupMeasurements(currentGroupId);
+                        // 그룹 현장 개수 업데이트
+                        updateGroupMemberCount(currentGroupId, data.new_count || 0);
                     });
                 } else {
                     Swal.fire('오류', data.message, 'error');
@@ -1748,8 +2412,97 @@ if ($selected_group_id) {
 
         // 그룹 엑셀 내보내기
         function exportGroupToExcel(groupId) {
-            // 그룹의 현장들을 선택하여 합쳐진 제작 데이터 엑셀 내보내기
-            window.open(`result.php?group_export=${groupId}`, '_blank');
+            console.log('=== 그룹 엑셀 내보내기 시작 ===');
+            console.log('groupId:', groupId);
+            
+            if (!groupId) {
+                console.log('오류: 그룹 ID가 없습니다.');
+                Swal.fire('오류', '그룹이 선택되지 않았습니다.', 'error');
+                return;
+            }
+            
+            console.log('그룹 ID 확인됨:', groupId);
+            
+            // 현재 그룹의 현장 목록을 가져와서 엑셀로 내보내기
+            const formData = new FormData();
+            formData.append('action', 'get_group_measurements');
+            formData.append('group_id', groupId);
+            
+            console.log('AJAX 요청 시작 - action: get_group_measurements, group_id:', groupId);
+
+            fetch('site_groups.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('AJAX 응답 받음:', response.status, response.statusText);
+                return response.json();
+            })
+            .then(data => {
+                console.log('JSON 파싱 완료:', data);
+                
+                if (data.success && data.measurements && data.measurements.length > 0) {
+                    console.log('측정 데이터 확인됨:', data.measurements.length, '개 현장');
+                    console.log('측정 데이터 샘플:', data.measurements[0]);
+                    
+                    // 패널 데이터 구조 확인
+                    data.measurements.forEach((measurement, index) => {
+                        console.log(`=== 현장 ${index + 1}: ${measurement.site_name} ===`);
+                        console.log(`elevator_count: ${measurement.elevator_count} (타입: ${typeof measurement.elevator_count})`);
+                        if (measurement.panel_data) {
+                            try {
+                                const panelData = JSON.parse(measurement.panel_data);
+                                console.log('패널 데이터 구조:', panelData);
+                                
+                                // 각 패널의 타공 정보 확인
+                                Object.keys(panelData).forEach(panelNum => {
+                                    const panelInfo = panelData[panelNum];
+                                    console.log(`패널 ${panelNum} 타공 정보:`, {
+                                        drillingWidth: panelInfo.drillingWidth,
+                                        drillingHeight: panelInfo.drillingHeight,
+                                        drillingFromFloor: panelInfo.drillingFromFloor,
+                                        drillingFromEntrance: panelInfo.drillingFromEntrance,
+                                        hole_width: panelInfo.hole_width,
+                                        hole_height: panelInfo.hole_height,
+                                        holes: panelInfo.holes
+                                    });
+                                });
+                            } catch (e) {
+                                console.error('패널 데이터 파싱 오류:', e);
+                            }
+                        }
+                    });
+                    
+                    // 폼 생성하여 그룹 엑셀 내보내기 실행
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'export_group_production_data.php';
+                    form.target = '_blank';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'measurements';
+                    input.value = JSON.stringify(data.measurements);
+                    
+                    console.log('POST 데이터 크기:', input.value.length, 'bytes');
+                    console.log('POST 데이터 샘플:', input.value.substring(0, 200) + '...');
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    
+                    console.log('폼 생성 및 제출 시작');
+                    form.submit();
+                    document.body.removeChild(form);
+                    console.log('폼 제출 완료');
+                } else {
+                    console.log('오류: 측정 데이터가 없거나 실패:', data);
+                    Swal.fire('알림', '내보낼 현장이 없습니다.', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('AJAX 오류:', error);
+                Swal.fire('오류', '엑셀 내보내기 중 오류가 발생했습니다: ' + error.message, 'error');
+            });
         }
 
         // 현장 검색
@@ -1767,3 +2520,4 @@ if ($selected_group_id) {
     </script>
 </body>
 </html>
+ 

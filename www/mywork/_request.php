@@ -1,5 +1,8 @@
 <?php
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
   if(isset($_REQUEST["search"]))   
 	 $search=$_REQUEST["search"];
    if(isset($_REQUEST["list"]))   
@@ -15,7 +18,7 @@
  if(isset($_REQUEST["check"]))        // 버튼 클릭시 읽는 값
 	 $check=$_REQUEST["check"];
    else
-     $check=$_POST["check"]; 
+     $check = isset($_POST["check"]) ? $_POST["check"] : ''; 
  
   
  if(isset($_REQUEST["choiceitem"]))
@@ -89,12 +92,12 @@ if(isset($_REQUEST["sortof"]))
  if(isset($_REQUEST["check_draw"])) 
 	 $check_draw=$_REQUEST["check_draw"];   // 도면 미설계List
 	   else
-		 $check_draw=$_POST["check_draw"];    
+		 $check_draw = isset($_POST["check_draw"]) ? $_POST["check_draw"] : '';    
 
  if(isset($_REQUEST["check"])) 
 	 $check=$_REQUEST["check"]; // 미출고 리스트 request 사용 페이지 이동버튼 누를시`
    else
-     $check=$_POST["check"]; // 미출고 리스트 POST사용 
+     $check = isset($_POST["check"]) ? $_POST["check"] : ''; // 미출고 리스트 POST사용 
  
  if(isset($_REQUEST["output_check"])) 
 	 $output_check=$_REQUEST["output_check"]; // 미출고 리스트 request 사용 페이지 이동버튼 누를시`

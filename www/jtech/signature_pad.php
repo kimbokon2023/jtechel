@@ -1,4 +1,8 @@
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/jtech/load.php' ?>
+<?php 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+include 'load.php' 
+?>
 
 <?php    
 session_start(); 

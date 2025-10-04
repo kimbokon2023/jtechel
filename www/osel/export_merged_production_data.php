@@ -17,7 +17,7 @@ if (!isset($_SESSION["level"]) || $_SESSION["level"] > 8) {
 // Check if measurements data is provided
 if (!isset($_POST['measurements'])) {
     ob_clean();
-    die('측정 데이터가 제공되지 않았습니다.');
+    die('측정 데이터가 제공되지 않았습니다.'); 
 }
 
 try {
@@ -27,11 +27,34 @@ try {
         throw new Exception('유효하지 않은 측정 데이터입니다.');
     }
 
-    // Check for required libraries
-    $excel_lib_path = '../PHPExcel_1.8.0/Classes/PHPExcel.php';
-    if (!file_exists($excel_lib_path)) {
+    // Check for required libraries - 환경별 경로 설정
+    require_once '../config/environment.php';
+
+    $excel_lib_path = null;
+    if (isLocalEnvironment()) {
+        // 로컬 환경
+        $excel_lib_path = '../PHPExcel_1.8.0/Classes/PHPExcel.php';
+    } else {
+        // 서버 환경 - 가능한 경로들을 순서대로 확인
+        $possible_paths = [
+            '../PHPExcel_1.8.0/Classes/PHPExcel.php',
+            './PHPExcel_1.8.0/Classes/PHPExcel.php',
+            '/home/jtechel/public_html/PHPExcel_1.8.0/Classes/PHPExcel.php',
+            dirname(__FILE__) . '/../PHPExcel_1.8.0/Classes/PHPExcel.php'
+        ];
+        
+        foreach ($possible_paths as $path) {
+            if (file_exists($path)) {
+                $excel_lib_path = $path;
+                break;
+            }
+        }
+    }
+
+    if (!$excel_lib_path || !file_exists($excel_lib_path)) {
+        error_log("PHPExcel 라이브러리를 찾을 수 없습니다. 시도한 경로들: " . implode(', ', $possible_paths ?? [$excel_lib_path]));
         ob_clean();
-        die('PHPExcel 라이브러리를 찾을 수 없습니다.');
+        die('PHPExcel 라이브러리를 찾을 수 없습니다. 관리자에게 문의하세요.');
     }
 
     require_once $excel_lib_path;
@@ -233,19 +256,20 @@ try {
     $productionSheet = $objPHPExcel->createSheet();
     $productionSheet->setTitle('제작산출결과');
 
-    // 제작산출결과 시트 헤더 (기존 export_production_results.php와 동일)
+    // 제작산출결과 시트 헤더 (타공 정보 컬럼 수정)
     $productionHeaders = [
         'A1' => '현장명',
         'B1' => '패널번호',
         'C1' => '폭(mm)',
         'D1' => '높이(mm)',
-        'E1' => '타공크기',
-        'F1' => '타공위치_바닥높이',
-        'G1' => '타공위치_출입구거리',
-        'H1' => '패널재질',
-        'I1' => '특이사항',
-        'J1' => '제작수량',
-        'K1' => '비고'
+        'E1' => '타공 가로',
+        'F1' => '타공 세로',
+        'G1' => '타공 높이(밑기준)',
+        'H1' => '입구방향에서 떨어짐',
+        'I1' => '패널재질',
+        'J1' => '특이사항',
+        'K1' => '제작수량',
+        'L1' => '비고'
     ];
 
     foreach ($productionHeaders as $cell => $value) {
@@ -253,7 +277,7 @@ try {
     }
 
     // 제작산출결과 헤더 스타일
-    $productionSheet->getStyle('A1:K1')->applyFromArray($headerStyle);
+    $productionSheet->getStyle('A1:L1')->applyFromArray($headerStyle);
 
     // 패널 데이터 작성
     $productionRow = 2;
@@ -308,12 +332,27 @@ try {
                     $height = $measurement['production_height'] ?? $measurement['car_inside_height'];
                 }
 
-                // 타공 정보 추출
-                $hole_size = '';
+                // 타공 정보 추출 (다양한 형태의 데이터 구조 지원)
+                $hole_width = '';
+                $hole_height = '';
                 $hole_floor_height = '';
                 $hole_entrance_distance = '';
 
-                if (isset($panel_info['holes']) && is_array($panel_info['holes'])) {
+                // 1. drilling_ 접두사 속성이 있는 경우 (실제 데이터 구조)
+                if (isset($panel_info['drilling_width']) || isset($panel_info['drilling_height'])) {
+                    if (isset($panel_info['drilling_width']) && isset($panel_info['drilling_height'])) {
+                        $hole_width = $panel_info['drilling_width'];
+                        $hole_height = $panel_info['drilling_height'];
+                    }
+                    if (isset($panel_info['drilling_from_floor'])) {
+                        $hole_floor_height = $panel_info['drilling_from_floor'];
+                    }
+                    if (isset($panel_info['drilling_from_entrance'])) {
+                        $hole_entrance_distance = $panel_info['drilling_from_entrance'];
+                    }
+                }
+                // 2. holes 배열이 있는 경우 (다중 타공)
+                elseif (isset($panel_info['holes']) && is_array($panel_info['holes'])) {
                     $hole_details = [];
                     $floor_heights = [];
                     $entrance_distances = [];
@@ -323,16 +362,57 @@ try {
                             $hole_details[] = $hole['width'] . '×' . $hole['height'];
                         }
                         if (isset($hole['floor_height'])) {
-                            $floor_heights[] = $hole['floor_height'] . 'mm';
+                            $floor_heights[] = $hole['floor_height'];
                         }
                         if (isset($hole['entrance_distance'])) {
-                            $entrance_distances[] = $hole['entrance_distance'] . 'mm';
+                            $entrance_distances[] = $hole['entrance_distance'];
                         }
                     }
 
-                    $hole_size = implode(', ', $hole_details);
+                    $hole_width = implode(', ', array_column($panel_info['holes'], 'width'));
+                    $hole_height = implode(', ', array_column($panel_info['holes'], 'height'));
                     $hole_floor_height = implode(', ', $floor_heights);
                     $hole_entrance_distance = implode(', ', $entrance_distances);
+                }
+                // 3. drillingWidth, drillingHeight 속성이 있는 경우 (단일 타공)
+                elseif (isset($panel_info['drillingWidth']) || isset($panel_info['drillingHeight'])) {
+                    if (isset($panel_info['drillingWidth']) && isset($panel_info['drillingHeight'])) {
+                        $hole_width = $panel_info['drillingWidth'];
+                        $hole_height = $panel_info['drillingHeight'];
+                    }
+                    if (isset($panel_info['drillingFromFloor'])) {
+                        $hole_floor_height = $panel_info['drillingFromFloor'];
+                    }
+                    if (isset($panel_info['drillingFromEntrance'])) {
+                        $hole_entrance_distance = $panel_info['drillingFromEntrance'];
+                    }
+                }
+                // 4. hole_ 접두사 속성이 있는 경우
+                elseif (isset($panel_info['hole_width']) || isset($panel_info['hole_height'])) {
+                    if (isset($panel_info['hole_width']) && isset($panel_info['hole_height'])) {
+                        $hole_width = $panel_info['hole_width'];
+                        $hole_height = $panel_info['hole_height'];
+                    }
+                    if (isset($panel_info['hole_floor_height'])) {
+                        $hole_floor_height = $panel_info['hole_floor_height'];
+                    }
+                    if (isset($panel_info['hole_entrance_distance'])) {
+                        $hole_entrance_distance = $panel_info['hole_entrance_distance'];
+                    }
+                }
+                // 5. 9번 패널 특별 처리 (문 타공)
+                elseif ($panel_num === '9') {
+                    // 9번 패널의 경우 보통 문 타공이 있음
+                    if (isset($panel_info['door_width']) && isset($panel_info['door_height'])) {
+                        $hole_width = $panel_info['door_width'];
+                        $hole_height = $panel_info['door_height'];
+                    }
+                    if (isset($panel_info['door_floor_height'])) {
+                        $hole_floor_height = $panel_info['door_floor_height'];
+                    }
+                    if (isset($panel_info['door_center_distance'])) {
+                        $hole_entrance_distance = $panel_info['door_center_distance'];
+                    }
                 }
 
                 // 패널 타입 결정
@@ -362,13 +442,14 @@ try {
                     'B' => $panel_num,
                     'C' => $width,
                     'D' => $height,
-                    'E' => $hole_size,
-                    'F' => $hole_floor_height,
-                    'G' => $hole_entrance_distance,
-                    'H' => $material,
-                    'I' => $notes,
-                    'J' => $quantity,
-                    'K' => trim($remarks)
+                    'E' => $hole_width,  // 타공 가로
+                    'F' => $hole_height, // 타공 세로
+                    'G' => $hole_floor_height, // 타공 높이(밑기준)
+                    'H' => $hole_entrance_distance, // 입구방향에서 떨어짐
+                    'I' => $material,
+                    'J' => $notes,
+                    'K' => $quantity,
+                    'L' => trim($remarks)
                 ];
 
                 foreach ($productionData as $col => $value) {
@@ -382,21 +463,22 @@ try {
 
     // 제작산출결과 데이터 스타일
     if ($productionRow > 2) {
-        $productionSheet->getStyle('A2:K' . ($productionRow - 1))->applyFromArray($dataStyle);
+        $productionSheet->getStyle('A2:L' . ($productionRow - 1))->applyFromArray($dataStyle);
     }
 
-    // 제작산출결과 시트 컬럼 너비 설정 (기존과 동일)
+    // 제작산출결과 시트 컬럼 너비 설정 (타공 정보 컬럼 수정)
     $productionSheet->getColumnDimension('A')->setWidth(20); // 현장명
     $productionSheet->getColumnDimension('B')->setWidth(14); // 패널번호
     $productionSheet->getColumnDimension('C')->setWidth(17); // 폭
     $productionSheet->getColumnDimension('D')->setWidth(17); // 높이
-    $productionSheet->getColumnDimension('E')->setWidth(21); // 타공크기
-    $productionSheet->getColumnDimension('F')->setWidth(21); // 타공위치_바닥높이
-    $productionSheet->getColumnDimension('G')->setWidth(30); // 타공위치_출입구거리
-    $productionSheet->getColumnDimension('H')->setWidth(24); // 패널재질
-    $productionSheet->getColumnDimension('I')->setWidth(40); // 특이사항
-    $productionSheet->getColumnDimension('J')->setWidth(14); // 제작수량
-    $productionSheet->getColumnDimension('K')->setWidth(50); // 비고
+    $productionSheet->getColumnDimension('E')->setWidth(14); // 타공 가로
+    $productionSheet->getColumnDimension('F')->setWidth(14); // 타공 세로
+    $productionSheet->getColumnDimension('G')->setWidth(18); // 타공 높이(밑기준)
+    $productionSheet->getColumnDimension('H')->setWidth(18); // 입구방향에서 떨어짐
+    $productionSheet->getColumnDimension('I')->setWidth(24); // 패널재질
+    $productionSheet->getColumnDimension('J')->setWidth(40); // 특이사항
+    $productionSheet->getColumnDimension('K')->setWidth(14); // 제작수량
+    $productionSheet->getColumnDimension('L')->setWidth(50); // 비고
 
     // === 세 번째 시트: 몰딩 정보 ===
     $moldingSheet = $objPHPExcel->createSheet();

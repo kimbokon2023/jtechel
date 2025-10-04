@@ -3,8 +3,11 @@
 session_start(); 
 ini_set('display_errors','1');  // 화면에 warning 없애기	
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 // 지점 선택 헬퍼 사용
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 require_once('branch_select_helper.php');
 $branch = getBranchFromCookie($pdo);
@@ -29,7 +32,7 @@ for($i=0; $i<sizeof($mAgent); $i++){
 if($level > 3)
 	$branch =  $sessionbranch ;
 
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ?>
 

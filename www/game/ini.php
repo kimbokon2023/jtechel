@@ -1,4 +1,7 @@
-<?
+<?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start(); 
 
 header('Content-Type: text/html; charset=utf-8');
@@ -9,7 +12,7 @@ $user_name= $_SESSION["name"];
  if(!isset($_SESSION["level"]) || $level>8) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(2);
-         header ("Location:http://j-techel.co.kr/game/login/logout.php");
+         header ("Location:" . getBaseUrl() . "/game/login/logout.php");
          exit;
    } 
 
@@ -20,7 +23,8 @@ $readIni = parse_ini_file($tmp_name,false);
 
 $tablename=$readIni['tablename'];
 $table_picuploads=$readIni['table_picuploads'];
-$workdir=$readIni['workdir'];
+// 환경에 따라 동적으로 workdir 설정
+$workdir = getBaseUrl() . "/game/";
 
 // common read
 

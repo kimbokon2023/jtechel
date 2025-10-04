@@ -1,12 +1,15 @@
 <?php
  session_start();
 
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
+
  $level= $_SESSION["level"];
  $user_name= $_SESSION["name"];
  if(!isset($_SESSION["level"]) || $level>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(2);
-	          header("Location:http://j-techel.co.kr/login/login_form.php"); 
+	          header("Location:" . getBaseUrl() . "/login/login_form.php"); 
          exit;
    }
   
@@ -53,8 +56,8 @@ if($itemname=="secondord")
  <link rel="stylesheet" type="text/css" href="../../css/common.css">
  <link rel="stylesheet" type="text/css" href="../../css/steel.css"> 
  
- <script src="http://j-techel.co.kr/js/date.js"></script>  <!-- 기간을 설정하는 관련 js 포함 -->
-<script src="http://j-techel.co.kr/common.js"></script> 
+ <script src="<?php echo getBaseUrl(); ?>/js/date.js"></script>  <!-- 기간을 설정하는 관련 js 포함 -->
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script> 
  
  <!-- 최초화면에서 보여주는 상단메뉴 -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

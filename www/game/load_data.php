@@ -1,12 +1,15 @@
 <?php   
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();   
 
 header("Content-Type: application/json");  //json을 사용하기 위해 필요한 구문  
 
 isset($_REQUEST["num"])  ? $num = $_REQUEST["num"] : $num=""; 
 		  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
      
  

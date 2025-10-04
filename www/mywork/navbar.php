@@ -4,7 +4,7 @@
 <!-- Header Start -->
 <nav class="navbar navbar-expand-lg navigation fixed-top" id="navbar">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="http://j-techel.co.kr/mywork/index.php">
+		<a class="navbar-brand" href="<?php echo getBaseUrl(); ?>/mywork/index.php">
 			<h3 class="text-white text-capitalize"></i>JK-테크<span class="text-color">(JK-TECH)</span></h3>
 		</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsid"
@@ -14,23 +14,23 @@
 		<div class="collapse text-center navbar-collapse" id="navbarsid">
 			<ul class="navbar-nav mx-auto">
 				<li class="nav-item active">
-					<a class="nav-link fs-2" href="http://j-techel.co.kr/mywork/index.php">Home <span class="sr-only">(current)</span></a>
+					<a class="nav-link fs-2" href="<?php echo getBaseUrl(); ?>/mywork/index.php">Home <span class="sr-only">(current)</span></a>
 				</li>				
 				<li class="nav-item">
 				
 						<?php if(intval($_SESSION["level"]) <= 2 ) {  ?>
-							<a class="nav-link fs-2" href="http://j-techel.co.kr/mywork/write_form.php?mode=new" aria-haspopup="true"					aria-expanded="false">수주/발주 등록 </a>												
+							<a class="nav-link fs-2" href="<?php echo getBaseUrl(); ?>/mywork/write_form.php?mode=new" aria-haspopup="true"					aria-expanded="false">수주/발주 등록 </a>												
 							<?php } ?>
 				</li>				
 								
 				<li class="nav-item ">
-					<a class="nav-link fs-2" href="http://j-techel.co.kr/mywork/list.php" aria-haspopup="true"
+					<a class="nav-link fs-2" href="<?php echo getBaseUrl(); ?>/mywork/list.php" aria-haspopup="true"
 						aria-expanded="false"> 수주/발주 관리 </a>					
 				</li>				
 				
 						
 				<li class="nav-item">				
-					<a class="nav-link fs-2 dropdown-toggle" href="http://j-techel.co.kr/mywork/schedule.php" aria-haspopup="true"
+					<a class="nav-link fs-2 dropdown-toggle" href="<?php echo getBaseUrl(); ?>/mywork/schedule.php" aria-haspopup="true"
 						aria-expanded="false"> 종합일정관리 </a>
 				</li>				
 				
@@ -42,7 +42,7 @@
 						<li><a class="dropdown-item" href="../../member/updateForm.php?id=<?=$_SESSION["userid"]?>">정보수정</a></li>		
 						<li><a class="dropdown-item" href="#" onclick="popupCenter('help.php', '사용자 메뉴얼', 1900, 1000);" >도움말</a></li>
 						<?php if(intval($_SESSION["level"]) <= 2 ) {  ?>
-						<<li><a class="dropdown-item fs-2" href="http://j-techel.co.kr/mywork/memberlist.php">회원관리</a></li>											
+						<li><a class="dropdown-item fs-2" href="<?php echo getBaseUrl(); ?>/mywork/memberlist.php">회원관리</a></li>											
 							<?php } ?>						
 					</ul>
 				</li>

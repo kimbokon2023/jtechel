@@ -1,7 +1,8 @@
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
-
 <?php    
   session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
     
   if(isset($_REQUEST["num"]))  //수정 버튼을 클릭해서 호출했는지 체크
    $num=$_REQUEST["num"];
@@ -70,6 +71,7 @@
        
 ?>
 
+<?php include 'load.php' ?>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>

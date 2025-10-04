@@ -1,11 +1,14 @@
  <?php
   session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
   
  $level= $_SESSION["level"];
  if(!isset($_SESSION["level"]) || $level>=5) {
          echo "<script> alert('관리자 승인이 필요합니다.') </script>";
 		 sleep(2);
-         header ("Location:http://8440.co.kr/login/logout.php");
+         header ("Location:" . getBaseUrl() . "/login/logout.php");
          exit;
    }   
   

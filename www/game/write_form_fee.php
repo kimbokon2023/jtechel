@@ -1,14 +1,17 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ini_set('display_errors','0');  // 화면에 warning 없애기	
 
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/logout.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/logout.php"); 
          exit;
    }
    
@@ -28,7 +31,7 @@ $level= $_SESSION["level"];
 $user_name= $_SESSION["name"];
 										  
 isset($_REQUEST["num"])  ? $num=$_REQUEST["num"] :   $num=''; 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();	
 
  try{

@@ -1,14 +1,17 @@
 <meta charset="utf-8">
  
 <?php
-session_start(); 
+session_start();
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php'; 
 
 $level= $_SESSION["level"];
 $id_name= $_SESSION["name"];   
 $user_name= $_SESSION["name"];  
     
- $num=$_REQUEST["num"];
- $search=$_REQUEST["search"];  //검색어
+ $num = isset($_REQUEST["num"]) ? $_REQUEST["num"] : '';
+ $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : '';  //검색어
 
  if(isset($_REQUEST["check"])) 
 	 $check=$_REQUEST["check"]; 
@@ -97,7 +100,7 @@ if($et_itemname=='')
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 
 
-<script src="http://j-techel.co.kr/common.js"></script>
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script>
 	
 <link rel="stylesheet" href="../css/partner.css" type="text/css" />
 <link rel="stylesheet" href="./css/style.css" type="text/css" />	
@@ -266,25 +269,16 @@ if($et_itemname=='')
 					<textarea name="et_note" id="et_note" rows=3 class="form-control" placeholder="(비고 기록)"><?=$et_note?></textarea>
 				    </div>
 				</span>			
-
 			  </form>			  
 				</div>
-       	 
-		
-
 			</div>
-		</div>		
-				
-   </div>		  
-		
+		</div>						
+   </div>		  		
   </body>
 </html>    
 
- 
 <script>
-
-$(document).ready(function(){		  
-		
+$(document).ready(function(){		  		
 	var description = <?php echo json_encode($description);?> ;
 	var spec = <?php echo json_encode($spec);?> ;
 	var unit = <?php echo json_encode($unit);?> ;
@@ -805,7 +799,7 @@ function savegrid()   {
 		$("#showjpgBtn").click(function(){    // jpg보여주기 그리고 pdf파일 생성	
 			var num = '<?php echo $num; ?>' ; 
 			var link ;
-			link = 'http://j-techel.co.kr/mywork/showjpg.php?num=' + num;
+			link = '<?php echo getBaseUrl(); ?>/mywork/showjpg.php?num=' + num;
 			  popupCenter(link , '원청 검색', 1500, 900);
 			
 		});	
@@ -866,15 +860,7 @@ function savegrid()   {
 			console.log( jqxhr , status , error );
 					} 			      		
 	   });		
-
-		// else
-		  // {
-		  // tmp='보고자만 결재상신 상태가 아닌 경우 수정이 가능합니다.';		
-		  // $('#alertmsg').html(tmp); 			  
-			// $('#myModal').modal('show');  
-		  // }
-		  
-	} 
+} 
 		 
 $("#delBtn").click(function(){      // del
 	var num = $("#num").val();    

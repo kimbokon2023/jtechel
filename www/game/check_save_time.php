@@ -1,4 +1,7 @@
 <?php
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();
 
 ini_set('display_errors', 'On');
@@ -9,7 +12,7 @@ $id = $_SESSION["userid"];
 
 header("Content-Type: application/json");
 			  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 
      try{

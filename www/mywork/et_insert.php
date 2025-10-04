@@ -24,15 +24,15 @@ array_push($fieldarr, 'et_receiver');
 
 
 if($mode=="modify" ) {
-	array_push($strarr, $_REQUEST["et_writeday"]);
-	array_push($strarr, $_REQUEST["et_wpname"]);
-	array_push($strarr, $_REQUEST["et_deadline"]);	
-	array_push($strarr, $_REQUEST["et_content"]);
-	array_push($strarr, $_REQUEST["et_note"]);
-	array_push($strarr, $_REQUEST["et_paymethod"]);
-	array_push($strarr, $_REQUEST["et_validation"]);
-	array_push($strarr, $_REQUEST["et_itemname"]);
-	array_push($strarr, $_REQUEST["et_receiver"]);
+	array_push($strarr, isset($_REQUEST["et_writeday"]) ? $_REQUEST["et_writeday"] : '');
+	array_push($strarr, isset($_REQUEST["et_wpname"]) ? $_REQUEST["et_wpname"] : '');
+	array_push($strarr, isset($_REQUEST["et_deadline"]) ? $_REQUEST["et_deadline"] : '');	
+	array_push($strarr, isset($_REQUEST["et_content"]) ? $_REQUEST["et_content"] : '');
+	array_push($strarr, isset($_REQUEST["et_note"]) ? $_REQUEST["et_note"] : '');
+	array_push($strarr, isset($_REQUEST["et_paymethod"]) ? $_REQUEST["et_paymethod"] : '');
+	array_push($strarr, isset($_REQUEST["et_validation"]) ? $_REQUEST["et_validation"] : '');
+	array_push($strarr, isset($_REQUEST["et_itemname"]) ? $_REQUEST["et_itemname"] : '');
+	array_push($strarr, isset($_REQUEST["et_receiver"]) ? $_REQUEST["et_receiver"] : '');
 }
 
 if($mode=="delete" ) {

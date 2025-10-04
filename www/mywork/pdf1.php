@@ -24,7 +24,10 @@
 // 파일을 읽어와서 서버에 저장함.
 isset($_REQUEST["imageURL"])  ? $imageURL=$_REQUEST["imageURL"] :   $imageURL=''; 
 
-$imageURL = 'http://j-techel.co.kr/mywork/' . $imageURL ;
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+$imageURL = getBaseUrl() . '/mywork/' . $imageURL ;
 // $imageURL = 'http://j-techel.co.kr/request/1.jpg';
 
 print $imageURL;

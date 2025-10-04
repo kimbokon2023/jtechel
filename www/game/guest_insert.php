@@ -5,6 +5,9 @@
 
 // 중복 이름과 전화번호가 입력되지 않도록 하기 위한 로직을 추가한다.
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 session_start();   
 
 $level= $_SESSION["level"];
@@ -20,7 +23,7 @@ isset($_REQUEST["guest_name"])  ? $guest_name = $_REQUEST["guest_name"] : $guest
 isset($_REQUEST["guest_tel"])  ? $guest_tel = $_REQUEST["guest_tel"] : $guest_tel=""; 
 isset($_REQUEST["branch"])  ? $branch = $_REQUEST["branch"] : $branch=""; 
 			  
-require_once($_SERVER['DOCUMENT_ROOT'] . "/lib/mydb.php");
+require_once("../lib/mydb.php");
 $pdo = db_connect();
 
 list($microseconds, $seconds) = explode(' ', microtime());

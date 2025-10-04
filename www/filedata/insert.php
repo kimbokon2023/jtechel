@@ -1,6 +1,9 @@
  <?php session_start(); ?>
  <meta charset="utf-8">
  <?php
+  // 환경별 기본 URL 설정
+  require_once '../config/environment.php';
+  
   if(!isset($_SESSION["userid"])) {
  ?>
   <script>

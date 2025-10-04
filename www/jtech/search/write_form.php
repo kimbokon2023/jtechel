@@ -1,11 +1,14 @@
  <?php
   session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../../config/environment.php';
   
  $level= $_SESSION["level"];
  if(!isset($_SESSION["level"]) || $level>=5) {
          echo "<script> alert('관리자 승인이 필요합니다.') </script>";
 		 sleep(2);
-         header ("Location:http://j-techel.co.kr/login/logout.php");
+         header ("Location:" . getBaseUrl() . "/login/logout.php");
          exit;
    }   
   
@@ -48,7 +51,7 @@ for($i=1;$i<=9;$i++)
 <!-- CSS only -->	
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="http://j-techel.co.kr/common.js"></script>
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script>
 
  <!-- 최초화면에서 보여주는 상단메뉴 -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

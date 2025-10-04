@@ -1,5 +1,8 @@
-<?
+<?php
 session_start();
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
 
 // 시공팀장별로 권한을 주기위함
 $username = $_SESSION["name"];
@@ -17,7 +20,7 @@ if( $choiceitem == '1')
 
 ?>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php include 'load.php' ?>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

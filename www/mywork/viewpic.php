@@ -1,5 +1,9 @@
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/mywork/load.php' ?>
+<?php 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+include 'load.php' 
+?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -40,7 +44,7 @@ isset($_REQUEST["page"])  ? $page = $_REQUEST["page"] : $page=1;
 
 
 // 스케줄에서 띄울때는 네이바를 나타내지 않는다. navibar=1 이면 나타내지 않음
-$navibar=$_REQUEST["navibar"];
+$navibar = isset($_REQUEST["navibar"]) ? $_REQUEST["navibar"] : '';
   
  // $file_dir = './uploads/'; 
   

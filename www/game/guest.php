@@ -1,7 +1,13 @@
 <?php 
 // 환경파일 읽어오기 (테이블명 작업 폴더 등)
 include 'ini.php';    
-session_start(); 
+
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} 
 
 $level= $_SESSION["level"];
 $user_name= $_SESSION["name"];
@@ -15,7 +21,7 @@ ini_set('display_errors','1');  // 화면에 warning 없애기
  if(!isset($_SESSION["level"]) || $_SESSION["level"]>5) {
           /*   alert("관리자 승인이 필요합니다."); */
 		 sleep(1);
-         header("Location:http://j-techel.co.kr/game/login/login_form.php"); 
+         header("Location:" . getBaseUrl() . "/game/login/login_form.php"); 
          exit;
    }  
 
@@ -50,7 +56,7 @@ $branch = isset($_COOKIE['branch']) ? $_COOKIE['branch'] : (intval($_SESSION["le
 <title>YH 회원관리</title>
 
 <?php
-$root_dir = $_SERVER['DOCUMENT_ROOT'] ;
+$root_dir = '..' ;
 
 ?>
 
@@ -398,6 +404,7 @@ $nowday = date("Y-m-d");   // 현재일자 변수지정
             <input type="text" name="search" id="search" value="<?=$search?>" onkeydown="JavaScript:SearchEnter();" placeholder="검색어">
             &nbsp; &nbsp;
             <button type="button" id="searchBtn" class="btn btn-dark btn-lg">검색</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <?php $buttonState = ''; // 버튼 상태 초기화 ?>
             <button type="button" class="btn btn-success btn-lg" <?=$buttonState?> onclick="popupCenter('./guest_write_form.php', '회원등록', 1050, 900)">회원등록</button> &nbsp;
         </div>
 

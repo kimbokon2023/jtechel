@@ -1,4 +1,8 @@
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/load_header.php' ?>
+<?php 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+include '../load_header.php' 
+?>
 
 <title> 사진대지 리스트 일괄등록 </title> 
 

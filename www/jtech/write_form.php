@@ -2,6 +2,9 @@
 
 session_start(); 
 
+// 환경별 기본 URL 설정
+require_once '../config/environment.php';
+
 $level= $_SESSION["level"];
 $id_name= $_SESSION["name"];   
 $user_name= $_SESSION["name"];  
@@ -22,12 +25,12 @@ for($i=0; $i<sizeof($mAgent); $i++){
 // 스케줄에서 띄울때는 네이바를 나타내지 않는다. navibar=1 이면 나타내지 않음
 $navibar=$_REQUEST["navibar"];
   
- // $file_dir = './uploads/'; 
+ // $file_dir = './uploads/';  
   
 
 include "_request.php";
 
-$URLsave = "http://j-techel.co.kr/jtech/viewpic.php?num=" . $num;
+$URLsave = getBaseUrl() . "/jtech/viewpic.php?num=" . $num;
 
 require_once("../lib/mydb.php");
 $pdo = db_connect();
@@ -73,7 +76,7 @@ if($num!=0)
 			} else {
 				// 디코딩된 데이터를 각 변수에 할당
 				$customer_date = $customer_object->customer_date;
-				$customer_company = $customer_object->customer_company;
+				$customer_company = $customer_object->customer_company; 
 				$customer_address = $customer_object->customer_address;
 				$customer_group = $customer_object->customer_group;
 				$customer_name = $customer_object->customer_name;
@@ -218,7 +221,7 @@ if(!in_array($worker, $worker_arr))   // 배열값에 없으면 넣어준다
 
 <script src="js/script.js"></script>
 	
-<script src="http://j-techel.co.kr/common.js"></script>
+<script src="<?php echo getBaseUrl(); ?>/common.js"></script>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -1280,7 +1283,7 @@ window.displayImages = function(filepaths, type, counter) {  // 전역함수 선
 							
 				  // 순서가 중요함 이동할 주소가 먼저 나와야 함 (모달창보다 먼저 나와야 화면에 나타냄)
 				  setTimeout(function() {
-						location.href='http://j-techel.co.kr/jtech/list.php';	
+						location.href='<?php echo getBaseUrl(); ?>/jtech/list.php';	
 				   }, 1500);
 				  
 				  // 메시지 창 띄우기  문구, 해당초
