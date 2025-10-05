@@ -549,6 +549,121 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
     <script src="assets/js/mobile-modal-enhancement.js"></script>
 
     <style>
+        /* HTML5 date input 스타일링 */
+        input[type="date"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            position: relative;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 1;
+            background: none;
+            color: var(--linear-text-secondary);
+            font-size: 1.2rem;
+            padding: 4px;
+            margin-right: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            background-color: var(--linear-bg-tertiary);
+            color: var(--linear-text-primary);
+            transform: scale(1.1);
+        }
+        
+        /* Firefox용 스타일 */
+        input[type="date"]::-moz-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 1;
+            background: none;
+            color: var(--linear-text-secondary);
+            font-size: 1.2rem;
+            padding: 4px;
+            margin-right: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="date"]::-moz-calendar-picker-indicator:hover {
+            background-color: var(--linear-bg-tertiary);
+            color: var(--linear-text-primary);
+            transform: scale(1.1);
+        }
+        
+        /* 커스텀 달력 아이콘 추가 */
+        .date-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .date-input-wrapper::after {
+            content: "▼";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 0.8rem;
+            color: var(--linear-text-secondary);
+            z-index: 1;
+            font-weight: bold;
+        }
+        
+        .date-input-wrapper input[type="date"] {
+            padding-right: 40px;
+        }
+        
+        /* 검색 폼 레이아웃 개선 */
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: var(--linear-spacing-md);
+            align-items: end;
+        }
+        
+        .search-grid > div {
+            min-width: 0;
+        }
+        
+        /* 날짜 입력 필드 너비 제한 */
+        .date-input-wrapper {
+            max-width: 150px;
+        }
+        
+        /* 측정자 드롭다운 최소 너비 보장 */
+        .search-grid select {
+            min-width: 120px;
+        }
+        
+        /* 버튼 그룹 */
+        .search-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: var(--linear-spacing-sm);
+        }
+        
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+                gap: var(--linear-spacing-sm);
+            }
+            
+            .date-input-wrapper {
+                max-width: none;
+            }
+            
+            .search-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
         /* 몰딩 테이블 인쇄 전용 스타일 */
         @media print {
             @page {
@@ -672,12 +787,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             box-shadow: var(--linear-shadow-low);
         }
 
-        .search-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
-            gap: var(--linear-spacing-md);
-            align-items: end;
-        }
+        /* 기존 search-grid 스타일은 위에서 정의됨 */
 
         .search-form input,
         .search-form select {
@@ -2338,6 +2448,50 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             color: #ffd700; /* 노란색 */
         }
 
+        /* 타공 정보 표시 스타일 */
+        .panel-info .drilling-info {
+            font-size: 0.98rem; /* 0.7rem * 1.4 = 0.98rem */
+            color: #ff6b6b; /* panel_measurement.php와 동일한 색상 */
+            font-weight: bold;
+            margin-top: 2px;
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+            transform: translateX(5ch); /* 센터로 5자 크기만큼 이동 */
+            display: block;
+        }
+
+        /* 2,3,4번 패널의 타공 정보를 오른쪽으로 16문자 이동 */
+        .panel-2 .panel-info .drilling-info,
+        .panel-3 .panel-info .drilling-info,
+        .panel-4 .panel-info .drilling-info {
+            transform: translateX(21ch); /* 5ch + 10ch + 6ch = 21ch */
+        }
+
+        /* 8,9,10번 패널의 타공 정보를 왼쪽으로 16문자 이동 */
+        .panel-8 .panel-info .drilling-info,
+        .panel-9 .panel-info .drilling-info,
+        .panel-10 .panel-info .drilling-info {
+            transform: translateX(-11ch); /* 5ch - 10ch - 6ch = -11ch */
+        }
+
+        /* 타공이 있는 패널의 치수 정보 위치 조정 */
+        .panel-3.has-drilling .panel-info .dimensions {
+            left: calc(50% + 7em) !important;
+            font-size: 0.9rem !important;
+            max-width: 150px !important;
+            text-align: left !important;
+            white-space: normal !important;
+            line-height: 1.1 !important;
+        }
+
+        .panel-9.has-drilling .panel-info .dimensions {
+            left: calc(50% - 7em) !important;
+            font-size: 0.9rem !important;
+            max-width: 150px !important;
+            text-align: left !important;
+            white-space: normal !important;
+            line-height: 1.1 !important;
+        }
+
         /* 자동 모드에서 시스템 다크 모드일 때 노란색 */
         @media (prefers-color-scheme: dark) {
             html:not([data-theme="light"]) .panel-width-value {
@@ -2790,7 +2944,16 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
     require_once '../components/LinearNavigation.php';
 
     $nav = LinearNavigation::withBrand(
-        '<i class="bi bi-building"></i> OSEL',
+        '<div style="display: flex; align-items: center;">
+            <a href="../mywork/index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center; margin-right: 1rem;" title="홈으로 이동">
+                <i class="bi bi-house" style="font-size: 2rem;"></i>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <a href="index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="bi bi-building"></i> OSEL
+                </a>
+            </div>
+        </div>',
         'index.php'
     )
     ->addAction('
@@ -2835,13 +2998,19 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     </div>
                     <div>
                         <label for="searchDateFrom">측정일자 (시작)</label>
-                        <input type="date" id="searchDateFrom" name="search_date_from"
-                               value="<?= htmlspecialchars($search_date_from) ?>">
+                        <div class="date-input-wrapper">
+                            <input type="date" id="searchDateFrom" name="search_date_from"
+                                   class="linear-input responsive-input"
+                                   value="<?= htmlspecialchars($search_date_from) ?>">
+                        </div>
                     </div>
                     <div>
                         <label for="searchDateTo">측정일자 (종료)</label>
-                        <input type="date" id="searchDateTo" name="search_date_to"
-                               value="<?= htmlspecialchars($search_date_to) ?>">
+                        <div class="date-input-wrapper">
+                            <input type="date" id="searchDateTo" name="search_date_to"
+                                   class="linear-input responsive-input"
+                                   value="<?= htmlspecialchars($search_date_to) ?>">
+                        </div>
                     </div>
                     <div>
                         <label for="searchMeasurer">측정자</label>
@@ -2855,7 +3024,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: var(--linear-spacing-xs);">
+                    <div class="search-buttons">
                         <?php
                         require_once '../components/LinearButton.php';
                         echo LinearButton::primary('<i class="bi bi-search"></i> 검색')
@@ -4197,6 +4366,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
         document.addEventListener('DOMContentLoaded', function() {
             // 전역 변수로 현재 선택된 데이터 초기화
             window.currentSelectedData = <?= json_encode($selected_data) ?>;
+            
+            // 날짜 선택기 초기화 (HTML5 date input 사용으로 불필요)
             
             const themeToggleBtn = document.getElementById('themeToggleBtn');
             const themeIcon = document.getElementById('themeIcon');
@@ -5876,6 +6047,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     // Mark panel as having data
                     panelElement.classList.add('has-info');
 
+                    // Add drilling class if panel has drilling information
+                    if (data.has_drilling && data.drilling_width && data.drilling_height) {
+                        panelElement.classList.add('has-drilling');
+                    } else {
+                        panelElement.classList.remove('has-drilling');
+                    }
+
                     // Create panel info content
                     const panelInfo = createPanelInfoContent(panelNumber, data);
 
@@ -5954,6 +6132,55 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             // Thickness
             if (data.thickness) {
                 content += `<div class="dimensions">${data.thickness}t</div>`;
+            }
+
+            // Drilling information
+            if (data.has_drilling && data.drilling_width && data.drilling_height) {
+                // 아이파크 프로젝트 확인 (site_name에 "아이파크"가 포함되어 있는지 확인)
+                const isIparkProject = window.currentSelectedData && 
+                    window.currentSelectedData.site_name && 
+                    window.currentSelectedData.site_name.includes('아이파크');
+                
+                let displayWidth = data.drilling_width;
+                let displayHeight = data.drilling_height;
+                let displayFromFloor = data.drilling_from_floor;
+                let displayFromEntrance = data.drilling_from_entrance;
+                
+                // 아이파크 프로젝트인 경우 제작치수 적용
+                if (isIparkProject) {
+                    // 제작가로 = 실측가로 - 70
+                    displayWidth = data.drilling_width - 70;
+                    
+                    // 제작세로 = 실측세로 - 13
+                    displayHeight = data.drilling_height - 13;
+                    
+                    // 제작바닥높이 = 실측바닥높이 + 6
+                    if (data.drilling_from_floor) {
+                        displayFromFloor = data.drilling_from_floor + 6;
+                    }
+                    
+                    // 제작출입구위치 = (제작패널전체폭 - 제작가로크기확정) / 2
+                    if (data.drilling_from_entrance && data.width) {
+                        const productionWidth = data.width; // 제작패널전체폭
+                        const productionDrillingWidth = displayWidth; // 제작가로크기확정
+                        displayFromEntrance = (productionWidth - productionDrillingWidth) / 2;
+                    }
+                }
+                
+                // panel_measurement.php와 동일한 형식: ⊙가로×세로H높이D거리
+                let drillingText = `⊙${Math.round(displayWidth)}×${Math.round(displayHeight)}`;
+                
+                // 높이(바닥부터) 추가
+                if (displayFromFloor) {
+                    drillingText += `H${Math.round(displayFromFloor)}`;
+                }
+                
+                // 거리(출입구에서) 추가
+                if (displayFromEntrance) {
+                    drillingText += `D${Math.round(displayFromEntrance)}`;
+                }
+                
+                content += `<div class="drilling-info">${drillingText}</div>`;
             }
 
             infoDiv.innerHTML = content;
@@ -6539,7 +6766,9 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             <?php else: ?>
             alert('내보낼 데이터가 없습니다.');
             <?php endif; ?>
-        } 
+        }
+
+        // HTML5 date input 사용으로 복잡한 커스텀 날짜 선택기 불필요
     </script>
 </body>
 </html>  

@@ -472,17 +472,49 @@ try {
             $hole_floor_height = '';
             $hole_entrance_distance = '';
 
+            // 아이파크 프로젝트 확인
+            $is_ipark_project = false;
+            if (isset($selected_data['site_name']) && strpos($selected_data['site_name'], '아이파크') !== false) {
+                $is_ipark_project = true;
+                error_log("아이파크 프로젝트 감지됨: " . $selected_data['site_name']);
+            }
+
             // 1. drilling_ 접두사 속성이 있는 경우 (실제 데이터 구조)
             if (isset($panel_info['drilling_width']) || isset($panel_info['drilling_height'])) {
                 if (isset($panel_info['drilling_width']) && isset($panel_info['drilling_height'])) {
                     $hole_width = $panel_info['drilling_width'];
                     $hole_height = $panel_info['drilling_height'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $original_width = $hole_width;
+                        $original_height = $hole_height;
+                        $hole_width = $hole_width - 70;  // 제작가로 = 실측가로 - 70
+                        $hole_height = $hole_height - 13; // 제작세로 = 실측세로 - 13
+                        error_log("아이파크 제작치수 적용 - 패널 {$panel_num}: 가로 {$original_width}→{$hole_width}, 세로 {$original_height}→{$hole_height}");
+                    }
                 }
                 if (isset($panel_info['drilling_from_floor'])) {
                     $hole_floor_height = $panel_info['drilling_from_floor'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $original_floor = $hole_floor_height;
+                        $hole_floor_height = $hole_floor_height + 6; // 제작바닥높이 = 실측바닥높이 + 6
+                        error_log("아이파크 제작치수 적용 - 패널 {$panel_num}: 바닥높이 {$original_floor}→{$hole_floor_height}");
+                    }
                 }
                 if (isset($panel_info['drilling_from_entrance'])) {
                     $hole_entrance_distance = $panel_info['drilling_from_entrance'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project && isset($panel_info['width'])) {
+                        $original_entrance = $hole_entrance_distance;
+                        $production_width = $panel_info['width']; // 제작패널전체폭
+                        $production_drilling_width = $hole_width; // 제작가로크기확정
+                        $hole_entrance_distance = ($production_width - $production_drilling_width) / 2; // 제작출입구위치
+                        error_log("아이파크 제작치수 적용 - 패널 {$panel_num}: 출입구거리 {$original_entrance}→{$hole_entrance_distance} (패널폭:{$production_width}, 제작가로:{$production_drilling_width})");
+                    }
                 }
             }
             // 2. holes 배열이 있는 경우 (다중 타공)
@@ -493,13 +525,38 @@ try {
 
                 foreach ($panel_info['holes'] as $hole) {
                     if (isset($hole['width']) && isset($hole['height'])) {
-                        $hole_details[] = $hole['width'] . '×' . $hole['height'];
+                        $hole_width_val = $hole['width'];
+                        $hole_height_val = $hole['height'];
+                        
+                        // 아이파크 프로젝트인 경우 제작치수 적용
+                        if ($is_ipark_project) {
+                            $hole_width_val = $hole_width_val - 70;  // 제작가로 = 실측가로 - 70
+                            $hole_height_val = $hole_height_val - 13; // 제작세로 = 실측세로 - 13
+                        }
+                        
+                        $hole_details[] = $hole_width_val . '×' . $hole_height_val;
                     }
                     if (isset($hole['floor_height'])) {
-                        $floor_heights[] = $hole['floor_height'];
+                        $floor_height_val = $hole['floor_height'];
+                        
+                        // 아이파크 프로젝트인 경우 제작치수 적용
+                        if ($is_ipark_project) {
+                            $floor_height_val = $floor_height_val + 6; // 제작바닥높이 = 실측바닥높이 + 6
+                        }
+                        
+                        $floor_heights[] = $floor_height_val;
                     }
                     if (isset($hole['entrance_distance'])) {
-                        $entrance_distances[] = $hole['entrance_distance'];
+                        $entrance_distance_val = $hole['entrance_distance'];
+                        
+                        // 아이파크 프로젝트인 경우 제작치수 적용
+                        if ($is_ipark_project && isset($panel_info['width'])) {
+                            $production_width = $panel_info['width']; // 제작패널전체폭
+                            $production_drilling_width = $hole_width_val ?? $hole['width'] - 70; // 제작가로크기확정
+                            $entrance_distance_val = ($production_width - $production_drilling_width) / 2; // 제작출입구위치
+                        }
+                        
+                        $entrance_distances[] = $entrance_distance_val;
                     }
                 }
 
@@ -513,12 +570,30 @@ try {
                 if (isset($panel_info['drillingWidth']) && isset($panel_info['drillingHeight'])) {
                     $hole_width = $panel_info['drillingWidth'];
                     $hole_height = $panel_info['drillingHeight'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_width = $hole_width - 70;  // 제작가로 = 실측가로 - 70
+                        $hole_height = $hole_height - 13; // 제작세로 = 실측세로 - 13
+                    }
                 }
                 if (isset($panel_info['drillingFromFloor'])) {
                     $hole_floor_height = $panel_info['drillingFromFloor'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_floor_height = $hole_floor_height + 6; // 제작바닥높이 = 실측바닥높이 + 6
+                    }
                 }
                 if (isset($panel_info['drillingFromEntrance'])) {
                     $hole_entrance_distance = $panel_info['drillingFromEntrance'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project && isset($panel_info['width'])) {
+                        $production_width = $panel_info['width']; // 제작패널전체폭
+                        $production_drilling_width = $hole_width; // 제작가로크기확정
+                        $hole_entrance_distance = ($production_width - $production_drilling_width) / 2; // 제작출입구위치
+                    }
                 }
             }
             // 4. hole_ 접두사 속성이 있는 경우
@@ -526,12 +601,30 @@ try {
                 if (isset($panel_info['hole_width']) && isset($panel_info['hole_height'])) {
                     $hole_width = $panel_info['hole_width'];
                     $hole_height = $panel_info['hole_height'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_width = $hole_width - 70;  // 제작가로 = 실측가로 - 70
+                        $hole_height = $hole_height - 13; // 제작세로 = 실측세로 - 13
+                    }
                 }
                 if (isset($panel_info['hole_floor_height'])) {
                     $hole_floor_height = $panel_info['hole_floor_height'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_floor_height = $hole_floor_height + 6; // 제작바닥높이 = 실측바닥높이 + 6
+                    }
                 }
                 if (isset($panel_info['hole_entrance_distance'])) {
                     $hole_entrance_distance = $panel_info['hole_entrance_distance'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project && isset($panel_info['width'])) {
+                        $production_width = $panel_info['width']; // 제작패널전체폭
+                        $production_drilling_width = $hole_width; // 제작가로크기확정
+                        $hole_entrance_distance = ($production_width - $production_drilling_width) / 2; // 제작출입구위치
+                    }
                 }
             }
             // 5. 9번 패널 특별 처리 (문 타공)
@@ -540,12 +633,30 @@ try {
                 if (isset($panel_info['door_width']) && isset($panel_info['door_height'])) {
                     $hole_width = $panel_info['door_width'];
                     $hole_height = $panel_info['door_height'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_width = $hole_width - 70;  // 제작가로 = 실측가로 - 70
+                        $hole_height = $hole_height - 13; // 제작세로 = 실측세로 - 13
+                    }
                 }
                 if (isset($panel_info['door_floor_height'])) {
                     $hole_floor_height = $panel_info['door_floor_height'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project) {
+                        $hole_floor_height = $hole_floor_height + 6; // 제작바닥높이 = 실측바닥높이 + 6
+                    }
                 }
                 if (isset($panel_info['door_center_distance'])) {
                     $hole_entrance_distance = $panel_info['door_center_distance'];
+                    
+                    // 아이파크 프로젝트인 경우 제작치수 적용
+                    if ($is_ipark_project && isset($panel_info['width'])) {
+                        $production_width = $panel_info['width']; // 제작패널전체폭
+                        $production_drilling_width = $hole_width; // 제작가로크기확정
+                        $hole_entrance_distance = ($production_width - $production_drilling_width) / 2; // 제작출입구위치
+                    }
                 }
             }
 

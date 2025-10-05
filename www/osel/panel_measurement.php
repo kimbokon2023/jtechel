@@ -844,7 +844,16 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
     </style>
     <?php
     $nav = LinearNavigation::withBrand(
-        '<i class="bi bi-building"></i> OSEL',
+        '<div style="display: flex; align-items: center;">
+            <a href="../mywork/index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center; margin-right: 1rem;" title="홈으로 이동">
+                <i class="bi bi-house" style="font-size: 2rem;"></i>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <a href="index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="bi bi-building"></i> OSEL
+                </a>
+            </div>
+        </div>',
         'index.php'
     )
     ->addAction('
@@ -897,43 +906,6 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     </div>
                     <div class="responsive-card-body">
                         
-                        <!-- 아이파크 체크박스 -->
-                        <div id="iparkCheckContainer" class="responsive-input-group">
-                            <label class="linear-label">
-                                <input type="checkbox" id="iparkCheck" name="ipark_check" value="1" <?= $defaultIparkCheck ? 'checked' : '' ?>>
-                                아이파크 신규
-                            </label>
-                        </div>
-
-                        <!-- 아이파크 프로젝트 정보 입력창 -->
-                        <div id="iparkProjectInfo" class="responsive-section" style="display: none;">
-                            <h6 class="responsive-section-title">아이파크 패널 설정</h6>
-                            <div class="responsive-grid responsive-grid-2">
-                                <div class="responsive-input-group">
-                                    <label for="iparkPanel39Width" class="linear-label">3,8번 패널 폭 (mm)</label>
-                                    <input type="number" class="linear-input responsive-input" id="iparkPanel39Width" name="ipark_panel_39_width" 
-                                           placeholder="800" min="100" max="2000" step="10" value="800">
-                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 3번과 8번 패널의 폭</small>
-                                </div>
-                                <div class="responsive-input-group">
-                                    <label for="iparkPanel6Width" class="linear-label">6번 패널 폭 (mm)</label>
-                                    <input type="number" class="linear-input responsive-input" id="iparkPanel6Width" name="ipark_panel_6_width" 
-                                           placeholder="1000" min="100" max="2000" step="10" value="1000">
-                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 6번 패널의 폭</small>
-                                </div>
-                                </div>
-                            <div style="margin-top: var(--linear-spacing-md); padding: var(--linear-spacing-md); background: var(--linear-bg-secondary); border-radius: var(--linear-radius-md);">
-                                <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">
-                                    <i class="bi bi-info-circle"></i> 
-                                    입력한 값으로 2번부터 10번까지의 패널 폭이 자동으로 계산됩니다.
-                                </small>
-                                </div>
-                            <div style="margin-top: var(--linear-spacing-md); display: flex; justify-content: flex-end;">
-                                <button type="button" id="applyIparkSettingsBtn" class="linear-btn linear-btn-primary">
-                                    <i class="bi bi-check-circle"></i> 설정 적용
-                                </button>
-                            </div>
-                        </div>
 
                         <!-- 현장명 -->
                         <div class="responsive-input-group">
@@ -1074,6 +1046,44 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                             <div class="responsive-input-group">
                                 <label for="notes" class="linear-label">특이사항</label>
                                 <textarea class="linear-input responsive-input" id="notes" name="notes" rows="2" placeholder="측정 시 특이사항이나 주의사항을 입력하세요"><?= htmlspecialchars($defaultNotes) ?></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 아이파크 체크박스 -->
+                        <div id="iparkCheckContainer" class="responsive-input-group">
+                            <label class="linear-label">
+                                <input type="checkbox" id="iparkCheck" name="ipark_check" value="1" <?= $defaultIparkCheck ? 'checked' : '' ?>>
+                                아이파크 신규
+                            </label>
+                        </div>
+
+                        <!-- 아이파크 프로젝트 정보 입력창 -->
+                        <div id="iparkProjectInfo" class="responsive-section" style="display: none;">
+                            <h6 class="responsive-section-title">아이파크 패널 설정</h6>
+                            <div class="responsive-grid responsive-grid-2">
+                                <div class="responsive-input-group">
+                                    <label for="iparkPanel39Width" class="linear-label">3,8번 패널 폭 (mm)</label>
+                                    <input type="number" class="linear-input responsive-input" id="iparkPanel39Width" name="ipark_panel_39_width" 
+                                           placeholder="800" min="100" max="2000" step="10" value="800">
+                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 3번과 8번 패널의 폭</small>
+                                </div>
+                                <div class="responsive-input-group">
+                                    <label for="iparkPanel6Width" class="linear-label">6번 패널 폭 (mm)</label>
+                                    <input type="number" class="linear-input responsive-input" id="iparkPanel6Width" name="ipark_panel_6_width" 
+                                           placeholder="1000" min="100" max="2000" step="10" value="1000">
+                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 6번 패널의 폭</small>
+                                </div>
+                                </div>
+                            <div style="margin-top: var(--linear-spacing-md); padding: var(--linear-spacing-md); background: var(--linear-bg-secondary); border-radius: var(--linear-radius-md);">
+                                <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">
+                                    <i class="bi bi-info-circle"></i> 
+                                    입력한 값으로 2번부터 10번까지의 패널 폭이 자동으로 계산됩니다.
+                                </small>
+                                </div>
+                            <div style="margin-top: var(--linear-spacing-md); display: flex; justify-content: flex-end;">
+                                <button type="button" id="applyIparkSettingsBtn" class="linear-btn linear-btn-primary">
+                                    <i class="bi bi-check-circle"></i> 설정 적용
+                                </button>
                             </div>
                         </div>
 
@@ -1357,7 +1367,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     <!-- Notes -->
                     <div class="panel-modal-field">
                         <label class="panel-modal-label">비고</label>
-                        <textarea class="linear-input" id="modalPanelNotes" name="panel_notes" rows="3" placeholder="특이사항, 추가 정보 등"></textarea>
+                        <textarea class="linear-input" id="modalPanelNotes" name="panel_notes" rows="2" placeholder="특이사항, 추가 정보 등"></textarea>
                     </div>
                 </form>
             </div>

@@ -457,7 +457,16 @@ try {
     </style>
     <?php
     $nav = LinearNavigation::withBrand(
-        '<i class="bi bi-building"></i> OSEL',
+        '<div style="display: flex; align-items: center;">
+            <a href="../mywork/index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center; margin-right: 1rem;" title="홈으로 이동">
+                <i class="bi bi-house" style="font-size: 2rem;"></i>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <a href="index.php" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="bi bi-building"></i> OSEL
+                </a>
+            </div>
+        </div>',
         'index.php'
     )
     ->addAction('

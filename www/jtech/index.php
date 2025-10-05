@@ -16,6 +16,32 @@ $login_url = getBaseUrl() . '/login/login_form.php';
          exit;
    }  
 
+
+// 제이테크 분기	
+if($_SESSION["part"]=='jtech') 
+{
+  header ("Location:../jtech/index.php");
+  exit;  
+}	
+
+// 김재구 팀장 분기	
+if($_SESSION["part"]=='mywork') 
+{
+  header ("Location:../mywork/index.php");
+  exit;  
+}	
+
+  if($_SESSION["userid"]=='9225' || $_SESSION["part"]=='mywork' )  
+{
+     header ("Location:../mywork/index.php");
+exit;  
+} 		
+else
+{
+  header ("Location:../jtech/index.php");	
+}
+
+
 ?>
 
 <!doctype html>
