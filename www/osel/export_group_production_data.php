@@ -99,16 +99,17 @@ try {
         'F1' => '카 내부 깊이(mm)',
         'G1' => '카 내부 높이(mm)',
         'H1' => '의장재질',
-        'I1' => '재질두께(mm)',
-        'J1' => '프로젝트 타입',
-        'K1' => '1,11번 제외',
-        'L1' => '트랜섬 제외',
-        'M1' => '몰딩 포함',
-        'N1' => '엘리베이터 대수',
-        'O1' => '제작 높이(mm)',
-        'P1' => '1,11번 높이(mm)',
-        'Q1' => '총 패널 수',
-        'R1' => '특이사항'
+        'I1' => '아이파크 체크',
+        'J1' => '재질두께(mm)',
+        'K1' => '프로젝트 타입',
+        'L1' => '1,11번 제외',
+        'M1' => '트랜섬 제외',
+        'N1' => '몰딩 포함',
+        'O1' => '엘리베이터 대수',
+        'P1' => '제작 높이(mm)',
+        'Q1' => '1,11번 높이(mm)',
+        'R1' => '총 패널 수',
+        'S1' => '특이사항'
     ];
 
     // 헤더 작성
@@ -137,7 +138,7 @@ try {
         ]
     ];
 
-    $sheet->getStyle('A1:R1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:S1')->applyFromArray($headerStyle);
 
     // 데이터 행 작성
     $row = 2;
@@ -178,6 +179,12 @@ try {
         error_log("measurement['elevator_count']: " . ($raw_elevator_count ?? 'NULL'));
         error_log("최종 elevator_count: " . $current_elevator_count);
 
+        // 아이파크 체크 여부 확인
+        $ipark_check = 'N';
+        if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+            $ipark_check = 'Y';
+        }
+
         $data = [
             'A' => $measurement['id'],
             'B' => $measurement['site_name'],
@@ -187,16 +194,17 @@ try {
             'F' => $measurement['car_inside_depth'],
             'G' => $measurement['car_inside_height'],
             'H' => $measurement['material_type'] ?? '',
-            'I' => $measurement['material_thickness'] ?? '',
-            'J' => $project_type,
-            'K' => $panel_corners_excluded_display,
-            'L' => $transom_excluded,
-            'M' => $molding_included_display,
-            'N' => $current_elevator_count,
-            'O' => $production_height,
-            'P' => $production_height1_11,
-            'Q' => count($panel_data),
-            'R' => $measurement['notes'] ?? ''
+            'I' => $ipark_check,
+            'J' => $measurement['material_thickness'] ?? '',
+            'K' => $project_type,
+            'L' => $panel_corners_excluded_display,
+            'M' => $transom_excluded,
+            'N' => $molding_included_display,
+            'O' => $current_elevator_count,
+            'P' => $production_height,
+            'Q' => $production_height1_11,
+            'R' => count($panel_data),
+            'S' => $measurement['notes'] ?? ''
         ];
 
         foreach ($data as $col => $value) {
@@ -218,18 +226,18 @@ try {
         ]
     ];
 
-    $sheet->getStyle('A2:R' . ($row - 1))->applyFromArray($dataStyle);
+    $sheet->getStyle('A2:S' . ($row - 1))->applyFromArray($dataStyle);
 
     // 컬럼 너비 설정
     $sheet->getColumnDimension('B')->setWidth(40); // 현장명
     $sheet->getColumnDimension('D')->setWidth(12); // 측정자
-    $sheet->getColumnDimension('R')->setWidth(40); // 특이사항
+    $sheet->getColumnDimension('S')->setWidth(40); // 특이사항
     $sheet->getColumnDimension('E')->setWidth(24); // 카 내부 가로
     $sheet->getColumnDimension('F')->setWidth(24); // 카 내부 깊이
     $sheet->getColumnDimension('G')->setWidth(24); // 카 내부 높이
     
-    // H열~Q열까지 너비 20으로 설정
-    $wideCols = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+    // H열~R열까지 너비 20으로 설정
+    $wideCols = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
     foreach ($wideCols as $col) {
         $sheet->getColumnDimension($col)->setWidth(20);
     }
@@ -254,30 +262,31 @@ try {
         'F1' => '카 내부 W',
         'G1' => '카 내부 D',
         'H1' => '카 내부 H',
-        'I1' => '의장재질',
-        'J1' => '재질 두께',
-        'K1' => '패널 번호',
-        'L1' => '제작 대수',
-        'M1' => '패널 타입',
-        'N1' => '제작폭',
-        'O1' => '제작높이',
-        'P1' => '타공 가로',
-        'Q1' => '타공 세로',
-        'R1' => '타공 높이(밑기준)',
-        'S1' => '출입구방향에서 떨어짐',
-        'T1' => '1,11전면 두께',
-        'U1' => '1,11전면 날개',
-        'V1' => '1,11후면 두께',
-        'W1' => '1,11후면 날개',
-        'X1' => 'TR 가로',
-        'Y1' => 'TR 막판높이',
-        'Z1' => 'TR 밑면깊이JD',
-        'AA1' => 'TR 날개값',
-        'AB1' => 'TR CPI타공 가로',
-        'AC1' => 'TR CPI타공 세로',
-        'AD1' => 'TR CPI타공높이',
-        'AE1' => 'TR 비고',
-        'AF1' => '패널 특이사항'
+        'I1' => '아이파크 체크',
+        'J1' => '의장재질',
+        'K1' => '재질 두께',
+        'L1' => '패널 번호',
+        'M1' => '제작 대수',
+        'N1' => '패널 타입',
+        'O1' => '제작폭',
+        'P1' => '제작높이',
+        'Q1' => '타공 가로',
+        'R1' => '타공 세로',
+        'S1' => '타공 높이(밑기준)',
+        'T1' => '출입구방향에서 떨어짐',
+        'U1' => '1,11전면 두께',
+        'V1' => '1,11전면 날개',
+        'W1' => '1,11후면 두께',
+        'X1' => '1,11후면 날개',
+        'Y1' => 'TR 가로',
+        'Z1' => 'TR 막판높이',
+        'AA1' => 'TR 밑면깊이JD',
+        'AB1' => 'TR 날개값',
+        'AC1' => 'TR CPI타공 가로',
+        'AD1' => 'TR CPI타공 세로',
+        'AE1' => 'TR CPI타공높이',
+        'AF1' => 'TR 비고',
+        'AG1' => '패널 특이사항'
     ];
 
     foreach ($productionHeaders as $cell => $value) {
@@ -285,7 +294,7 @@ try {
     }
 
     // 제작산출결과 헤더 스타일
-    $productionSheet->getStyle('A1:AF1')->applyFromArray($headerStyle);
+    $productionSheet->getStyle('A1:AG1')->applyFromArray($headerStyle);
 
     // 패널 데이터 작성
     $productionRow = 2;
@@ -350,6 +359,12 @@ try {
                     continue;
                 }
 
+                // 아이파크 체크 여부 확인
+                $ipark_check = 'N';
+                if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+                    $ipark_check = 'Y';
+                }
+
                 // 기본 현장 정보
                 $productionSheet->setCellValue('A' . $productionRow, $rowNum);
                 $productionSheet->setCellValue('B' . $productionRow, $measurement['id']);
@@ -359,18 +374,19 @@ try {
                 $productionSheet->setCellValue('F' . $productionRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
                 $productionSheet->setCellValue('G' . $productionRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
                 $productionSheet->setCellValue('H' . $productionRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-                $productionSheet->setCellValue('I' . $productionRow, $measurement['material_type']);
-                $productionSheet->setCellValue('J' . $productionRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+                $productionSheet->setCellValue('I' . $productionRow, $ipark_check);
+                $productionSheet->setCellValue('J' . $productionRow, $measurement['material_type']);
+                $productionSheet->setCellValue('K' . $productionRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
 
                 // 패널 정보
-                $productionSheet->setCellValue('K' . $productionRow, $panel_num);
-                $productionSheet->setCellValue('L' . $productionRow, $current_elevator_count);
+                $productionSheet->setCellValue('L' . $productionRow, $panel_num);
+                $productionSheet->setCellValue('M' . $productionRow, $current_elevator_count);
                 
                 // 디버그: 패널별 elevator_count 확인
                 error_log("패널 데이터 처리 - 현장: {$measurement['site_name']}, 패널: {$panel_num}, elevator_count: {$current_elevator_count}");
                 
                 $panelIndex = is_numeric($panel_num) ? (int)$panel_num : (int)preg_replace('/\D+/', '', (string)$panel_num);
-                $productionSheet->setCellValue('M' . $productionRow, ($panelIndex === 1 || $panelIndex === 11) ? ($panel_info['panel_type_detail'] ?? '') : '');
+                $productionSheet->setCellValue('N' . $productionRow, ($panelIndex === 1 || $panelIndex === 11) ? ($panel_info['panel_type_detail'] ?? '') : '');
 
                 // 제작사이즈 적용
                 $width = $panel_info['width'] ?? 0;
@@ -399,8 +415,8 @@ try {
                 }
 
                 // 제작폭, 제작높이 설정
-                $productionSheet->setCellValue('N' . $productionRow, $width == 0 ? '' : $width);
-                $productionSheet->setCellValue('O' . $productionRow, $height == 0 ? '' : $height);
+                $productionSheet->setCellValue('O' . $productionRow, $width == 0 ? '' : $width);
+                $productionSheet->setCellValue('P' . $productionRow, $height == 0 ? '' : $height);
 
                 // 타공 정보 추출 (다양한 형태의 데이터 구조 지원)
                 $hole_width = '';
@@ -518,25 +534,25 @@ try {
                 }
 
                 // 타공 정보 설정 (올바른 열에 각각의 값 설정)
-                $productionSheet->setCellValue('P' . $productionRow, $hole_width);  // 타공 가로
-                $productionSheet->setCellValue('Q' . $productionRow, $hole_height); // 타공 세로
-                $productionSheet->setCellValue('R' . $productionRow, $hole_floor_height); // 타공 높이(밑기준)
-                $productionSheet->setCellValue('S' . $productionRow, $hole_entrance_distance); // 입구방향에서 떨어짐
+                $productionSheet->setCellValue('Q' . $productionRow, $hole_width);  // 타공 가로
+                $productionSheet->setCellValue('R' . $productionRow, $hole_height); // 타공 세로
+                $productionSheet->setCellValue('S' . $productionRow, $hole_floor_height); // 타공 높이(밑기준)
+                $productionSheet->setCellValue('T' . $productionRow, $hole_entrance_distance); // 입구방향에서 떨어짐
 
                 // Corner details for 1,11
-                $productionSheet->setCellValue('T' . $productionRow, ($panel_info['frontThickness'] ?? 0) == 0 ? '' : ($panel_info['frontThickness'] ?? ''));
-                $productionSheet->setCellValue('U' . $productionRow, ($panel_info['frontWing'] ?? 0) == 0 ? '' : ($panel_info['frontWing'] ?? ''));
-                $productionSheet->setCellValue('V' . $productionRow, ($panel_info['backThickness'] ?? 0) == 0 ? '' : ($panel_info['backThickness'] ?? ''));
-                $productionSheet->setCellValue('W' . $productionRow, ($panel_info['backWing'] ?? 0) == 0 ? '' : ($panel_info['backWing'] ?? ''));
+                $productionSheet->setCellValue('U' . $productionRow, ($panel_info['frontThickness'] ?? 0) == 0 ? '' : ($panel_info['frontThickness'] ?? ''));
+                $productionSheet->setCellValue('V' . $productionRow, ($panel_info['frontWing'] ?? 0) == 0 ? '' : ($panel_info['frontWing'] ?? ''));
+                $productionSheet->setCellValue('W' . $productionRow, ($panel_info['backThickness'] ?? 0) == 0 ? '' : ($panel_info['backThickness'] ?? ''));
+                $productionSheet->setCellValue('X' . $productionRow, ($panel_info['backWing'] ?? 0) == 0 ? '' : ($panel_info['backWing'] ?? ''));
 
                 // 1~11번 패널은 TR 관련 컬럼을 비워둠
                 $currentPanelNum = is_numeric($panel_num) ? (int)$panel_num : (int)preg_replace('/\D+/', '', (string)$panel_num);
                 if ($currentPanelNum >= 1 && $currentPanelNum <= 11) {
-                    foreach (['X','Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                    foreach (['Y','Z','AA','AB','AC','AD','AE'] as $col) {
                         $productionSheet->setCellValue($col . $productionRow, '');
                     }
                 } else {
-                    foreach (['X','Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                    foreach (['Y','Z','AA','AB','AC','AD','AE'] as $col) {
                         $productionSheet->setCellValue($col . $productionRow, '');
                     }
                 }
@@ -556,40 +572,44 @@ try {
                 $productionSheet->setCellValue('F' . $productionRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
                 $productionSheet->setCellValue('G' . $productionRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
                 $productionSheet->setCellValue('H' . $productionRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-                $productionSheet->setCellValue('I' . $productionRow, $measurement['material_type']);
-                $productionSheet->setCellValue('J' . $productionRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
-                $productionSheet->setCellValue('K' . $productionRow, 'transom');
-                $productionSheet->setCellValue('L' . $productionRow, $current_elevator_count);
+                $productionSheet->setCellValue('I' . $productionRow, $ipark_check);
+                $productionSheet->setCellValue('J' . $productionRow, $measurement['material_type']);
+                $productionSheet->setCellValue('K' . $productionRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+                $productionSheet->setCellValue('L' . $productionRow, 'transom');
+                $productionSheet->setCellValue('M' . $productionRow, $current_elevator_count);
                 
                 // 디버그: Transom elevator_count 확인
                 error_log("Transom 데이터 처리 - 현장: {$measurement['site_name']}, elevator_count: {$current_elevator_count}");
                 
-                $productionSheet->setCellValue('M' . $productionRow, '');
-                $productionSheet->setCellValue('N' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-                $productionSheet->setCellValue('O' . $productionRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
+                $productionSheet->setCellValue('N' . $productionRow, '');
+                $productionSheet->setCellValue('O' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+                $productionSheet->setCellValue('P' . $productionRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
                 
                 // Drilling fields (Transom에는 비워둠)
-                $productionSheet->setCellValue('P' . $productionRow, '');
                 $productionSheet->setCellValue('Q' . $productionRow, '');
                 $productionSheet->setCellValue('R' . $productionRow, '');
                 $productionSheet->setCellValue('S' . $productionRow, '');
+                $productionSheet->setCellValue('T' . $productionRow, '');
                 
                 // Corner details (Transom에는 비워둠)
-                $productionSheet->setCellValue('T' . $productionRow, '');
+                $productionSheet->setCellValue('U' . $productionRow, '');
                 $productionSheet->setCellValue('U' . $productionRow, '');
                 $productionSheet->setCellValue('V' . $productionRow, '');
                 $productionSheet->setCellValue('W' . $productionRow, '');
                 
                 // TR 블록
-                $productionSheet->setCellValue('X' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-                $productionSheet->setCellValue('Y' . $productionRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
-                $productionSheet->setCellValue('Z' . $productionRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
-                $productionSheet->setCellValue('AA' . $productionRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
-                $productionSheet->setCellValue('AB' . $productionRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
-                $productionSheet->setCellValue('AC' . $productionRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
-                $productionSheet->setCellValue('AD' . $productionRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
-                $productionSheet->setCellValue('AE' . $productionRow, $transomData['notes'] ?? '');
-                $productionSheet->setCellValue('AF' . $productionRow, '');
+                $productionSheet->setCellValue('V' . $productionRow, '');
+                $productionSheet->setCellValue('W' . $productionRow, '');
+                $productionSheet->setCellValue('X' . $productionRow, '');
+                $productionSheet->setCellValue('Y' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+                $productionSheet->setCellValue('Z' . $productionRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
+                $productionSheet->setCellValue('AA' . $productionRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
+                $productionSheet->setCellValue('AB' . $productionRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
+                $productionSheet->setCellValue('AC' . $productionRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
+                $productionSheet->setCellValue('AD' . $productionRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
+                $productionSheet->setCellValue('AE' . $productionRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
+                $productionSheet->setCellValue('AF' . $productionRow, $transomData['notes'] ?? '');
+                $productionSheet->setCellValue('AG' . $productionRow, '');
                 $productionRow++;
                 $rowNum++;
             }
@@ -598,7 +618,7 @@ try {
 
     // 제작산출결과 데이터 스타일
     if ($productionRow > 2) {
-        $productionSheet->getStyle('A2:AF' . ($productionRow - 1))->applyFromArray($dataStyle);
+        $productionSheet->getStyle('A2:AG' . ($productionRow - 1))->applyFromArray($dataStyle);
     }
 
     // 제작산출결과 시트 컬럼 너비 설정
@@ -607,16 +627,16 @@ try {
         $productionSheet->getColumnDimension($columnID)->setAutoSize(false);
         $productionSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
     }
-    foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF'] as $columnID) {
+    foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG'] as $columnID) {
         $productionSheet->getColumnDimension($columnID)->setAutoSize(false);
         $productionSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
     }
 
     // 긴 텍스트/헤더 열은 더 넓게 지정
     $detailWideColumns = [
-        'A' => 5, 'B' => 8, 'C' => 30, 'D' => 12, 'E' => 12, 'K' => 12, 'L' => 12,
-        'M' => 15, 'N' => 14, 'O' => 14, 'P' => 14, 'Q' => 14, 'R' => 18, 'S' => 18,
-        'AC' => 18, 'AD' => 18, 'AE' => 18, 'AF' => 30
+        'A' => 5, 'B' => 8, 'C' => 30, 'D' => 12, 'E' => 12, 'I' => 12, 'L' => 12, 'M' => 12,
+        'N' => 15, 'O' => 14, 'P' => 14, 'Q' => 14, 'R' => 14, 'S' => 18, 'T' => 18,
+        'AD' => 18, 'AE' => 18, 'AF' => 18, 'AG' => 30
     ];
     foreach ($detailWideColumns as $col => $width) {
         $productionSheet->getColumnDimension($col)->setWidth($width);

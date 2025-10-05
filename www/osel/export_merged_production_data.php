@@ -125,18 +125,19 @@ try {
         'F1' => '카 내부 깊이(mm)',
         'G1' => '카 내부 높이(mm)',
         'H1' => '의장재질',
-        'I1' => '재질두께(mm)',
+        'I1' => '아이파크 체크',
+        'J1' => '재질두께(mm)',
         // 제작 조건 설정 컬럼 추가
-        'J1' => '프로젝트 타입',
-        'K1' => '1,11번 제외',
-        'L1' => '트랜섬 제외',
-        'M1' => '몰딩 포함',
-        'N1' => '엘리베이터 대수',
-        'O1' => '제작 높이(mm)',
-        'P1' => '1,11번 높이(mm)',
+        'K1' => '프로젝트 타입',
+        'L1' => '1,11번 제외',
+        'M1' => '트랜섬 제외',
+        'N1' => '몰딩 포함',
+        'O1' => '엘리베이터 대수',
+        'P1' => '제작 높이(mm)',
+        'Q1' => '1,11번 높이(mm)',
         // 패널 정보
-        'Q1' => '총 패널 수',
-        'R1' => '특이사항'
+        'R1' => '총 패널 수',
+        'S1' => '특이사항'
     ];
 
     // 헤더 작성
@@ -145,7 +146,7 @@ try {
     }
 
     // 헤더 스타일 설정
-    $sheet->getStyle('A1:R1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:S1')->applyFromArray($headerStyle);
 
     // 데이터 행 작성
     $row = 2;
@@ -188,6 +189,12 @@ try {
             }
         }
 
+        // 아이파크 체크 여부 확인
+        $ipark_check = 'N';
+        if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+            $ipark_check = 'Y';
+        }
+
         $data = [
             'A' => $measurement['id'],
             'B' => $measurement['site_name'],
@@ -197,18 +204,19 @@ try {
             'F' => $measurement['car_inside_depth'],
             'G' => $measurement['car_inside_height'],
             'H' => $measurement['material_type'] ?? '',
-            'I' => $measurement['material_thickness'] ?? '',
+            'I' => $ipark_check,
+            'J' => $measurement['material_thickness'] ?? '',
             // 제작 조건 설정
-            'J' => $project_type,
-            'K' => $panel_corners_excluded_display,
-            'L' => $transom_excluded,
-            'M' => $molding_included_display,
-            'N' => $elevator_count,
-            'O' => $production_height,
-            'P' => $production_height1_11,
+            'K' => $project_type,
+            'L' => $panel_corners_excluded_display,
+            'M' => $transom_excluded,
+            'N' => $molding_included_display,
+            'O' => $elevator_count,
+            'P' => $production_height,
+            'Q' => $production_height1_11,
             // 패널 정보 (실제 제작되는 패널 수)
-            'Q' => $actual_panel_count,
-            'R' => $measurement['notes'] ?? ''
+            'R' => $actual_panel_count,
+            'S' => $measurement['notes'] ?? ''
         ];
 
         foreach ($data as $col => $value) {
@@ -231,18 +239,18 @@ try {
 
     // 데이터 스타일 설정
     if ($row > 2) {
-        $sheet->getStyle('A2:R' . ($row - 1))->applyFromArray($dataStyle);
+        $sheet->getStyle('A2:S' . ($row - 1))->applyFromArray($dataStyle);
     }
 
     // 컬럼 너비 설정 (기존과 동일)
     $sheet->getColumnDimension('B')->setWidth(40); // 현장명
     $sheet->getColumnDimension('D')->setWidth(12); // 측정자
-    $sheet->getColumnDimension('R')->setWidth(40); // 특이사항
+    $sheet->getColumnDimension('S')->setWidth(40); // 특이사항
     $sheet->getColumnDimension('E')->setWidth(24); // 카 내부 가로
     $sheet->getColumnDimension('F')->setWidth(24); // 카 내부 깊이
     $sheet->getColumnDimension('G')->setWidth(24); // 카 내부 높이
 
-    $wideCols = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+    $wideCols = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'];
     foreach ($wideCols as $col) {
         $sheet->getColumnDimension($col)->setWidth(20);
     }
@@ -259,17 +267,18 @@ try {
     // 제작산출결과 시트 헤더 (타공 정보 컬럼 수정)
     $productionHeaders = [
         'A1' => '현장명',
-        'B1' => '패널번호',
-        'C1' => '폭(mm)',
-        'D1' => '높이(mm)',
-        'E1' => '타공 가로',
-        'F1' => '타공 세로',
-        'G1' => '타공 높이(밑기준)',
-        'H1' => '입구방향에서 떨어짐',
-        'I1' => '패널재질',
-        'J1' => '특이사항',
-        'K1' => '제작수량',
-        'L1' => '비고'
+        'B1' => '아이파크 체크',
+        'C1' => '패널번호',
+        'D1' => '폭(mm)',
+        'E1' => '높이(mm)',
+        'F1' => '타공 가로',
+        'G1' => '타공 세로',
+        'H1' => '타공 높이(밑기준)',
+        'I1' => '입구방향에서 떨어짐',
+        'J1' => '패널재질',
+        'K1' => '특이사항',
+        'L1' => '제작수량',
+        'M1' => '비고'
     ];
 
     foreach ($productionHeaders as $cell => $value) {
@@ -277,7 +286,7 @@ try {
     }
 
     // 제작산출결과 헤더 스타일
-    $productionSheet->getStyle('A1:L1')->applyFromArray($headerStyle);
+    $productionSheet->getStyle('A1:M1')->applyFromArray($headerStyle);
 
     // 패널 데이터 작성
     $productionRow = 2;
@@ -463,6 +472,12 @@ try {
                     $panel_type = '일반 패널';
                 }
 
+                // 아이파크 체크 여부 확인
+                $ipark_check = 'N';
+                if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+                    $ipark_check = 'Y';
+                }
+
                 // 기타 정보
                 $material = $panel_info['material'] ?? $measurement['material_type'] ?? '스테인리스 스틸';
                 $notes = $panel_info['notes'] ?? $panel_type;
@@ -471,17 +486,18 @@ try {
 
                 $productionData = [
                     'A' => $measurement['site_name'],
-                    'B' => $panel_num,
-                    'C' => $width,
-                    'D' => $height,
-                    'E' => $hole_width,  // 타공 가로
-                    'F' => $hole_height, // 타공 세로
-                    'G' => $hole_floor_height, // 타공 높이(밑기준)
-                    'H' => $hole_entrance_distance, // 입구방향에서 떨어짐
-                    'I' => $material,
-                    'J' => $notes,
-                    'K' => $quantity,
-                    'L' => trim($remarks)
+                    'B' => $ipark_check,
+                    'C' => $panel_num,
+                    'D' => $width,
+                    'E' => $height,
+                    'F' => $hole_width,  // 타공 가로
+                    'G' => $hole_height, // 타공 세로
+                    'H' => $hole_floor_height, // 타공 높이(밑기준)
+                    'I' => $hole_entrance_distance, // 입구방향에서 떨어짐
+                    'J' => $material,
+                    'K' => $notes,
+                    'L' => $quantity,
+                    'M' => trim($remarks)
                 ];
 
                 foreach ($productionData as $col => $value) {
@@ -495,22 +511,23 @@ try {
 
     // 제작산출결과 데이터 스타일
     if ($productionRow > 2) {
-        $productionSheet->getStyle('A2:L' . ($productionRow - 1))->applyFromArray($dataStyle);
+        $productionSheet->getStyle('A2:M' . ($productionRow - 1))->applyFromArray($dataStyle);
     }
 
     // 제작산출결과 시트 컬럼 너비 설정 (타공 정보 컬럼 수정)
     $productionSheet->getColumnDimension('A')->setWidth(20); // 현장명
-    $productionSheet->getColumnDimension('B')->setWidth(14); // 패널번호
-    $productionSheet->getColumnDimension('C')->setWidth(17); // 폭
-    $productionSheet->getColumnDimension('D')->setWidth(17); // 높이
-    $productionSheet->getColumnDimension('E')->setWidth(14); // 타공 가로
-    $productionSheet->getColumnDimension('F')->setWidth(14); // 타공 세로
-    $productionSheet->getColumnDimension('G')->setWidth(18); // 타공 높이(밑기준)
-    $productionSheet->getColumnDimension('H')->setWidth(18); // 입구방향에서 떨어짐
-    $productionSheet->getColumnDimension('I')->setWidth(24); // 패널재질
-    $productionSheet->getColumnDimension('J')->setWidth(40); // 특이사항
-    $productionSheet->getColumnDimension('K')->setWidth(14); // 제작수량
-    $productionSheet->getColumnDimension('L')->setWidth(50); // 비고
+    $productionSheet->getColumnDimension('B')->setWidth(14); // 아이파크 체크
+    $productionSheet->getColumnDimension('C')->setWidth(14); // 패널번호
+    $productionSheet->getColumnDimension('D')->setWidth(17); // 폭
+    $productionSheet->getColumnDimension('E')->setWidth(17); // 높이
+    $productionSheet->getColumnDimension('F')->setWidth(14); // 타공 가로
+    $productionSheet->getColumnDimension('G')->setWidth(14); // 타공 세로
+    $productionSheet->getColumnDimension('H')->setWidth(18); // 타공 높이(밑기준)
+    $productionSheet->getColumnDimension('I')->setWidth(18); // 입구방향에서 떨어짐
+    $productionSheet->getColumnDimension('J')->setWidth(24); // 패널재질
+    $productionSheet->getColumnDimension('K')->setWidth(40); // 특이사항
+    $productionSheet->getColumnDimension('L')->setWidth(14); // 제작수량
+    $productionSheet->getColumnDimension('M')->setWidth(50); // 비고
 
     // === 세 번째 시트: 몰딩 정보 ===
     $moldingSheet = $objPHPExcel->createSheet();
