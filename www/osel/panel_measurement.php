@@ -1062,10 +1062,10 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                             <h6 class="responsive-section-title">아이파크 패널 설정</h6>
                             <div class="responsive-grid responsive-grid-2">
                                 <div class="responsive-input-group">
-                                    <label for="iparkPanel39Width" class="linear-label">3,8번 패널 폭 (mm)</label>
+                                    <label for="iparkPanel39Width" class="linear-label">3,9번 패널 폭 (mm)</label>
                                     <input type="number" class="linear-input responsive-input" id="iparkPanel39Width" name="ipark_panel_39_width" 
                                            placeholder="800" min="100" max="2000" step="10" value="800">
-                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 3번과 8번 패널의 폭</small>
+                                    <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 3번과 9번 패널의 폭</small>
                                 </div>
                                 <div class="responsive-input-group">
                                     <label for="iparkPanel6Width" class="linear-label">6번 패널 폭 (mm)</label>
@@ -1850,7 +1850,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                         if (panel39Width < 100 || panel39Width > 2000) {
                             Swal.fire({
                                 icon: 'warning',
-                                text: '3,8번 패널 폭은 100~2000mm 범위로 입력해주세요.',
+                                text: '3,9번 패널 폭은 100~2000mm 범위로 입력해주세요.',
                                 timer: 2000,
                                 showConfirmButton: false,
                                 toast: true,
@@ -1892,7 +1892,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                         Swal.fire({
                             icon: 'success',
                             title: '설정 적용 완료',
-                            html: `아이파크 설정이 적용되었습니다.<br>3,8번: ${panel39Width}mm, 6번: ${panel6Width}mm`,
+                            html: `아이파크 설정이 적용되었습니다.<br>3,9번: ${panel39Width}mm, 6번: ${panel6Width}mm`,
                             timer: 2500,
                             showConfirmButton: false,
                             toast: true,
@@ -1952,7 +1952,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             if (panel2_4_8_10_width <= 0) {
                 panel2_4_8_10_width = 10;
                 hasAdjustment = true;
-                adjustmentMessage += `D방향: 3,8번 패널폭(${panel39Width}mm)이 카 깊이(${carDepth}mm)보다 커서 2,4,8,10번을 최소값 10mm로 조정\n`;
+                adjustmentMessage += `D방향: 3,9번 패널폭(${panel39Width}mm)이 카 깊이(${carDepth}mm)보다 커서 2,4,8,10번을 최소값 10mm로 조정\n`;
                 console.log(`⚠️ D방향 조정: 2,4,8,10번 → ${panel2_4_8_10_width}mm (최소값)`);
             }
 
