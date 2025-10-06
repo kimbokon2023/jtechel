@@ -415,6 +415,181 @@ try {
                 margin-right: 0.3rem !important;
             }
         }
+
+        /* Python 제작 안내 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex !important;
+        }
+
+        .modal-content {
+            background: var(--linear-bg-primary);
+            border-radius: var(--linear-radius-lg);
+            padding: 0;
+            max-width: 800px;
+            width: 95%;
+            height: 90vh;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--linear-shadow-lg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            padding: var(--linear-spacing-xl) var(--linear-spacing-xl) var(--linear-spacing-lg);
+            border-bottom: 1px solid var(--linear-border-secondary);
+            background: var(--linear-bg-tertiary);
+            min-height: 100px;
+        }
+
+        .modal-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--linear-spacing-md);
+        }
+
+        .modal-title {
+            font-size: var(--linear-text-title2);
+            font-weight: var(--linear-font-semibold);
+            margin: 0;
+            color: var(--linear-text-primary);
+        }
+
+        .modal-description {
+            color: var(--linear-text-secondary);
+            font-size: var(--linear-text-small);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: var(--linear-spacing-xl);
+            padding-bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: calc(90vh - 180px);
+            min-height: 250px;
+        }
+
+        .modal-footer {
+            flex-shrink: 0;
+            padding: var(--linear-spacing-lg) var(--linear-spacing-xl);
+            border-top: 1px solid var(--linear-border-secondary);
+            background: var(--linear-bg-secondary);
+            display: flex;
+            gap: var(--linear-spacing-sm);
+            justify-content: flex-end;
+            min-height: 80px;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--linear-text-secondary);
+            padding: var(--linear-spacing-xs);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--linear-radius-sm);
+            transition: all var(--linear-transition-fast);
+        }
+
+        .modal-close:hover {
+            color: var(--linear-text-primary);
+            background: var(--linear-bg-secondary);
+        }
+
+        /* 모달 스크롤바 스타일링 */
+        .modal-body {
+            scrollbar-width: auto;
+            scrollbar-color: var(--linear-brand-primary) var(--linear-bg-secondary);
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--linear-bg-secondary);
+            border-radius: 6px;
+            border: 1px solid var(--linear-border-primary);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--linear-brand-primary);
+            border-radius: 6px;
+            border: 2px solid var(--linear-bg-secondary);
+            min-height: 30px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--linear-brand-primary-hover);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:active {
+            background: var(--linear-brand-primary);
+        }
+
+        .modal-body::-webkit-scrollbar-corner {
+            background: var(--linear-bg-secondary);
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 98%;
+                height: 85vh;
+                max-height: 85vh;
+            }
+
+            .modal-header {
+                padding: var(--linear-spacing-lg);
+                min-height: 70px;
+                flex-shrink: 0;
+            }
+
+            .modal-body {
+                padding: var(--linear-spacing-lg);
+                padding-bottom: 0;
+                max-height: calc(85vh - 150px);
+                min-height: 150px;
+                overflow-y: auto;
+                flex: 1;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                gap: var(--linear-spacing-sm);
+                min-height: 80px;
+                max-height: 80px;
+                padding: var(--linear-spacing-md) var(--linear-spacing-lg);
+                flex-shrink: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -552,6 +727,9 @@ try {
                         echo LinearButton::secondary('현장 묶음(그룹)');
                         ?>
                     </a>
+                    <button type="button" class="linear-btn linear-btn-outline" onclick="openPythonGuideModal()" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="bi bi-code-slash"></i> Python 제작 안내
+                    </button>
                 </div>
             </div>
         </div>
@@ -858,6 +1036,201 @@ try {
                     }
                 });
             }
+        });
+    </script>
+
+    <!-- Python 제작 안내 모달 -->
+    <div id="pythonGuideModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; height: 90vh;">
+            <div class="modal-header">
+                <div class="modal-header-top">
+                    <h3 class="modal-title">
+                        <i class="bi bi-code-slash"></i> OSEL Panel Generator - Python 제작 안내
+                    </h3>
+                    <button type="button" class="modal-close" onclick="closePythonGuideModal()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <p class="modal-description">
+                    Excel 데이터를 기반으로 DXF 형식의 CAD 도면을 자동 생성하는 Python 애플리케이션 사용법
+                </p>
+            </div>
+            
+            <div class="modal-body" style="overflow-y: auto; padding: var(--linear-spacing-xl);">
+                <div style="line-height: 1.6; color: var(--linear-text-primary);">
+                    
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-info-circle"></i> 개요
+                    </h4>
+                    <p style="margin-bottom: var(--linear-spacing-lg);">
+                        <strong>OSEL Panel Generator</strong>는 오성이엘의 패널제작 자동작도 프로그램으로, Excel 데이터를 기반으로 DXF 형식의 CAD 도면을 자동 생성하는 Python 애플리케이션입니다.
+                    </p>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-gear"></i> 주요 기능
+                    </h4>
+                    <ul style="margin-bottom: var(--linear-spacing-lg); padding-left: var(--linear-spacing-lg);">
+                        <li>Excel 파일에서 제작 데이터 자동 읽기</li>
+                        <li>DXF 형식의 CAD 도면 자동 생성</li>
+                        <li>패널 치수, 타공, 레이블링 자동화</li>
+                        <li>다중 현장 데이터 처리</li>
+                        <li>한글 지원 및 스타일 적용</li>
+                    </ul>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-folder"></i> 파일 구조
+                    </h4>
+                    <div style="background: var(--linear-bg-secondary); padding: var(--linear-spacing-md); border-radius: var(--linear-radius-md); margin-bottom: var(--linear-spacing-lg); font-family: monospace; font-size: 0.9rem;">
+                        <div>osel/</div>
+                        <div>├── osel_panel.py           # 메인 애플리케이션</div>
+                        <div>├── dimstyle/</div>
+                        <div>│   └── style.dxf          # DXF 스타일 템플릿</div>
+                        <div>├── excel_files/           # 입력 Excel 파일들</div>
+                        <div>├── done/                  # 출력 DXF 파일들 (자동 생성)</div>
+                        <div>└── release/               # 배포용 실행 파일</div>
+                        <div>    ├── OSEL_Panel_Generator.exe</div>
+                        <div>    ├── dimstyle/</div>
+                        <div>    ├── excel_files/</div>
+                        <div>    └── README.txt</div>
+                    </div>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-play-circle"></i> 사용 방법
+                    </h4>
+                    <ol style="margin-bottom: var(--linear-spacing-lg); padding-left: var(--linear-spacing-lg);">
+                        <li><code>excel_files</code> 폴더에 Excel 파일(.xlsx) 배치</li>
+                        <li><code>OSEL_Panel_Generator.exe</code> 실행</li>
+                        <li><code>done</code> 폴더에서 결과 DXF 파일 확인</li>
+                    </ol>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-database"></i> 데이터 플로우
+                    </h4>
+                    <div style="background: var(--linear-bg-secondary); padding: var(--linear-spacing-md); border-radius: var(--linear-radius-md); margin-bottom: var(--linear-spacing-lg);">
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>1. 입력 데이터 처리</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-sm);">
+                            Excel 파일 → 제작산출결과 시트 읽기 → 컬럼 매핑 → 데이터 검증 → 현장별 그룹핑
+                        </div>
+                        
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>2. 도면 생성 프로세스</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-sm);">
+                            현장별 데이터 → 패널 시퀀스 생성 → 도면 요소 배치 → 레이어 적용 → DXF 파일 출력
+                        </div>
+                        
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>3. 출력 파일 생성</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md);">
+                            현장명_날짜시간.dxf → 파일명 중복 방지 → 자동 폴더 생성
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-palette"></i> DXF 스타일 시스템
+                    </h4>
+                    <div style="background: var(--linear-bg-secondary); padding: var(--linear-spacing-md); border-radius: var(--linear-radius-md); margin-bottom: var(--linear-spacing-lg);">
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>스타일 파일:</strong> style.dxf</div>
+                        <ul style="margin-left: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-sm);">
+                            <li><strong>텍스트 스타일:</strong> 한글 폰트 지원 (gulim.ttc, Arial.ttf)</li>
+                            <li><strong>치수 스타일:</strong> 전문적인 CAD 치수 표시</li>
+                            <li><strong>레이어:</strong> '레이져', 'DIM', '0'</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-exclamation-triangle"></i> 알려진 이슈 및 해결방법
+                    </h4>
+                    <div style="background: var(--linear-bg-secondary); padding: var(--linear-spacing-md); border-radius: var(--linear-radius-md); margin-bottom: var(--linear-spacing-lg);">
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>1. 한글 인코딩 문제</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-sm);">
+                            증상: 한글 텍스트가 ???로 표시<br>
+                            해결: style.dxf에서 한글 폰트 스타일 확인
+                        </div>
+                        
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>2. Excel 파일 접근 오류</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md); margin-bottom: var(--linear-spacing-sm);">
+                            증상: "파일을 열 수 없습니다" 오류<br>
+                            해결: Excel 파일이 다른 프로그램에서 열려있지 않은지 확인
+                        </div>
+                        
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>3. DXF 스타일 미적용</strong></div>
+                        <div style="margin-left: var(--linear-spacing-md);">
+                            증상: 기본 스타일로 도면 생성<br>
+                            해결: dimstyle/style.dxf 파일 존재 및 경로 확인
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--linear-brand-primary); margin-bottom: var(--linear-spacing-md);">
+                        <i class="bi bi-info-square"></i> 기술 정보
+                    </h4>
+                    <div style="background: var(--linear-bg-secondary); padding: var(--linear-spacing-md); border-radius: var(--linear-radius-md);">
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>개발사:</strong> 오성이엘</div>
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>버전:</strong> 1.0</div>
+                        <div style="margin-bottom: var(--linear-spacing-sm);"><strong>최종 업데이트:</strong> 2025-10-07</div>
+                        <div><strong>실행 파일 크기:</strong> 94.9MB (모든 의존성 포함)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="linear-btn linear-btn-primary" onclick="closePythonGuideModal()">
+                    <i class="bi bi-check-lg"></i> 확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Python 제작 안내 모달 관련 함수
+        function openPythonGuideModal() {
+            console.log('Python 제작 안내 모달 열기 시도');
+            const modal = document.getElementById('pythonGuideModal');
+            if (modal) {
+                console.log('모달 요소 찾음, 표시 중...');
+                modal.style.display = 'flex';
+                
+                // 모달 바디 스크롤을 맨 위로 초기화
+                const modalBody = modal.querySelector('.modal-body');
+                if (modalBody) {
+                    modalBody.scrollTop = 0;
+                }
+            } else {
+                console.error('pythonGuideModal 요소를 찾을 수 없습니다');
+            }
+        }
+
+        function closePythonGuideModal() {
+            const modal = document.getElementById('pythonGuideModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('pythonGuideModal');
+            if (modal && e.target === modal) {
+                closePythonGuideModal();
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePythonGuideModal();
+            }
+        });
+
+        // DOM 로드 완료 후 버튼 이벤트 리스너 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            // Python 제작 안내 버튼에 직접 이벤트 리스너 추가
+            const pythonGuideButtons = document.querySelectorAll('button[onclick="openPythonGuideModal()"]');
+            pythonGuideButtons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Python 제작 안내 버튼 클릭됨');
+                    openPythonGuideModal();
+                });
+            });
         });
     </script>
 </body>
