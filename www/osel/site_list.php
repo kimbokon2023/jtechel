@@ -267,6 +267,7 @@ try {
             AVG(car_inside_width) as avg_width,
             AVG(car_inside_depth) as avg_depth,
             AVG(car_inside_height) as avg_height,
+            MAX(elevator_count) as elevator_count,
             GROUP_CONCAT(DISTINCT material_type SEPARATOR ', ') as material_types,
             SUBSTRING_INDEX(GROUP_CONCAT(panel_data ORDER BY id DESC SEPARATOR '|||'), '|||', 1) as latest_panel_data,
             SUBSTRING_INDEX(GROUP_CONCAT(transom_data ORDER BY id DESC SEPARATOR '|||'), '|||', 1) as latest_transom_data
@@ -279,11 +280,12 @@ try {
     $stmt->execute($params);
     $sites = $stmt->fetchAll();
 
-    // 각 사이트의 실제 패널 개수 계산 및 transom 정보 추가
+    // 각 사이트의 실제 패널 개수 계산 및 transom/elevator 정보 추가
     foreach ($sites as &$site) {
         $site['actual_panel_count'] = calculateActualPanelCount($site['latest_panel_data'], $site['latest_transom_data']);
         $site['has_transom'] = hasTransomData($site['latest_transom_data']);
-        $site['elevator_count'] = extractElevatorCount($site['site_name']);
+        $dbElevator = isset($site['elevator_count']) ? intval($site['elevator_count']) : 0;
+        $site['elevator_count'] = $dbElevator > 0 ? $dbElevator : extractElevatorCount($site['site_name']);
         
     }
     unset($site); // 참조 제거

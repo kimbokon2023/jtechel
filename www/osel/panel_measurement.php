@@ -53,6 +53,26 @@ if (!empty($edit_id)) {
             if (!empty($edit_data['transom_data'])) {
                 $edit_transom_data = json_decode($edit_data['transom_data'], true) ?? [];
             }
+
+            // Derive defaults for iPark panel widths from saved data when available
+            $iparkPanel39WidthDefault = '800';
+            $iparkPanel6WidthDefault = '1000';
+            try {
+                $w3 = isset($edit_panel_data['3']['width']) ? intval($edit_panel_data['3']['width']) : null;
+                $w9 = isset($edit_panel_data['9']['width']) ? intval($edit_panel_data['9']['width']) : null;
+                $w6 = isset($edit_panel_data['6']['width']) ? intval($edit_panel_data['6']['width']) : null;
+
+                if (!empty($w3)) {
+                    $iparkPanel39WidthDefault = (string)$w3;
+                } elseif (!empty($w9)) {
+                    $iparkPanel39WidthDefault = (string)$w9;
+                }
+                if (!empty($w6)) {
+                    $iparkPanel6WidthDefault = (string)$w6;
+                }
+            } catch (Exception $e) {
+                // If parsing fails, keep hardcoded defaults
+            }
         }
     } catch (PDOException $e) {
         error_log("Edit data fetch failed: " . $e->getMessage());
@@ -985,7 +1005,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                                         <i class="bi bi-arrows-horizontal" style="margin-right: 4px;"></i>
                                         가로 (W) <small style="color: var(--linear-text-tertiary);">mm</small>
                                     </label>
-                                    <input type="number" id="carInsideWidth" name="car_inside_width" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultWidth) ?>" min="800" max="2500" step="5">
+                                    <input type="number" id="carInsideWidth" name="car_inside_width" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultWidth) ?>" min="800" max="2500" step="1">
                                 </div>
                                 <!-- Car Inside Depth -->
                                 <div class="responsive-input-group">
@@ -993,7 +1013,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                                         <i class="bi bi-arrow-up-down" style="margin-right: 4px;"></i>
                                         깊이 (D) <small style="color: var(--linear-text-tertiary);">mm</small>
                                     </label>
-                                    <input type="number" id="carInsideDepth" name="car_inside_depth" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultDepth) ?>" min="800" max="2000" step="5">
+                                    <input type="number" id="carInsideDepth" name="car_inside_depth" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultDepth) ?>" min="800" max="3000" step="1">
                                 </div>
                                 <!-- Car Inside Height -->
                                 <div class="responsive-input-group">
@@ -1001,7 +1021,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                                         <i class="bi bi-arrows-vertical" style="margin-right: 4px;"></i>
                                         높이 (H) <small style="color: var(--linear-text-tertiary);">mm</small>
                                     </label>
-                                    <input type="number" id="carInsideHeight" name="car_inside_height" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultHeight) ?>" min="2000" max="3000" step="5">
+                                    <input type="number" id="carInsideHeight" name="car_inside_height" class="linear-input responsive-input" value="<?= htmlspecialchars($defaultHeight) ?>" min="2000" max="3000" step="1">
                                 </div>
                             </div>
                         </div>
@@ -1064,13 +1084,13 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                                 <div class="responsive-input-group">
                                     <label for="iparkPanel39Width" class="linear-label">3,9번 패널 폭 (mm)</label>
                                     <input type="number" class="linear-input responsive-input" id="iparkPanel39Width" name="ipark_panel_39_width" 
-                                           placeholder="800" min="100" max="2000" step="10" value="800">
+                                           placeholder="800" min="100" max="2000" step="10" value="<?= isset($iparkPanel39WidthDefault) ? htmlspecialchars($iparkPanel39WidthDefault) : '800' ?>">
                                     <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 3번과 9번 패널의 폭</small>
                                 </div>
                                 <div class="responsive-input-group">
                                     <label for="iparkPanel6Width" class="linear-label">6번 패널 폭 (mm)</label>
                                     <input type="number" class="linear-input responsive-input" id="iparkPanel6Width" name="ipark_panel_6_width" 
-                                           placeholder="1000" min="100" max="2000" step="10" value="1000">
+                                           placeholder="1000" min="100" max="2000" step="10" value="<?= isset($iparkPanel6WidthDefault) ? htmlspecialchars($iparkPanel6WidthDefault) : '1000' ?>">
                                     <small style="color: var(--linear-text-tertiary); font-size: 0.8rem;">※ 6번 패널의 폭</small>
                                 </div>
                                 </div>
