@@ -2488,15 +2488,25 @@ if ($selected_group_id) {
                     form.action = 'export_group_production_data.php';
                     form.target = '_blank';
                     
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'measurements';
-                    input.value = JSON.stringify(data.measurements);
+                    const measurementInput = document.createElement('input');
+                    measurementInput.type = 'hidden';
+                    measurementInput.name = 'measurements';
+                    measurementInput.value = JSON.stringify(data.measurements);
                     
-                    console.log('POST 데이터 크기:', input.value.length, 'bytes');
-                    console.log('POST 데이터 샘플:', input.value.substring(0, 200) + '...');
+                    // 그룹명 추가
+                    const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+                    const groupName = groupCard ? groupCard.querySelector('.group-name').textContent : '그룹';
+                    const groupNameInput = document.createElement('input');
+                    groupNameInput.type = 'hidden';
+                    groupNameInput.name = 'group_name';
+                    groupNameInput.value = groupName;
                     
-                    form.appendChild(input);
+                    console.log('POST 데이터 크기:', measurementInput.value.length, 'bytes');
+                    console.log('POST 데이터 샘플:', measurementInput.value.substring(0, 200) + '...');
+                    console.log('그룹명:', groupName);
+                    
+                    form.appendChild(measurementInput);
+                    form.appendChild(groupNameInput);
                     document.body.appendChild(form);
                     
                     console.log('폼 생성 및 제출 시작');

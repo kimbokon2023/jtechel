@@ -12,6 +12,7 @@ if (!isset($_SESSION["level"]) || $_SESSION["level"] > 8) {
 
 // Get measurements data from POST
 $measurements_json = $_POST['measurements'] ?? '';
+$group_name = $_POST['group_name'] ?? '그룹';
 
 if (empty($measurements_json)) {
     die('측정 데이터가 없습니다.');
@@ -21,6 +22,104 @@ $measurements = json_decode($measurements_json, true);
 
 if (!$measurements || !is_array($measurements)) {
     die('유효하지 않은 측정 데이터입니다.');
+}
+
+/**
+ * 현장명들의 공통 부분을 추출하는 함수
+ */
+function extractCommonSiteName($measurements) {
+    if (empty($measurements)) {
+        return '현장';
+    }
+    
+    if (count($measurements) === 1) {
+        return $measurements[0]['site_name'] ?? '현장';
+    }
+    
+    // 모든 현장명 추출
+    $site_names = array_map(function($m) {
+        return $m['site_name'] ?? '';
+    }, $measurements);
+    
+    // 빈 값 제거
+    $site_names = array_filter($site_names);
+    
+    if (empty($site_names)) {
+        return '현장';
+    }
+    
+    // 가장 짧은 이름을 기준으로
+    $shortest = min(array_map('mb_strlen', $site_names));
+    
+    // 공통 접두사 찾기
+    $common = '';
+    for ($i = 0; $i < $shortest; $i++) {
+        $char = mb_substr($site_names[0], $i, 1);
+        $is_common = true;
+        
+        foreach ($site_names as $name) {
+            if (mb_substr($name, $i, 1) !== $char) {
+                $is_common = false;
+                break;
+            }
+        }
+        
+        if ($is_common) {
+            $common .= $char;
+        } else {
+            break;
+        }
+    }
+    
+    // 공통 부분이 너무 짧으면 다른 방법 시도
+    if (mb_strlen($common) < 2) {
+        // 숫자나 특수문자 제거 후 공통 단어 찾기
+        $cleaned_names = array_map(function($name) {
+            // 숫자 제거
+            $name = preg_replace('/\d+/', '', $name);
+            // 특수문자 제거 (공백, 하이픈, 언더스코어는 유지)
+            $name = preg_replace('/[^\w\s가-힣-]/u', '', $name);
+            return trim($name);
+        }, $site_names);
+        
+        // 공통 접두사 재시도
+        $shortest = min(array_map('mb_strlen', $cleaned_names));
+        $common = '';
+        for ($i = 0; $i < $shortest; $i++) {
+            $char = mb_substr($cleaned_names[0], $i, 1);
+            $is_common = true;
+            
+            foreach ($cleaned_names as $name) {
+                if (mb_substr($name, $i, 1) !== $char) {
+                    $is_common = false;
+                    break;
+                }
+            }
+            
+            if ($is_common) {
+                $common .= $char;
+            } else {
+                break;
+            }
+        }
+    }
+    
+    // 공통 부분 정리
+    $common = trim($common);
+    
+    // 마지막 공백, 하이픈, 언더스코어 제거
+    $common = rtrim($common, ' -_');
+    
+    // 여전히 너무 짧으면 첫 번째 현장명 사용
+    if (mb_strlen($common) < 2) {
+        $common = $site_names[0];
+        // 너무 길면 잘라내기
+        if (mb_strlen($common) > 20) {
+            $common = mb_substr($common, 0, 20);
+        }
+    }
+    
+    return $common ?: '현장';
 }
 
 // 디버그: 받은 측정 데이터의 elevator_count 확인
@@ -778,10 +877,26 @@ try {
     // 첫 번째 시트를 활성화
     $objPHPExcel->setActiveSheetIndex(0);
 
-    // 파일명 생성
-    $siteCount = count($measurements);
-    $filename = '그룹제작산출결과_' . $siteCount . '개현장_' . date('Y-m-d') . '.xlsx';
+    // 파일명 생성 - 현장명공통부분_그룹명_일자 형태
+    $common_site_name = extractCommonSiteName($measurements);
+    $safe_group_name = preg_replace('/[^가-힣a-zA-Z0-9\s]/', '', $group_name);
+    $safe_group_name = trim($safe_group_name);
+    
+    // 파일명 길이 제한 (너무 길면 잘라내기)
+    if (mb_strlen($common_site_name) > 30) {
+        $common_site_name = mb_substr($common_site_name, 0, 30);
+    }
+    if (mb_strlen($safe_group_name) > 20) {
+        $safe_group_name = mb_substr($safe_group_name, 0, 20);
+    }
+    
+    $filename = $common_site_name . '_' . $safe_group_name . '_' . date('Y-m-d') . '.xlsx';
     $filename = preg_replace('/[^가-힣a-zA-Z0-9._-]/', '_', $filename);
+    
+    // 로그 기록
+    error_log("생성된 파일명: " . $filename);
+    error_log("공통 현장명: " . $common_site_name);
+    error_log("그룹명: " . $safe_group_name);
 
     // Excel 파일 출력
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
