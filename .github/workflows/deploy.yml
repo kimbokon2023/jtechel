@@ -47,7 +47,7 @@ jobs:
           local-dir:  "./www/"
           state-name: "ftp-deploy-sync-state.json"  # 점파일 금지 서버 대응
           log-level:  verbose                       # 상세 로그로 디버깅 
-          dry-run:    false                         # 실제 배포 실행
+          dry-run:    false                         # false로 설정해야 실제 배포 실행
           exclude: |
             **/.git/**
             **/.git*
@@ -68,3 +68,5 @@ jobs:
             **/uploads/**
             **/storage/**
             **/lib/**             
+            **/common/**
+            **/dbeditor/**

@@ -114,3 +114,5 @@ storage/
 # 기타
 lib/
 _mirror_*.git/
+common/
+dbeditor/
