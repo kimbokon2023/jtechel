@@ -84,6 +84,7 @@ try {
             car_inside_width,
             car_inside_depth,
             car_inside_height,
+            car_structure,
             material_type,
             material_thickness,
             COALESCE(elevator_count, 1) as elevator_count,
@@ -173,23 +174,26 @@ $headers = [
     'E1' => '카 내부 W',
     'F1' => '카 내부 D',
     'G1' => '카 내부 H',
-    'H1' => '의장재질',
-    'I1' => '재질 두께',
-    'J1' => '패널 수',
-    'K1' => '대수',
-    'L1' => '비고',
-    'M1' => '등록일',
-    'N1' => '수정일'
+    'H1' => '카 구조',
+    'I1' => '의장재질',
+    'J1' => '재질 두께',
+    'K1' => '패널 수',
+    'L1' => '대수',
+    'M1' => '비고',
+    'N1' => '등록일',
+    'O1' => '수정일'
 ];
 
 foreach ($headers as $cell => $value) {
     $sheet->setCellValue($cell, $value);
 }
-$sheet->getStyle('A1:N1')->applyFromArray($headerStyle);
+$sheet->getStyle('A1:O1')->applyFromArray($headerStyle);
 
 // 패널 개수 계산 함수 (site_list.php와 동일)
-function calculateActualPanelCount($panel_data, $transom_data) {
-    $panel_count = 9; // 기본 2-10번 패널
+function calculateActualPanelCount($panel_data, $transom_data, $car_structure = '일반형') {
+    // 관통형이면 5,6,7번 패널이 없으므로 기본 패널 수는 6개 (2,3,4,8,9,10)
+    // 일반형이면 모든 패널이 있으므로 기본 패널 수는 9개 (2,3,4,5,6,7,8,9,10)
+    $panel_count = ($car_structure === '관통형') ? 6 : 9;
 
     // 1,11번 패널 확인 (각각 개별적으로 확인)
     if (!empty($panel_data) && $panel_data !== '{}') {
@@ -246,7 +250,8 @@ function calculateActualPanelCount($panel_data, $transom_data) {
 // 데이터 입력
 $row = 2;
 foreach ($measurements as $measurement) {
-    $panel_count = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data']);
+    $car_structure = $measurement['car_structure'] ?? '일반형';
+    $panel_count = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data'], $car_structure);
 
     $sheet->setCellValue('A' . $row, $measurement['id']);
     $sheet->setCellValue('B' . $row, $measurement['site_name']);
@@ -255,13 +260,14 @@ foreach ($measurements as $measurement) {
     $sheet->setCellValue('E' . $row, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
     $sheet->setCellValue('F' . $row, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
     $sheet->setCellValue('G' . $row, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-    $sheet->setCellValue('H' . $row, $measurement['material_type']);
-    $sheet->setCellValue('I' . $row, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
-    $sheet->setCellValue('J' . $row, $panel_count == 0 ? '' : $panel_count);
-    $sheet->setCellValue('K' . $row, $measurement['elevator_count'] == 0 ? '' : $measurement['elevator_count']);
-    $sheet->setCellValue('L' . $row, $measurement['notes']);
-    $sheet->setCellValue('M' . $row, date('Y-m-d H:i', strtotime($measurement['created_at'])));
-    $sheet->setCellValue('N' . $row, date('Y-m-d H:i', strtotime($measurement['updated_at'])));
+    $sheet->setCellValue('H' . $row, $car_structure);
+    $sheet->setCellValue('I' . $row, $measurement['material_type']);
+    $sheet->setCellValue('J' . $row, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+    $sheet->setCellValue('K' . $row, $panel_count == 0 ? '' : $panel_count);
+    $sheet->setCellValue('L' . $row, $measurement['elevator_count'] == 0 ? '' : $measurement['elevator_count']);
+    $sheet->setCellValue('M' . $row, $measurement['notes']);
+    $sheet->setCellValue('N' . $row, date('Y-m-d H:i', strtotime($measurement['created_at'])));
+    $sheet->setCellValue('O' . $row, date('Y-m-d H:i', strtotime($measurement['updated_at'])));
 
     $row++;
 }
@@ -275,13 +281,14 @@ $columnWidths = [
     'E' => 14,  // 카 내부 W
     'F' => 14,  // 카 내부 D
     'G' => 14,  // 카 내부 H
-    'H' => 18,  // 의장재질
-    'I' => 14,  // 재질 두께
-    'J' => 12,  // 패널 수
-    'K' => 10,  // 대수
-    'L' => 40,  // 비고 (긴 텍스트)
-    'M' => 20,  // 등록일
-    'N' => 20   // 수정일
+    'H' => 12,  // 카 구조
+    'I' => 18,  // 의장재질
+    'J' => 14,  // 재질 두께
+    'K' => 12,  // 패널 수
+    'L' => 10,  // 대수
+    'M' => 40,  // 비고 (긴 텍스트)
+    'N' => 20,  // 등록일
+    'O' => 20   // 수정일
 ];
 foreach ($columnWidths as $col => $width) {
     $sheet->getColumnDimension($col)->setAutoSize(false);
@@ -302,35 +309,36 @@ $detailHeaders = [
     'F1' => '카 내부 W',
     'G1' => '카 내부 D',
     'H1' => '카 내부 H',
-    'I1' => '의장재질',
-    'J1' => '재질 두께',
-    'K1' => '패널 번호',
-    'L1' => '패널 타입',
-    'M1' => '패널 가로',
-    'N1' => '패널 세로',
-    'O1' => '타공 가로',
-    'P1' => '타공 세로',
-    'Q1' => '타공 높이(밑기준)',
-    'R1' => '출입구방향에서 떨어짐',
-    'S1' => '1,11전면 두께',
-    'T1' => '1,11전면 날개',
-    'U1' => '1,11후면 두께',
-    'V1' => '1,11후면 날개',
-        'W1' => 'TR 가로',
-        'X1' => 'TR 막판높이',
-    'Y1' => 'TR 밑면깊이JD',
-    'Z1' => 'TR 날개값',
-    'AA1' => 'TR CPI타공 가로',
-    'AB1' => 'TR CPI타공 세로',
-    'AC1' => 'TR CPI타공높이',
-    'AD1' => 'TR 비고',
-    'AE1' => '패널 특이사항',
+    'I1' => '카 구조',
+    'J1' => '의장재질',
+    'K1' => '재질 두께',
+    'L1' => '패널 번호',
+    'M1' => '패널 타입',
+    'N1' => '패널 가로',
+    'O1' => '패널 세로',
+    'P1' => '타공 가로',
+    'Q1' => '타공 세로',
+    'R1' => '타공 높이(밑기준)',
+    'S1' => '출입구방향에서 떨어짐',
+    'T1' => '1,11전면 두께',
+    'U1' => '1,11전면 날개',
+    'V1' => '1,11후면 두께',
+    'W1' => '1,11후면 날개',
+    'X1' => 'TR 가로',
+    'Y1' => 'TR 막판높이',
+    'Z1' => 'TR 밑면깊이JD',
+    'AA1' => 'TR 날개값',
+    'AB1' => 'TR CPI타공 가로',
+    'AC1' => 'TR CPI타공 세로',
+    'AD1' => 'TR CPI타공높이',
+    'AE1' => 'TR 비고',
+    'AF1' => '패널 특이사항',
 ];
 
 foreach ($detailHeaders as $cell => $value) {
     $detailSheet->setCellValue($cell, $value);
 }
-$detailSheet->getStyle('A1:AE1')->applyFromArray($headerStyle);
+$detailSheet->getStyle('A1:AF1')->applyFromArray($headerStyle);
 
 // 세부정보 데이터 입력
 $detailRow = 2;
@@ -369,6 +377,7 @@ foreach ($measurements as $measurement) {
                 error_log("DEBUG: Transom 패널 건너뜀: " . $panelNum);
                 continue;
             }
+            $car_structure = $measurement['car_structure'] ?? '일반형';
             $detailSheet->setCellValue('A' . $detailRow, $rowNum);
             $detailSheet->setCellValue('B' . $detailRow, $measurement['id']);
             $detailSheet->setCellValue('C' . $detailRow, $measurement['site_name']);
@@ -377,38 +386,39 @@ foreach ($measurements as $measurement) {
             $detailSheet->setCellValue('F' . $detailRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
             $detailSheet->setCellValue('G' . $detailRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
             $detailSheet->setCellValue('H' . $detailRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-            $detailSheet->setCellValue('I' . $detailRow, $measurement['material_type']);
-            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+            $detailSheet->setCellValue('I' . $detailRow, $car_structure);
+            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_type']);
+            $detailSheet->setCellValue('K' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
 
             // 패널 정보 (0인 값은 공백으로 표시)
             // 패널번호: transom은 별도 행으로 표시하지 않으므로 패널 데이터에서는 1~11만
-            $detailSheet->setCellValue('K' . $detailRow, $panelNum);
+            $detailSheet->setCellValue('L' . $detailRow, $panelNum);
             $panelIndex = is_numeric($panelNum) ? (int)$panelNum : (int)preg_replace('/\D+/', '', (string)$panelNum);
             // 패널 타입 - 두 가지 필드명 모두 지원
             $panelType = $panelInfo['panelType'] ?? $panelInfo['panel_type_detail'] ?? '';
-            $detailSheet->setCellValue('L' . $detailRow, ($panelIndex === 1 || $panelIndex === 11) ? $panelType : '');
-            $detailSheet->setCellValue('M' . $detailRow, ($panelInfo['width'] ?? 0) == 0 ? '' : ($panelInfo['width'] ?? ''));
-            $detailSheet->setCellValue('N' . $detailRow, ($panelInfo['height'] ?? 0) == 0 ? '' : ($panelInfo['height'] ?? ''));
+            $detailSheet->setCellValue('M' . $detailRow, ($panelIndex === 1 || $panelIndex === 11) ? $panelType : '');
+            $detailSheet->setCellValue('N' . $detailRow, ($panelInfo['width'] ?? 0) == 0 ? '' : ($panelInfo['width'] ?? ''));
+            $detailSheet->setCellValue('O' . $detailRow, ($panelInfo['height'] ?? 0) == 0 ? '' : ($panelInfo['height'] ?? ''));
             // Drilling fields - 두 가지 필드명 모두 지원
             $drillingWidth = $panelInfo['drilling_width'] ?? $panelInfo['drillingWidth'] ?? '';
             $drillingHeight = $panelInfo['drilling_height'] ?? $panelInfo['drillingHeight'] ?? '';
             $drillingFromFloor = $panelInfo['drilling_from_floor'] ?? $panelInfo['drillingFromFloor'] ?? '';
             $drillingFromEntrance = $panelInfo['drilling_from_entrance'] ?? $panelInfo['drillingFromEntrance'] ?? '';
             
-            $detailSheet->setCellValue('O' . $detailRow, (empty($drillingWidth) || $drillingWidth == 0) ? '' : $drillingWidth);
-            $detailSheet->setCellValue('P' . $detailRow, (empty($drillingHeight) || $drillingHeight == 0) ? '' : $drillingHeight);
-            $detailSheet->setCellValue('Q' . $detailRow, (empty($drillingFromFloor) || $drillingFromFloor == 0) ? '' : $drillingFromFloor);
-            $detailSheet->setCellValue('R' . $detailRow, (empty($drillingFromEntrance) || $drillingFromEntrance == 0) ? '' : $drillingFromEntrance);
+            $detailSheet->setCellValue('P' . $detailRow, (empty($drillingWidth) || $drillingWidth == 0) ? '' : $drillingWidth);
+            $detailSheet->setCellValue('Q' . $detailRow, (empty($drillingHeight) || $drillingHeight == 0) ? '' : $drillingHeight);
+            $detailSheet->setCellValue('R' . $detailRow, (empty($drillingFromFloor) || $drillingFromFloor == 0) ? '' : $drillingFromFloor);
+            $detailSheet->setCellValue('S' . $detailRow, (empty($drillingFromEntrance) || $drillingFromEntrance == 0) ? '' : $drillingFromEntrance);
             // Corner details for 1,11 - 두 가지 필드명 모두 지원
             $frontThickness = $panelInfo['front_thickness'] ?? $panelInfo['frontThickness'] ?? '';
             $frontWing = $panelInfo['front_wing'] ?? $panelInfo['frontWing'] ?? '';
             $backThickness = $panelInfo['back_thickness'] ?? $panelInfo['backThickness'] ?? '';
             $backWing = $panelInfo['back_wing'] ?? $panelInfo['backWing'] ?? '';
             
-            $detailSheet->setCellValue('S' . $detailRow, (empty($frontThickness) || $frontThickness == 0) ? '' : $frontThickness);
-            $detailSheet->setCellValue('T' . $detailRow, (empty($frontWing) || $frontWing == 0) ? '' : $frontWing);
-            $detailSheet->setCellValue('U' . $detailRow, (empty($backThickness) || $backThickness == 0) ? '' : $backThickness);
-            $detailSheet->setCellValue('V' . $detailRow, (empty($backWing) || $backWing == 0) ? '' : $backWing);
+            $detailSheet->setCellValue('T' . $detailRow, (empty($frontThickness) || $frontThickness == 0) ? '' : $frontThickness);
+            $detailSheet->setCellValue('U' . $detailRow, (empty($frontWing) || $frontWing == 0) ? '' : $frontWing);
+            $detailSheet->setCellValue('V' . $detailRow, (empty($backThickness) || $backThickness == 0) ? '' : $backThickness);
+            $detailSheet->setCellValue('W' . $detailRow, (empty($backWing) || $backWing == 0) ? '' : $backWing);
             // 패널번호 1~11번은 TR 관련 컬럼을 비워둠 (transom만 표시)
             // 패널 번호를 다시 한번 정확히 계산
             $currentPanelNum = is_numeric($panelNum) ? (int)$panelNum : (int)preg_replace('/\D+/', '', (string)$panelNum);
@@ -431,19 +441,19 @@ foreach ($measurements as $measurement) {
             // 1~11번 패널은 무조건 TR 컬럼을 비워둠 (transom만 표시)
             if ($currentPanelNum >= 1 && $currentPanelNum <= 11) {
                 error_log("DEBUG: 패널 " . $currentPanelNum . "번 - TR 컬럼 비우기");
-                foreach (['W','X','Y','Z','AA','AB','AC','AD'] as $col) {
+                foreach (['X','Y','Z','AA','AB','AC','AD'] as $col) {
                     $detailSheet->setCellValue($col . $detailRow, '');
                 }
             } else {
                 // 12번 이상 패널은 기존 로직 유지
                 error_log("DEBUG: 패널 " . $currentPanelNum . "번 - TR 컬럼 유지");
-                foreach (['W','X','Y','Z','AA','AB','AC','AD'] as $col) {
+                foreach (['X','Y','Z','AA','AB','AC','AD'] as $col) {
                     $detailSheet->setCellValue($col . $detailRow, '');
                 }
             }
             // 패널 특이사항 - 두 가지 필드명 모두 지원
             $specialNotes = $panelInfo['notes'] ?? $panelInfo['specialNotes'] ?? '';
-            $detailSheet->setCellValue('AE' . $detailRow, $specialNotes);
+            $detailSheet->setCellValue('AF' . $detailRow, $specialNotes);
             $detailRow++;
         }
         // 패널들 출력 후, Transom 데이터가 있으면 별도 행 추가
@@ -458,37 +468,39 @@ foreach ($measurements as $measurement) {
             $detailSheet->setCellValue('F' . $detailRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
             $detailSheet->setCellValue('G' . $detailRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
             $detailSheet->setCellValue('H' . $detailRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-            $detailSheet->setCellValue('I' . $detailRow, $measurement['material_type']);
-            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
-            $detailSheet->setCellValue('K' . $detailRow, 'transom');
-            $detailSheet->setCellValue('L' . $detailRow, '');
-            // 패널 가로/세로는 M/N에 출력
-            $detailSheet->setCellValue('M' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('N' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
+            $detailSheet->setCellValue('I' . $detailRow, $car_structure);
+            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_type']);
+            $detailSheet->setCellValue('K' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+            $detailSheet->setCellValue('L' . $detailRow, 'transom');
+            $detailSheet->setCellValue('M' . $detailRow, '');
+            // 패널 가로/세로는 N/O에 출력
+            $detailSheet->setCellValue('N' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+            $detailSheet->setCellValue('O' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
             // Drilling fields (Transom에는 비워둠)
-            $detailSheet->setCellValue('O' . $detailRow, '');
             $detailSheet->setCellValue('P' . $detailRow, '');
             $detailSheet->setCellValue('Q' . $detailRow, '');
             $detailSheet->setCellValue('R' . $detailRow, '');
-            // Corner details (Transom에는 비워둠)
             $detailSheet->setCellValue('S' . $detailRow, '');
+            // Corner details (Transom에는 비워둠)
             $detailSheet->setCellValue('T' . $detailRow, '');
             $detailSheet->setCellValue('U' . $detailRow, '');
             $detailSheet->setCellValue('V' . $detailRow, '');
-            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑 (TR 세로 제거됨)
-            $detailSheet->setCellValue('W' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('X' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
-            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
-            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
-            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
-            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
-            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
-            $detailSheet->setCellValue('AD' . $detailRow, $transomData['notes'] ?? '');
-            $detailSheet->setCellValue('AE' . $detailRow, '');
+            $detailSheet->setCellValue('W' . $detailRow, '');
+            // TR 블록: 헤더(X~AE)에 맞춰 정확히 매핑
+            $detailSheet->setCellValue('X' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
+            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
+            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
+            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
+            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
+            $detailSheet->setCellValue('AD' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
+            $detailSheet->setCellValue('AE' . $detailRow, $transomData['notes'] ?? '');
+            $detailSheet->setCellValue('AF' . $detailRow, '');
             $detailRow++;
         }
     } else {
         // 패널 데이터가 없는 경우 기본 정보만 표시
+        $car_structure = $measurement['car_structure'] ?? '일반형';
         $detailSheet->setCellValue('A' . $detailRow, $rowNum);
         $detailSheet->setCellValue('B' . $detailRow, $measurement['id']);
         $detailSheet->setCellValue('C' . $detailRow, $measurement['site_name']);
@@ -497,9 +509,10 @@ foreach ($measurements as $measurement) {
         $detailSheet->setCellValue('F' . $detailRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
         $detailSheet->setCellValue('G' . $detailRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
         $detailSheet->setCellValue('H' . $detailRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-        $detailSheet->setCellValue('I' . $detailRow, $measurement['material_type']);
-        $detailSheet->setCellValue('J' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
-        $detailSheet->setCellValue('K' . $detailRow, '-');
+        $detailSheet->setCellValue('I' . $detailRow, $car_structure);
+        $detailSheet->setCellValue('J' . $detailRow, $measurement['material_type']);
+        $detailSheet->setCellValue('K' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+        $detailSheet->setCellValue('L' . $detailRow, '-');
 
         // Transom 정보는 별도 행으로 출력
         if (!empty($transomData)) {
@@ -511,32 +524,33 @@ foreach ($measurements as $measurement) {
             $detailSheet->setCellValue('F' . $detailRow, $measurement['car_inside_width'] == 0 ? '' : $measurement['car_inside_width']);
             $detailSheet->setCellValue('G' . $detailRow, $measurement['car_inside_depth'] == 0 ? '' : $measurement['car_inside_depth']);
             $detailSheet->setCellValue('H' . $detailRow, $measurement['car_inside_height'] == 0 ? '' : $measurement['car_inside_height']);
-            $detailSheet->setCellValue('I' . $detailRow, $measurement['material_type']);
-            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
-            $detailSheet->setCellValue('K' . $detailRow, 'transom');
-            $detailSheet->setCellValue('L' . $detailRow, '');
-            $detailSheet->setCellValue('M' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('N' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
+            $detailSheet->setCellValue('I' . $detailRow, $car_structure);
+            $detailSheet->setCellValue('J' . $detailRow, $measurement['material_type']);
+            $detailSheet->setCellValue('K' . $detailRow, $measurement['material_thickness'] == 0 ? '' : $measurement['material_thickness']);
+            $detailSheet->setCellValue('L' . $detailRow, 'transom');
+            $detailSheet->setCellValue('M' . $detailRow, '');
+            $detailSheet->setCellValue('N' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+            $detailSheet->setCellValue('O' . $detailRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
             // Drilling fields (transom에는 비워둠)
-            $detailSheet->setCellValue('O' . $detailRow, '');
             $detailSheet->setCellValue('P' . $detailRow, '');
             $detailSheet->setCellValue('Q' . $detailRow, '');
             $detailSheet->setCellValue('R' . $detailRow, '');
-            // Corner details (transom에는 비워둠)
             $detailSheet->setCellValue('S' . $detailRow, '');
+            // Corner details (transom에는 비워둠)
             $detailSheet->setCellValue('T' . $detailRow, '');
             $detailSheet->setCellValue('U' . $detailRow, '');
             $detailSheet->setCellValue('V' . $detailRow, '');
-            // TR 블록: 헤더(W~AE)에 맞춰 정확히 매핑 (패널 데이터가 없는 경우, TR 세로 제거됨)
-            $detailSheet->setCellValue('W' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $detailSheet->setCellValue('X' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
-            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
-            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
-            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
-            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
-            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
-            $detailSheet->setCellValue('AD' . $detailRow, $transomData['notes'] ?? '');
-            $detailSheet->setCellValue('AE' . $detailRow, '');
+            $detailSheet->setCellValue('W' . $detailRow, '');
+            // TR 블록: 헤더(X~AE)에 맞춰 정확히 매핑
+            $detailSheet->setCellValue('X' . $detailRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+            $detailSheet->setCellValue('Y' . $detailRow, ($transomData['transomPlateHeight'] ?? 0) == 0 ? '' : ($transomData['transomPlateHeight'] ?? ''));
+            $detailSheet->setCellValue('Z' . $detailRow, ($transomData['bottomDepthJD'] ?? 0) == 0 ? '' : ($transomData['bottomDepthJD'] ?? ''));
+            $detailSheet->setCellValue('AA' . $detailRow, ($transomData['wingValue'] ?? 0) == 0 ? '' : ($transomData['wingValue'] ?? ''));
+            $detailSheet->setCellValue('AB' . $detailRow, ($transomData['cpiDrillingWidth'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingWidth'] ?? ''));
+            $detailSheet->setCellValue('AC' . $detailRow, ($transomData['cpiDrillingHeight'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeight'] ?? ''));
+            $detailSheet->setCellValue('AD' . $detailRow, ($transomData['cpiDrillingHeightFromBottom'] ?? 0) == 0 ? '' : ($transomData['cpiDrillingHeightFromBottom'] ?? ''));
+            $detailSheet->setCellValue('AE' . $detailRow, $transomData['notes'] ?? '');
+            $detailSheet->setCellValue('AF' . $detailRow, '');
             $detailRow++;
         }
 
@@ -552,8 +566,8 @@ foreach (range('A','Z') as $columnID) {
     $detailSheet->getColumnDimension($columnID)->setAutoSize(false);
     $detailSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
 }
-// AA-AE 컬럼도 설정 (AF 제거됨)
-foreach (['AA', 'AB', 'AC', 'AD', 'AE'] as $columnID) {
+// AA-AF 컬럼도 설정
+foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF'] as $columnID) {
     $detailSheet->getColumnDimension($columnID)->setAutoSize(false);
     $detailSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
 }
@@ -564,16 +578,18 @@ $detailWideColumns = [
     'C' => 30,  // 현장명
     'D' => 12,  // 측정일자
     'E' => 12,  // 측정자
-    'K' => 12,  // 패널 번호 
-    'L' => 15,  // 패널 타입
-    'O' => 14,  // 타공 가로
-    'P' => 14,  // 타공 세로
-    'Q' => 18,  // 타공 높이(밑기준)
-    'R' => 18,  // 출입구방향에서 떨어짐
+    'I' => 12,  // 카 구조
+    'L' => 12,  // 패널 번호 
+    'M' => 15,  // 패널 타입
+    'P' => 14,  // 타공 가로
+    'Q' => 14,  // 타공 세로
+    'R' => 18,  // 타공 높이(밑기준)
+    'S' => 18,  // 출입구방향에서 떨어짐
     'AB' => 18, // Transom CPI타공 가로
     'AC' => 18, // Transom CPI타공 세로
     'AD' => 18, // Transom CPI타공높이
-    'AE' => 30  // 패널 특이사항
+    'AE' => 20, // TR 비고
+    'AF' => 30  // 패널 특이사항
 ];
 foreach ($detailWideColumns as $col => $width) {
     $detailSheet->getColumnDimension($col)->setWidth($width);

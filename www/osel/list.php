@@ -4,8 +4,9 @@ session_start();
 $DB = 'jtechel';
 
 // 실제 패널 개수 계산 함수
-function calculateActualPanelCount($panel_data, $transom_data) {
-    $panel_count = 9; // 기본 2-10번 패널
+function calculateActualPanelCount($panel_data, $transom_data, $car_structure = '일반형') {
+    // 기본 패널 개수: 일반형=9개(2-10번), 관통형=6개(2,3,4,8,9,10번, 5,6,7번 제외)
+    $panel_count = ($car_structure === '관통형') ? 6 : 9;
 
     // 1,11번 패널 확인 (각각 개별적으로 확인)
     if (!empty($panel_data) && $panel_data !== '{}') {
@@ -142,6 +143,7 @@ try {
                 car_inside_width,
                 car_inside_depth,
                 car_inside_height,
+                car_structure,
                 material_type,
                 material_thickness,
                 panel_data,
@@ -161,7 +163,8 @@ try {
 
         // 각 측정 데이터의 실제 패널 개수 계산 및 엘리베이터 대수 추가
         foreach ($measurements as &$measurement) {
-            $measurement['actual_panel_count'] = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data']);
+            $car_structure = $measurement['car_structure'] ?? '일반형';
+            $measurement['actual_panel_count'] = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data'], $car_structure);
             $measurement['elevator_count'] = extractElevatorCount($measurement['site_name']);
         }
         unset($measurement); // 참조 제거
@@ -567,12 +570,12 @@ try {
                                value="<?= htmlspecialchars($search_site) ?>" placeholder="현장명 검색">
                     </div>
                     <div>
-                        <label for="searchDateFrom">측정일자 (시작)</label>
+                        <label for="searchDateFrom">측정일 (시작)</label>
                         <input type="date" id="searchDateFrom" name="search_date_from" 
                                value="<?= htmlspecialchars($search_date_from) ?>">
                     </div>
                     <div>
-                        <label for="searchDateTo">측정일자 (종료)</label>
+                        <label for="searchDateTo">측정일 (종료)</label>
                         <input type="date" id="searchDateTo" name="search_date_to" 
                                value="<?= htmlspecialchars($search_date_to) ?>">
                     </div>
@@ -644,11 +647,11 @@ try {
                                     <input type="checkbox" id="selectAll" style="transform: scale(1.2);" title="전체 선택/해제">
                                 </th>
                                 <th>현장명/측정자</th>
-                                <th>측정일자</th>
+                                <th>측정일</th>
+                                <th>카 구조</th>
                                 <th>카치수/대수/재질</th>
                                 <th>측정 판넬</th>
                                 <th>판넬</th>
-                                <th>등록</th>
                                 <th>작업</th>
                             </tr>
                         </thead>
@@ -689,6 +692,17 @@ try {
                                     <small class="text-muted d-block"><?= htmlspecialchars($measurement['measurer_name']) ?></small>
                                 </td>
                                 <td><?= date('Y-m-d', strtotime($measurement['measurement_date'])) ?></td>
+                                <td style="text-align: center;">
+                                    <?php 
+                                    $car_structure = $measurement['car_structure'] ?? '일반형';
+                                    $car_structure_color = ($car_structure === '관통형') ? '#dc2626' : '#059669';
+                                    $car_structure_bg = ($car_structure === '관통형') ? '#fef2f2' : '#dcfce7';
+                                    ?>
+                                    <span style="display: inline-flex; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; 
+                                          background: <?= $car_structure_bg ?>; color: <?= $car_structure_color ?>;">
+                                        <?= htmlspecialchars($car_structure) ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <div><strong>W<?= $measurement['car_inside_width'] ?>D<?= $measurement['car_inside_depth'] ?>H<?= $measurement['car_inside_height'] ?></strong></div>
                                     <div><strong><?= $measurement['elevator_count'] ?>대</strong></div>
@@ -734,18 +748,8 @@ try {
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <small style="color: var(--linear-text-secondary);">
-                                        <?= date('m-d H:i', strtotime($measurement['created_at'])) ?>
-                                    </small>
-                                </td>
-                                <td>
                                     <div style="display: flex; gap: var(--linear-spacing-xs);">
                                         <?php
-                                        echo LinearButton::ghost('<i class="bi bi-eye"></i>')
-                                            ->size('sm')
-                                            ->addAttribute('onclick', "event.stopPropagation(); viewDetails({$measurement['id']})")
-                                            ->addAttribute('title', '상세 보기');
-
                                         echo LinearButton::ghost('<i class="bi bi-pencil"></i>')
                                             ->size('sm')
                                             ->addAttribute('onclick', "event.stopPropagation(); editMeasurement({$measurement['id']})")
@@ -886,7 +890,7 @@ try {
                 html: `<p>다음 측정 데이터를 삭제하시겠습니까?</p>
                        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #dc3545;">
                            <strong>현장명:</strong> ${siteName}<br>
-                           <strong>측정일자:</strong> ${measurementDate}<br>
+                           <strong>측정일:</strong> ${measurementDate}<br>
                            <strong>ID:</strong> ${measurementId}
                        </div>
                        <p style="color: #dc3545; font-weight: 500;">⚠️ 이 작업은 되돌릴 수 없습니다.</p>`,

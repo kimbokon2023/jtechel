@@ -4,8 +4,9 @@ session_start();
 $DB = 'jtechel';
 
 // 실제 패널 개수 계산 함수
-function calculateActualPanelCount($panel_data, $transom_data) {
-    $panel_count = 9; // 기본 2-10번 패널
+function calculateActualPanelCount($panel_data, $transom_data, $car_structure = '일반형') {
+    // 기본 패널 개수: 일반형=9개(2-10번), 관통형=6개(2,3,4,8,9,10번, 5,6,7번 제외)
+    $panel_count = ($car_structure === '관통형') ? 6 : 9;
 
     // 1,11번 패널 확인 (각각 개별적으로 확인)
     if (!empty($panel_data) && $panel_data !== '{}') {
@@ -757,7 +758,7 @@ try {
                         $stmt = $pdo->prepare("
                             SELECT id, site_name, measurement_date, measurer_name,
                                    material_type, panel_data, transom_data, created_at, updated_at,
-                                   car_inside_width, car_inside_depth, car_inside_height, elevator_count
+                                   car_inside_width, car_inside_depth, car_inside_height, car_structure, elevator_count
                             FROM panel_measurements
                             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
                             ORDER BY measurement_date DESC, created_at DESC
@@ -769,8 +770,11 @@ try {
                         if ($recent_measurements) {
                             // 데이터 처리 함수
                             function processCardData($measurement) {
-                                // 실제 패널 개수 계산 (이미 transom 포함됨)
-                                $actual_panel_count = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data']);
+                                // 카 구조 정보 가져오기 (기본값: 일반형)
+                                $car_structure = $measurement['car_structure'] ?? '일반형';
+                                
+                                // 실제 패널 개수 계산 (카 구조 고려)
+                                $actual_panel_count = calculateActualPanelCount($measurement['panel_data'], $measurement['transom_data'], $car_structure);
 
                                 // transom 존재 여부만 확인 (개수는 이미 actual_panel_count에 포함됨)
                                 $has_transom = false;
@@ -803,6 +807,7 @@ try {
                                     'panel_count' => $actual_panel_count,
                                     'has_transom' => $has_transom,
                                     'total_panels' => $actual_panel_count, // 중복 계산 제거
+                                    'car_structure' => $car_structure,
                                     'last_modified' => !empty($measurement['updated_at']) ? $measurement['updated_at'] : $measurement['created_at']
                                 ];
                             }
@@ -810,7 +815,7 @@ try {
                             // PC Table View (데스크톱에서만 표시)
                             echo '<div class="desktop-table-view">';
                             echo '<table class="activity-table">';
-                            echo '<thead><tr><th>현장명</th><th>측정자</th><th>측정일자</th><th>패널 정보</th><th>최근수정일시</th><th>CAR INSIDE</th><th>작업</th></tr></thead>';
+                            echo '<thead><tr><th>현장명</th><th>측정자</th><th>측정일자</th><th>카 구조</th><th>패널 정보</th><th>최근수정일시</th><th>CAR INSIDE</th><th>작업</th></tr></thead>';
                             echo '<tbody>';
 
                             foreach ($recent_measurements as $measurement) {
@@ -820,6 +825,17 @@ try {
                                 echo '<td style="color: var(--linear-text-primary); font-weight: var(--linear-font-weight-medium); cursor: pointer;" onclick="window.location.href=\'measurement_detail.php?id=' . $measurement['id'] . '\'">' . htmlspecialchars($measurement['site_name']) . '</td>';
                                 echo '<td style="color: var(--linear-text-secondary); cursor: pointer;" onclick="window.location.href=\'measurement_detail.php?id=' . $measurement['id'] . '\'">' . htmlspecialchars($measurement['measurer_name']) . '</td>';
                                 echo '<td style="color: var(--linear-text-secondary); cursor: pointer;" onclick="window.location.href=\'measurement_detail.php?id=' . $measurement['id'] . '\'">' . htmlspecialchars($measurement['measurement_date']) . '</td>';
+
+                                // 카 구조
+                                echo '<td style="cursor: pointer; text-align: center;" onclick="window.location.href=\'measurement_detail.php?id=' . $measurement['id'] . '\'">';
+                                $car_structure_display = $data['car_structure'];
+                                $car_structure_color = ($car_structure_display === '관통형') ? '#dc2626' : '#059669';
+                                $car_structure_bg = ($car_structure_display === '관통형') ? '#fef2f2' : '#dcfce7';
+                                echo '<span style="display: inline-flex; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; ';
+                                echo 'background: ' . $car_structure_bg . '; color: ' . $car_structure_color . ';">';
+                                echo htmlspecialchars($car_structure_display);
+                                echo '</span>';
+                                echo '</td>';
 
                                 // 패널 정보
                                 echo '<td style="cursor: pointer;" onclick="window.location.href=\'measurement_detail.php?id=' . $measurement['id'] . '\'">';
@@ -909,6 +925,14 @@ try {
                                 echo '<div class="activity-card-info-item">';
                                 echo '<i class="bi bi-calendar3"></i>';
                                 echo '<span>' . htmlspecialchars($measurement['measurement_date']) . '</span>';
+                                echo '</div>';
+
+                                // 카 구조
+                                echo '<div class="activity-card-info-item">';
+                                $car_structure_icon = ($data['car_structure'] === '관통형') ? 'bi-arrow-left-right' : 'bi-square';
+                                $car_structure_color = ($data['car_structure'] === '관통형') ? '#dc2626' : '#059669';
+                                echo '<i class="' . $car_structure_icon . '" style="color: ' . $car_structure_color . ';"></i>';
+                                echo '<span style="font-weight: 600; color: ' . $car_structure_color . ';">' . htmlspecialchars($data['car_structure']) . '</span>';
                                 echo '</div>';
 
                                 // 최근수정일시

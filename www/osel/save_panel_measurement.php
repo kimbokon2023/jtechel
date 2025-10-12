@@ -53,6 +53,7 @@ $measurement_date = $_POST['measurement_date'] ?? '';
 $car_inside_width = intval($_POST['car_inside_width'] ?? 0);
 $car_inside_depth = intval($_POST['car_inside_depth'] ?? 0);
 $car_inside_height = intval($_POST['car_inside_height'] ?? 0);
+$car_structure = trim($_POST['car_structure'] ?? '일반형');
 $material_type = trim($_POST['material_type'] ?? '');
 $material_thickness = floatval($_POST['material_thickness'] ?? 0);
 $panel_data = $_POST['panel_data'] ?? '';
@@ -102,12 +103,14 @@ try {
     $has_transom_excluded = in_array('transom_excluded', $columns);
     $has_elevator_count = in_array('elevator_count', $columns);
     $has_ipark_check = in_array('ipark_check', $columns);
+    $has_car_structure = in_array('car_structure', $columns);
 
     error_log("Columns - project_type: " . ($has_project_type ? 'YES' : 'NO') .
              ", panel_corners_excluded: " . ($has_panel_corners_excluded ? 'YES' : 'NO') .
              ", transom_excluded: " . ($has_transom_excluded ? 'YES' : 'NO') .
              ", elevator_count: " . ($has_elevator_count ? 'YES' : 'NO') .
-             ", ipark_check: " . ($has_ipark_check ? 'YES' : 'NO'));
+             ", ipark_check: " . ($has_ipark_check ? 'YES' : 'NO') .
+             ", car_structure: " . ($has_car_structure ? 'YES' : 'NO'));
 } catch (Exception $e) {
     error_log("Column check error: " . $e->getMessage());
     $has_project_type = false;
@@ -115,6 +118,7 @@ try {
     $has_transom_excluded = false;
     $has_elevator_count = false;
     $has_ipark_check = false;
+    $has_car_structure = false;
 }
 
 // Check if this is an edit operation
@@ -185,6 +189,14 @@ if (!empty($panel_data)) {
             unset($decoded_panel['1']);
             unset($decoded_panel['11']);
             error_log("패널 저장: 1,11번 패널 제외 체크박스로 인해 1,11번 패널 데이터 제거됨");
+        }
+
+        // 관통형일 때 5,6,7번 패널 데이터 제거
+        if ($car_structure === '관통형') {
+            unset($decoded_panel['5']);
+            unset($decoded_panel['6']);
+            unset($decoded_panel['7']);
+            error_log("패널 저장: 관통형 카 구조로 인해 5,6,7번 패널 데이터 제거됨");
         }
 
         // 필터링된 패널 데이터를 다시 JSON으로 변환
@@ -265,6 +277,12 @@ try {
         $project_params_insert .= ', :ipark_check';
     }
 
+    if ($has_car_structure) {
+        $project_columns .= ', car_structure = :car_structure';
+        $project_values .= ', car_structure';
+        $project_params_insert .= ', :car_structure';
+    }
+
 
     // Prepare SQL based on edit mode
     if ($is_edit) {
@@ -333,6 +351,9 @@ try {
     if ($has_ipark_check) {
         $params[':ipark_check'] = $ipark_check;
     }
+    if ($has_car_structure) {
+        $params[':car_structure'] = $car_structure;
+    }
 
     // Add edit_id parameter if updating
     if ($is_edit) {
@@ -343,7 +364,8 @@ try {
     error_log("SQL " . ($is_edit ? "UPDATE" : "INSERT") . " - project_type: '" . ($params[':project_type'] ?? 'N/A') .
              "', panel_corners_excluded: '" . ($params[':panel_corners_excluded'] ?? 'N/A') .
              "', transom_excluded: '" . ($params[':transom_excluded'] ?? 'N/A') .
-             "', ipark_check: '" . ($params[':ipark_check'] ?? 'N/A') . "'");
+             "', ipark_check: '" . ($params[':ipark_check'] ?? 'N/A') .
+             "', car_structure: '" . ($params[':car_structure'] ?? 'N/A') . "'");
 
     // 에러 발생 시 JSON으로 응답하도록 수정
     try {

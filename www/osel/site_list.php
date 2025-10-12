@@ -4,8 +4,10 @@ session_start();
 $DB = 'jtechel';
 
 // 실제 패널 개수 계산 함수 (index.php와 동일한 로직)
-function calculateActualPanelCount($panel_data, $transom_data) {
-    $panel_count = 9; // 기본 2-10번 패널
+function calculateActualPanelCount($panel_data, $transom_data, $car_structure = '일반형') {
+    // 관통형이면 5,6,7번 패널이 없으므로 기본 패널 수는 6개 (2,3,4,8,9,10)
+    // 일반형이면 모든 패널이 있으므로 기본 패널 수는 9개 (2,3,4,5,6,7,8,9,10)
+    $panel_count = ($car_structure === '관통형') ? 6 : 9;
 
     // 1,11번 패널 확인 (각각 개별적으로 확인)
     if (!empty($panel_data) && $panel_data !== '{}') {
@@ -269,6 +271,7 @@ try {
             AVG(car_inside_height) as avg_height,
             MAX(elevator_count) as elevator_count,
             GROUP_CONCAT(DISTINCT material_type SEPARATOR ', ') as material_types,
+            SUBSTRING_INDEX(GROUP_CONCAT(car_structure ORDER BY id DESC SEPARATOR '|||'), '|||', 1) as latest_car_structure,
             SUBSTRING_INDEX(GROUP_CONCAT(panel_data ORDER BY id DESC SEPARATOR '|||'), '|||', 1) as latest_panel_data,
             SUBSTRING_INDEX(GROUP_CONCAT(transom_data ORDER BY id DESC SEPARATOR '|||'), '|||', 1) as latest_transom_data
         FROM $DB.panel_measurements
@@ -282,7 +285,9 @@ try {
 
     // 각 사이트의 실제 패널 개수 계산 및 transom/elevator 정보 추가
     foreach ($sites as &$site) {
-        $site['actual_panel_count'] = calculateActualPanelCount($site['latest_panel_data'], $site['latest_transom_data']);
+        $car_structure = $site['latest_car_structure'] ?? '일반형';
+        $site['car_structure'] = $car_structure;
+        $site['actual_panel_count'] = calculateActualPanelCount($site['latest_panel_data'], $site['latest_transom_data'], $car_structure);
         $site['has_transom'] = hasTransomData($site['latest_transom_data']);
         $dbElevator = isset($site['elevator_count']) ? intval($site['elevator_count']) : 0;
         $site['elevator_count'] = $dbElevator > 0 ? $dbElevator : extractElevatorCount($site['site_name']);
@@ -1202,6 +1207,7 @@ require_once '../components/LinearNavigation.php';
                             onclick="sortTable('site_name')">현장명</th>
                         <th class="sortable <?= $sort === 'measurer_name' ? 'sort-' . $order : '' ?>"
                             onclick="sortTable('measurer_name')">측정자</th>
+                        <th>카 구조</th>
                         <th>카 내부 치수</th>
                         <th>의장재질</th>
                         <th>측정 현황</th>
@@ -1227,6 +1233,17 @@ require_once '../components/LinearNavigation.php';
                                     </small>
                                 <?php endif; ?>
                             </td>
+                            <td style="text-align: center;">
+                                <?php 
+                                $car_structure = $site['car_structure'] ?? '일반형';
+                                $car_structure_color = ($car_structure === '관통형') ? '#dc2626' : '#059669';
+                                $car_structure_bg = ($car_structure === '관통형') ? '#fef2f2' : '#dcfce7';
+                                ?>
+                                <span style="display: inline-flex; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; 
+                                      background: <?= $car_structure_bg ?>; color: <?= $car_structure_color ?>;">
+                                    <?= htmlspecialchars($car_structure) ?>
+                                </span>
+                            </td>
                             <td>
                                 <?php if ($site['avg_width'] && $site['avg_depth'] && $site['avg_height']): ?>
                                     <span style="font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace; font-size: var(--linear-text-small);">
@@ -1247,7 +1264,7 @@ require_once '../components/LinearNavigation.php';
                                 <?php if ($site['measurement_sessions'] > 0): ?>
                                     <?php
                                     // transom이 있으면 패널 개수에서 1개 빼고 표시 (index.php와 동일한 로직)
-                                    $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) + 1 : ($site['actual_panel_count'] ?? 0);
+                                    $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) - 1 : ($site['actual_panel_count'] ?? 0);
                                     ?>
                                     <div class="badge success">
                                         <?= $display_panel_count ?>개
@@ -1295,10 +1312,10 @@ require_once '../components/LinearNavigation.php';
                                 <?php if ($site['measurement_sessions'] > 0): ?>
                                     <?php
                                     // transom이 있으면 패널 개수에서 1개 빼고 표시 (index.php와 동일한 로직)
-                                    $display_panel_count = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) - 1 : ($site['actual_panel_count'] ?? 0);
+                                    $display_panel_count_mobile = $site['has_transom'] ? ($site['actual_panel_count'] ?? 0) - 1 : ($site['actual_panel_count'] ?? 0);
                                     ?>
                                     <div class="badge success">
-                                        <?= $display_panel_count ?>개
+                                        <?= $display_panel_count_mobile ?>개
                                     </div>
                                     <?php if ($site['has_transom']): ?>
                                         <div style="font-size: 0.7rem; color: var(--linear-brand-primary); margin-top: 2px; text-align: right;">+ Transom</div>
@@ -1313,6 +1330,17 @@ require_once '../components/LinearNavigation.php';
                         <!-- Second Row: Details & Actions -->
                         <div class="card-row card-details">
                             <div class="card-info">
+                                <div class="info-item">
+                                    <?php 
+                                    $car_structure_mobile = $site['car_structure'] ?? '일반형';
+                                    $car_structure_icon = ($car_structure_mobile === '관통형') ? 'bi-arrow-left-right' : 'bi-square';
+                                    $car_structure_color_mobile = ($car_structure_mobile === '관통형') ? '#dc2626' : '#059669';
+                                    ?>
+                                    <i class="<?= $car_structure_icon ?>" style="color: <?= $car_structure_color_mobile ?>;"></i>
+                                    <span style="font-weight: 600; color: <?= $car_structure_color_mobile ?>;">
+                                        <?= htmlspecialchars($car_structure_mobile) ?>
+                                    </span>
+                                </div>
                                 <div class="info-item">
                                     <i class="bi bi-rulers"></i>
                                     <span>

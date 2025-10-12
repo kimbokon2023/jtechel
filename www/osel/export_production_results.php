@@ -196,20 +196,21 @@ try {
         'E1' => '카 내부 가로(mm)',
         'F1' => '카 내부 깊이(mm)',
         'G1' => '카 내부 높이(mm)',
-        'H1' => '의장재질',
-        'I1' => '아이파크 체크',
-        'J1' => '재질두께(mm)',
+        'H1' => '카 구조',
+        'I1' => '의장재질',
+        'J1' => '아이파크 체크',
+        'K1' => '재질두께(mm)',
         // 제작 조건 설정 컬럼 추가
-        'K1' => '프로젝트 타입',
-        'L1' => '1,11번 제외',
-        'M1' => '트랜섬 제외',
-        'N1' => '몰딩 포함',
-        'O1' => '엘리베이터 대수',
-        'P1' => '제작 높이(mm)',
-        'Q1' => '1,11번 높이(mm)',
+        'L1' => '프로젝트 타입',
+        'M1' => '1,11번 제외',
+        'N1' => '트랜섬 제외',
+        'O1' => '몰딩 포함',
+        'P1' => '엘리베이터 대수',
+        'Q1' => '제작 높이(mm)',
+        'R1' => '1,11번 높이(mm)',
         // 패널 정보
-        'R1' => '총 패널 수',
-        'S1' => '특이사항'
+        'S1' => '총 패널 수',
+        'T1' => '특이사항'
     ];
 
     // 헤더 작성
@@ -238,7 +239,7 @@ try {
         ]
     ];
 
-    $sheet->getStyle('A1:S1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:T1')->applyFromArray($headerStyle);
 
     // 데이터 행 작성
     $row = 2;
@@ -266,20 +267,21 @@ try {
         'E' => $selected_data['car_inside_width'],
         'F' => $selected_data['car_inside_depth'],
         'G' => $selected_data['car_inside_height'],
-        'H' => $selected_data['material_type'] ?? '',
-        'I' => $ipark_check,
-        'J' => $selected_data['material_thickness'] ?? '',
+        'H' => $selected_data['car_structure'] ?? '일반형',
+        'I' => $selected_data['material_type'] ?? '',
+        'J' => $ipark_check,
+        'K' => $selected_data['material_thickness'] ?? '',
         // 제작 조건 설정
-        'K' => $project_type,
-        'L' => $panel_corners_excluded_display,
-        'M' => $transom_excluded,
-        'N' => $molding_included_display,
-        'O' => $elevator_count,
-        'P' => $production_height,
-        'Q' => $production_height1_11,
+        'L' => $project_type,
+        'M' => $panel_corners_excluded_display,
+        'N' => $transom_excluded,
+        'O' => $molding_included_display,
+        'P' => $elevator_count,
+        'Q' => $production_height,
+        'R' => $production_height1_11,
         // 패널 정보
-        'R' => $production_results['total_panels'] ?? 0,
-        'S' => $selected_data['notes'] ?? ''
+        'S' => $production_results['total_panels'] ?? 0,
+        'T' => $selected_data['notes'] ?? ''
     ];
 
     foreach ($data as $col => $value) {
@@ -337,31 +339,32 @@ try {
         'F1' => '카 내부 W',
         'G1' => '카 내부 D',
         'H1' => '카 내부 H',
-        'I1' => '아이파크 체크',
-        'J1' => '의장재질',
-        'K1' => '재질 두께',
-        'L1' => '패널 번호',
-        'M1' => '제작 대수',
-        'N1' => '패널 타입',
-        'O1' => '제작폭',
-        'P1' => '제작높이',
-        'Q1' => '타공 가로',
-        'R1' => '타공 세로',
-        'S1' => '타공 높이(밑기준)',
-        'T1' => '출입구방향에서 떨어짐',
-        'U1' => '1,11전면 두께',
-        'V1' => '1,11전면 날개',
-        'W1' => '1,11후면 두께',
-        'X1' => '1,11후면 날개',
-        'Y1' => 'TR 가로',
-        'Z1' => 'TR 막판높이',
-        'AA1' => 'TR 밑면깊이JD',
-        'AB1' => 'TR 날개값',
-        'AC1' => 'TR CPI타공 가로',
-        'AD1' => 'TR CPI타공 세로',
-        'AE1' => 'TR CPI타공높이',
-        'AF1' => 'TR 비고',
-        'AG1' => '패널 특이사항'
+        'I1' => '카 구조',
+        'J1' => '아이파크 체크',
+        'K1' => '의장재질',
+        'L1' => '재질 두께',
+        'M1' => '패널 번호',
+        'N1' => '제작 대수',
+        'O1' => '패널 타입',
+        'P1' => '제작폭',
+        'Q1' => '제작높이',
+        'R1' => '타공 가로',
+        'S1' => '타공 세로',
+        'T1' => '타공 높이(밑기준)',
+        'U1' => '출입구방향에서 떨어짐',
+        'V1' => '1,11전면 두께',
+        'W1' => '1,11전면 날개',
+        'X1' => '1,11후면 두께',
+        'Y1' => '1,11후면 날개',
+        'Z1' => 'TR 가로',
+        'AA1' => 'TR 막판높이',
+        'AB1' => 'TR 밑면깊이JD',
+        'AC1' => 'TR 날개값',
+        'AD1' => 'TR CPI타공 가로',
+        'AE1' => 'TR CPI타공 세로',
+        'AF1' => 'TR CPI타공높이',
+        'AG1' => 'TR 비고',
+        'AH1' => '패널 특이사항'
     ];
 
     foreach ($productionHeaders as $cell => $value) {
@@ -442,15 +445,16 @@ try {
             $productionSheet->setCellValue('F' . $productionRow, $selected_data['car_inside_width'] == 0 ? '' : $selected_data['car_inside_width']);
             $productionSheet->setCellValue('G' . $productionRow, $selected_data['car_inside_depth'] == 0 ? '' : $selected_data['car_inside_depth']);
             $productionSheet->setCellValue('H' . $productionRow, $selected_data['car_inside_height'] == 0 ? '' : $selected_data['car_inside_height']);
-            $productionSheet->setCellValue('I' . $productionRow, $ipark_check);
-            $productionSheet->setCellValue('J' . $productionRow, $selected_data['material_type']);
-            $productionSheet->setCellValue('K' . $productionRow, $selected_data['material_thickness'] == 0 ? '' : $selected_data['material_thickness']);
+            $productionSheet->setCellValue('I' . $productionRow, $selected_data['car_structure'] ?? '일반형');
+            $productionSheet->setCellValue('J' . $productionRow, $ipark_check);
+            $productionSheet->setCellValue('K' . $productionRow, $selected_data['material_type']);
+            $productionSheet->setCellValue('L' . $productionRow, $selected_data['material_thickness'] == 0 ? '' : $selected_data['material_thickness']);
 
             // 패널 정보
-            $productionSheet->setCellValue('L' . $productionRow, $panel_num);
-            $productionSheet->setCellValue('M' . $productionRow, $elevator_count);
+            $productionSheet->setCellValue('M' . $productionRow, $panel_num);
+            $productionSheet->setCellValue('N' . $productionRow, $elevator_count);
             $panelIndex = is_numeric($panel_num) ? (int)$panel_num : (int)preg_replace('/\D+/', '', (string)$panel_num);
-            $productionSheet->setCellValue('N' . $productionRow, ($panelIndex === 1 || $panelIndex === 11) ? ($panel_info['panel_type_detail'] ?? '') : '');
+            $productionSheet->setCellValue('O' . $productionRow, ($panelIndex === 1 || $panelIndex === 11) ? ($panel_info['panel_type_detail'] ?? '') : '');
 
             // 제작사이즈 적용 (제작패널데이터의 width 사용)
             $width = $panel_info['width'] ?? 0;
@@ -459,13 +463,19 @@ try {
             if ($production_settings['molding_included'] && is_numeric($panel_num) && $panel_num >= 2 && $panel_num <= 10) {
                 $molding_deduction = 0;
                 $panel_number = intval($panel_num);
+                $is_pass_through = ($selected_data['car_structure'] ?? '일반형') === '관통형';
 
                 if ($panel_number === 2 || $panel_number === 10) {
                     $molding_deduction = 5; // 2번, 10번: -5
                 } elseif ($panel_number === 3 || $panel_number === 6 || $panel_number === 9) {
                     $molding_deduction = 4; // 3번, 6번, 9번: -4
                 } elseif ($panel_number === 4 || $panel_number === 5 || $panel_number === 7 || $panel_number === 8) {
-                    $molding_deduction = 10; // 4번, 5번, 7번, 8번: -10
+                    // 관통형일 때 4번, 8번은 -5, 일반형일 때는 -10
+                    if ($is_pass_through && ($panel_number === 4 || $panel_number === 8)) {
+                        $molding_deduction = 5; // 관통형 4번, 8번: -5
+                    } else {
+                        $molding_deduction = 10; // 일반형 또는 5번, 7번: -10
+                    }
                 }
 
                 $width = $width - $molding_deduction;
@@ -479,8 +489,8 @@ try {
             }
 
             // 제작폭, 제작높이 설정
-            $productionSheet->setCellValue('O' . $productionRow, $width == 0 ? '' : $width);
-            $productionSheet->setCellValue('P' . $productionRow, $height == 0 ? '' : $height);
+            $productionSheet->setCellValue('P' . $productionRow, $width == 0 ? '' : $width);
+            $productionSheet->setCellValue('Q' . $productionRow, $height == 0 ? '' : $height);
 
             // 타공 정보 추출 (다양한 형태의 데이터 구조 지원)
             $hole_width = '';
@@ -767,30 +777,30 @@ try {
             }
 
             // 타공 정보 설정 (올바른 열에 각각의 값 설정)
-            $productionSheet->setCellValue('Q' . $productionRow, $hole_width);  // 타공 가로
-            $productionSheet->setCellValue('R' . $productionRow, $hole_height); // 타공 세로
-            $productionSheet->setCellValue('S' . $productionRow, $hole_floor_height); // 타공 높이(밑기준)
-            $productionSheet->setCellValue('T' . $productionRow, $hole_entrance_distance); // 입구방향에서 떨어짐
+            $productionSheet->setCellValue('R' . $productionRow, $hole_width);  // 타공 가로
+            $productionSheet->setCellValue('S' . $productionRow, $hole_height); // 타공 세로
+            $productionSheet->setCellValue('T' . $productionRow, $hole_floor_height); // 타공 높이(밑기준)
+            $productionSheet->setCellValue('U' . $productionRow, $hole_entrance_distance); // 입구방향에서 떨어짐
 
             // Corner details for 1,11
-            $productionSheet->setCellValue('U' . $productionRow, ($panel_info['frontThickness'] ?? 0) == 0 ? '' : ($panel_info['frontThickness'] ?? ''));
-            $productionSheet->setCellValue('V' . $productionRow, ($panel_info['frontWing'] ?? 0) == 0 ? '' : ($panel_info['frontWing'] ?? ''));
-            $productionSheet->setCellValue('W' . $productionRow, ($panel_info['backThickness'] ?? 0) == 0 ? '' : ($panel_info['backThickness'] ?? ''));
-            $productionSheet->setCellValue('X' . $productionRow, ($panel_info['backWing'] ?? 0) == 0 ? '' : ($panel_info['backWing'] ?? ''));
+            $productionSheet->setCellValue('V' . $productionRow, ($panel_info['frontThickness'] ?? 0) == 0 ? '' : ($panel_info['frontThickness'] ?? ''));
+            $productionSheet->setCellValue('W' . $productionRow, ($panel_info['frontWing'] ?? 0) == 0 ? '' : ($panel_info['frontWing'] ?? ''));
+            $productionSheet->setCellValue('X' . $productionRow, ($panel_info['backThickness'] ?? 0) == 0 ? '' : ($panel_info['backThickness'] ?? ''));
+            $productionSheet->setCellValue('Y' . $productionRow, ($panel_info['backWing'] ?? 0) == 0 ? '' : ($panel_info['backWing'] ?? ''));
 
             // 1~11번 패널은 TR 관련 컬럼을 비워둠 (transom만 표시)
             $currentPanelNum = is_numeric($panel_num) ? (int)$panel_num : (int)preg_replace('/\D+/', '', (string)$panel_num);
             if ($currentPanelNum >= 1 && $currentPanelNum <= 11) {
-                foreach (['Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                foreach (['Z','AA','AB','AC','AD','AE','AF'] as $col) {
                     $productionSheet->setCellValue($col . $productionRow, '');
                 }
             } else {
-                foreach (['Y','Z','AA','AB','AC','AD','AE'] as $col) {
+                foreach (['Z','AA','AB','AC','AD','AE','AF'] as $col) {
                     $productionSheet->setCellValue($col . $productionRow, '');
                 }
             }
 
-            $productionSheet->setCellValue('AF' . $productionRow, $panel_info['specialNotes'] ?? '');
+            $productionSheet->setCellValue('AG' . $productionRow, $panel_info['specialNotes'] ?? '');
             $productionRow++;
         }
 
@@ -809,25 +819,26 @@ try {
             $productionSheet->setCellValue('F' . $productionRow, $selected_data['car_inside_width'] == 0 ? '' : $selected_data['car_inside_width']);
             $productionSheet->setCellValue('G' . $productionRow, $selected_data['car_inside_depth'] == 0 ? '' : $selected_data['car_inside_depth']);
             $productionSheet->setCellValue('H' . $productionRow, $selected_data['car_inside_height'] == 0 ? '' : $selected_data['car_inside_height']);
-            $productionSheet->setCellValue('I' . $productionRow, $ipark_check);
-            $productionSheet->setCellValue('J' . $productionRow, $selected_data['material_type']);
-            $productionSheet->setCellValue('K' . $productionRow, $selected_data['material_thickness'] == 0 ? '' : $selected_data['material_thickness']);
-            $productionSheet->setCellValue('L' . $productionRow, 'transom');
-            $productionSheet->setCellValue('M' . $productionRow, $elevator_count);
-            $productionSheet->setCellValue('N' . $productionRow, '');
-            // 패널 가로/세로는 O/P에 출력
-            $productionSheet->setCellValue('O' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
-            $productionSheet->setCellValue('P' . $productionRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
+            $productionSheet->setCellValue('I' . $productionRow, $selected_data['car_structure'] ?? '일반형');
+            $productionSheet->setCellValue('J' . $productionRow, $ipark_check);
+            $productionSheet->setCellValue('K' . $productionRow, $selected_data['material_type']);
+            $productionSheet->setCellValue('L' . $productionRow, $selected_data['material_thickness'] == 0 ? '' : $selected_data['material_thickness']);
+            $productionSheet->setCellValue('M' . $productionRow, 'transom');
+            $productionSheet->setCellValue('N' . $productionRow, $elevator_count);
+            $productionSheet->setCellValue('O' . $productionRow, '');
+            // 패널 가로/세로는 P/Q에 출력
+            $productionSheet->setCellValue('P' . $productionRow, ($transomData['width'] ?? 0) == 0 ? '' : ($transomData['width'] ?? ''));
+            $productionSheet->setCellValue('Q' . $productionRow, ($transomData['height'] ?? 0) == 0 ? '' : ($transomData['height'] ?? ''));
             // Drilling fields (Transom에는 비워둠)
-            $productionSheet->setCellValue('Q' . $productionRow, '');
             $productionSheet->setCellValue('R' . $productionRow, '');
             $productionSheet->setCellValue('S' . $productionRow, '');
             $productionSheet->setCellValue('T' . $productionRow, '');
-            // Corner details (Transom에는 비워둠)
             $productionSheet->setCellValue('U' . $productionRow, '');
+            // Corner details (Transom에는 비워둠)
             $productionSheet->setCellValue('V' . $productionRow, '');
             $productionSheet->setCellValue('W' . $productionRow, '');
             $productionSheet->setCellValue('X' . $productionRow, '');
+            $productionSheet->setCellValue('Y' . $productionRow, '');
             
             // TR 블록: 헤더(Y~AF)에 맞춰 정확히 매핑 (TR 세로 제거됨)
             error_log("=== TR 데이터 설정 시작 ===");
@@ -922,8 +933,8 @@ try {
         $productionSheet->getColumnDimension($columnID)->setAutoSize(false);
         $productionSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
     }
-    // AA-AF 컬럼도 설정
-    foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF'] as $columnID) {
+    // AA-AH 컬럼도 설정
+    foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH'] as $columnID) {
         $productionSheet->getColumnDimension($columnID)->setAutoSize(false);
         $productionSheet->getColumnDimension($columnID)->setWidth($defaultDetailWidth);
     }
@@ -934,20 +945,22 @@ try {
         'C' => 30,  // 현장명
         'D' => 12,  // 측정일자
         'E' => 12,  // 측정자
-        'I' => 12,  // 아이파크 체크
-        'L' => 12,  // 패널 번호
-        'M' => 12,  // 제작 대수
-        'N' => 15,  // 패널 타입
-        'O' => 14,  // 제작폭
-        'P' => 14,  // 제작높이
-        'Q' => 14,  // 타공 가로
-        'R' => 14,  // 타공 세로
-        'S' => 18,  // 타공 높이(밑기준)
-        'T' => 18,  // 출입구방향에서 떨어짐
+        'I' => 12,  // 카 구조
+        'J' => 12,  // 아이파크 체크
+        'M' => 12,  // 패널 번호
+        'N' => 12,  // 제작 대수
+        'O' => 15,  // 패널 타입
+        'P' => 14,  // 제작폭
+        'Q' => 14,  // 제작높이
+        'R' => 14,  // 타공 가로
+        'S' => 14,  // 타공 세로
+        'T' => 18,  // 타공 높이(밑기준)
+        'U' => 18,  // 출입구방향에서 떨어짐
         'AD' => 18, // Transom CPI타공 가로
         'AE' => 18, // Transom CPI타공 세로
         'AF' => 18, // Transom CPI타공높이
-        'AG' => 30  // 패널 특이사항
+        'AG' => 20, // TR 비고
+        'AH' => 30  // 패널 특이사항
     ];
     foreach ($detailWideColumns as $col => $width) {
         $productionSheet->getColumnDimension($col)->setWidth($width);
@@ -964,30 +977,25 @@ try {
     $carDepth = intval($selected_data['car_inside_depth']);
     $elevatorCount = intval($elevator_count);
 
+    // 관통형 체크
+    $is_pass_through = ($selected_data['car_structure'] ?? '일반형') === '관통형';
+    
     $moldingData = [
             [
                 'type' => '엔딩몰딩',
                 'size' => $productionHeight,
-                'count' => 2,
+                'count' => $is_pass_through ? 4 : 2, // 관통형일 때 4개 (2, 10, 4, 8번), 일반형일 때 2개 (2, 10번)
                 'elevatorCount' => $elevatorCount,
-                'totalCount' => 2 * $elevatorCount,
-                'description' => '2번, 10번 패널용'
+                'totalCount' => ($is_pass_through ? 4 : 2) * $elevatorCount,
+                'description' => $is_pass_through ? '2번, 10번, 4번, 8번 패널용 (관통형)' : '2번, 10번 패널용'
             ],
             [
                 'type' => '센터몰딩',
                 'size' => $productionHeight,
-                'count' => 6,
+                'count' => $is_pass_through ? 4 : 6, // 관통형일 때 5-6, 6-7번 센터몰딩 제외
                 'elevatorCount' => $elevatorCount,
-                'totalCount' => 6 * $elevatorCount,
-                'description' => '3번, 4번, 7번, 8번, 9번 패널용'
-            ],
-            [
-                'type' => '코너몰딩',
-                'size' => $productionHeight,
-                'count' => 2,
-                'elevatorCount' => $elevatorCount,
-                'totalCount' => 2 * $elevatorCount,
-                'description' => '5번, 6번 패널용'
+                'totalCount' => ($is_pass_through ? 4 : 6) * $elevatorCount,
+                'description' => $is_pass_through ? '2-3, 3-4, 8-9, 9-10번 연결용' : '패널 사이 연결용'
             ],
             [
                 'type' => 'S엔딩몰딩',
@@ -996,16 +1004,28 @@ try {
                 'elevatorCount' => $elevatorCount,
                 'totalCount' => 2 * $elevatorCount,
                 'description' => '측면 하부 가로'
-            ],
-            [
-                'type' => 'R엔딩몰딩',
-                'size' => $carWidth - 2,
-                'count' => 1,
-                'elevatorCount' => $elevatorCount,
-                'totalCount' => 1 * $elevatorCount,
-                'description' => '후면 하부 가로'
             ]
     ];
+    
+    // 일반형일 때만 코너몰딩과 R엔딩몰딩 추가
+    if (!$is_pass_through) {
+        $moldingData[] = [
+            'type' => '코너몰딩',
+            'size' => $productionHeight,
+            'count' => 2,
+            'elevatorCount' => $elevatorCount,
+            'totalCount' => 2 * $elevatorCount,
+            'description' => '4-5, 7-8번 연결용'
+        ];
+        $moldingData[] = [
+            'type' => 'R엔딩몰딩',
+            'size' => $carWidth - 2,
+            'count' => 1,
+            'elevatorCount' => $elevatorCount,
+            'totalCount' => 1 * $elevatorCount,
+            'description' => '후면 하부 가로'
+        ];
+    }
 
     // 몰딩 시트 헤더
     $moldingHeaders = [

@@ -282,11 +282,12 @@ $groups = $groups_stmt->fetchAll(PDO::FETCH_ASSOC);
 $measurements_stmt = $pdo->prepare("
     SELECT pm.id, pm.site_name, pm.measurement_date, pm.measurer_name,
            pm.car_inside_width, pm.car_inside_depth, pm.car_inside_height,
+           pm.car_structure,
            GROUP_CONCAT(sg.group_name ORDER BY sg.group_name SEPARATOR ', ') as group_names
     FROM panel_measurements pm
     LEFT JOIN site_group_members sgm ON pm.id = sgm.measurement_id AND sgm.is_deleted = 0
     LEFT JOIN site_groups sg ON sgm.group_id = sg.id AND sg.is_deleted = 0
-    GROUP BY pm.id, pm.site_name, pm.measurement_date, pm.measurer_name, pm.car_inside_width, pm.car_inside_depth, pm.car_inside_height
+    GROUP BY pm.id, pm.site_name, pm.measurement_date, pm.measurer_name, pm.car_inside_width, pm.car_inside_depth, pm.car_inside_height, pm.car_structure
     ORDER BY pm.measurement_date DESC, pm.site_name
 ");
 $measurements_stmt->execute();
@@ -1091,6 +1092,12 @@ if ($selected_group_id) {
                                             <p class="measurement-meta">
                                                 <i class="bi bi-calendar"></i> <?= $measurement['measurement_date'] ?>
                                             </p>
+                                            <p class="measurement-meta">
+                                                <i class="bi bi-diagram-3"></i> 카구조: 
+                                                <span style="color: <?= ($measurement['car_structure'] ?? '일반형') === '관통형' ? 'var(--linear-color-warning)' : 'var(--linear-color-success)' ?>; font-weight: bold;">
+                                                    <?= htmlspecialchars($measurement['car_structure'] ?? '일반형') ?>
+                                                </span>
+                                            </p>
                                             <p class="measurement-dimensions">
                                                 <i class="bi bi-rulers"></i> 
                                                 <?= number_format($measurement['car_inside_width']) ?> × 
@@ -1467,6 +1474,7 @@ if ($selected_group_id) {
         }
         
         let currentGroupId = null;
+        let currentGroupName = null; // 현재 선택된 그룹명 저장
         let currentSelectedMeasurements = [];
         let allGroups = []; // 전체 그룹 데이터 저장
         let allMeasurements = []; // 전체 측정 데이터 저장 (그룹 생성용)
@@ -1589,6 +1597,9 @@ if ($selected_group_id) {
                             </div>
                             <div style="font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">
                                 ${measurement.measurement_date} | ${measurement.measurer_name}
+                            </div>
+                            <div style="font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">
+                                카구조: <span style="color: ${(measurement.car_structure || '일반형') === '관통형' ? 'var(--linear-color-warning)' : 'var(--linear-color-success)'}; font-weight: bold;">${measurement.car_structure || '일반형'}</span>
                                 ${measurement.car_inside_width ? ` | ${measurement.car_inside_width}×${measurement.car_inside_depth}×${measurement.car_inside_height}mm` : ''}
                             </div>
                             ${groupInfo}
@@ -1765,6 +1776,31 @@ if ($selected_group_id) {
             
             currentGroupId = groupId;
             
+            // 그룹명 저장 - 상세 디버깅
+            console.log('=== selectGroup 함수에서 그룹명 저장 시도 ===');
+            console.log('groupId:', groupId);
+            console.log('groupCard selector:', `[data-group-id="${groupId}"]`);
+            
+            const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+            console.log('groupCard found:', groupCard);
+            
+            if (groupCard) {
+                const nameElement = groupCard.querySelector('.group-name');
+                console.log('nameElement found:', nameElement);
+                
+                if (nameElement) {
+                    const rawText = nameElement.textContent;
+                    currentGroupName = rawText.trim();
+                    console.log('raw text:', rawText);
+                    console.log('trimmed text:', currentGroupName);
+                    console.log('currentGroupName saved:', currentGroupName);
+                } else {
+                    console.log('nameElement not found in groupCard');
+                }
+            } else {
+                console.log('groupCard not found');
+            }
+            
             // 모든 그룹 카드에서 selected 클래스 제거
             document.querySelectorAll('.group-card').forEach(card => {
                 card.classList.remove('selected');
@@ -1780,6 +1816,7 @@ if ($selected_group_id) {
         // 그룹 선택 해제
         function clearGroupSelection() {
             currentGroupId = null;
+            currentGroupName = null;
             
             // 모든 그룹 카드에서 selected 클래스 제거
             document.querySelectorAll('.group-card').forEach(card => {
@@ -1881,6 +1918,7 @@ if ($selected_group_id) {
                     <div class="measurement-info" style="flex: 1;">
                         <h4 style="margin: 0 0 var(--linear-spacing-xs) 0; font-size: var(--linear-text-lg); font-weight: var(--linear-font-weight-semibold); color: var(--linear-text-primary);">${measurement.site_name}</h4>
                         <p style="margin: 0 0 var(--linear-spacing-xs) 0; font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">측정일: ${measurement.measurement_date} | 측정자: ${measurement.measurer_name}</p>
+                        <p style="margin: 0 0 var(--linear-spacing-xs) 0; font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">카구조: <span style="color: ${(measurement.car_structure || '일반형') === '관통형' ? 'var(--linear-color-warning)' : 'var(--linear-color-success)'}; font-weight: bold;">${measurement.car_structure || '일반형'}</span></p>
                         ${measurement.car_inside_width ? `<p style="margin: 0; font-size: var(--linear-text-sm); color: var(--linear-text-tertiary);">크기: ${measurement.car_inside_width}×${measurement.car_inside_depth}×${measurement.car_inside_height}mm</p>` : ''}
                     </div>
                     <div class="measurement-actions" style="margin-left: var(--linear-spacing-md);">
@@ -2306,6 +2344,9 @@ if ($selected_group_id) {
                                             </div>
                                             <div style="font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">
                                                 ${measurement.measurement_date} | ${measurement.measurer_name}
+                                            </div>
+                                            <div style="font-size: var(--linear-text-sm); color: var(--linear-text-secondary);">
+                                                카구조: <span style="color: ${(measurement.car_structure || '일반형') === '관통형' ? 'var(--linear-color-warning)' : 'var(--linear-color-success)'}; font-weight: bold;">${measurement.car_structure || '일반형'}</span>
                                                 ${measurement.car_inside_width ? ` | ${measurement.car_inside_width}×${measurement.car_inside_depth}×${measurement.car_inside_height}mm` : ''}
                                             </div>
                                             ${groupInfo}
@@ -2493,21 +2534,66 @@ if ($selected_group_id) {
                     measurementInput.name = 'measurements';
                     measurementInput.value = JSON.stringify(data.measurements);
                     
-                    // 그룹명 추가
-                    const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
-                    const groupName = groupCard ? groupCard.querySelector('.group-name').textContent : '그룹';
+                    // 그룹명 추가 - 저장된 그룹명 사용
+                    console.log('=== exportGroupToExcel에서 그룹명 추출 시도 ===');
+                    console.log('currentGroupName:', currentGroupName);
+                    console.log('currentGroupId:', currentGroupId);
+                    console.log('groupId parameter:', groupId);
+                    
+                    let groupName = currentGroupName || '그룹';
+                    console.log('1단계 - currentGroupName 사용:', groupName);
+                    
+                    // 저장된 그룹명이 없으면 다시 시도
+                    if (!groupName || groupName === '그룹') {
+                        console.log('2단계 - DOM에서 다시 추출 시도');
+                        const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+                        console.log('groupCard found:', groupCard);
+                        
+                        if (groupCard) {
+                            const nameElement = groupCard.querySelector('.group-name');
+                            console.log('nameElement found:', nameElement);
+                            
+                            if (nameElement) {
+                                const rawText = nameElement.textContent;
+                                groupName = rawText.trim();
+                                console.log('DOM에서 추출한 그룹명:', groupName);
+                            }
+                        }
+                    }
+                    
+                    // 여전히 기본값이면 그룹 ID를 사용
+                    if (!groupName || groupName === '그룹') {
+                        console.log('3단계 - 그룹 ID 사용');
+                        groupName = `그룹_${groupId}`;
+                    }
+                    
+                    console.log('최종 그룹명:', groupName);
+                    
                     const groupNameInput = document.createElement('input');
                     groupNameInput.type = 'hidden';
                     groupNameInput.name = 'group_name';
                     groupNameInput.value = groupName;
                     
-                    console.log('POST 데이터 크기:', measurementInput.value.length, 'bytes');
-                    console.log('POST 데이터 샘플:', measurementInput.value.substring(0, 200) + '...');
-                    console.log('그룹명:', groupName);
+                    console.log('=== 폼 제출 전 최종 확인 ===');
+                    console.log('measurementInput.name:', measurementInput.name);
+                    console.log('measurementInput.value 길이:', measurementInput.value.length, 'bytes');
+                    console.log('measurementInput.value 샘플:', measurementInput.value.substring(0, 200) + '...');
+                    console.log('groupNameInput.name:', groupNameInput.name);
+                    console.log('groupNameInput.value:', groupNameInput.value);
+                    console.log('최종 그룹명:', groupName);
                     
                     form.appendChild(measurementInput);
                     form.appendChild(groupNameInput);
                     document.body.appendChild(form);
+                    
+                    // 폼의 실제 내용 확인
+                    console.log('폼 요소 개수:', form.elements.length);
+                    for (let i = 0; i < form.elements.length; i++) {
+                        const element = form.elements[i];
+                        if (element.name) {
+                            console.log(`폼 요소 ${i}: name="${element.name}", value="${element.value.substring(0, 100)}${element.value.length > 100 ? '...' : ''}"`);
+                        }
+                    }
                     
                     console.log('폼 생성 및 제출 시작');
                     form.submit();

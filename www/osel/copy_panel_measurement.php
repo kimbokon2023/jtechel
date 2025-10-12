@@ -48,7 +48,7 @@ try {
     // Get original data
     $stmt = $pdo->prepare("
         SELECT site_name, measurer_name, measurer_id, measurement_date,
-               car_inside_width, car_inside_depth, car_inside_height,
+               car_inside_width, car_inside_depth, car_inside_height, car_structure,
                material_type, material_thickness, panel_data, transom_data,
                notes, project_type, panel_corners_excluded, transom_excluded,
                elevator_count, ipark_check, production_height, production_height1_11,
@@ -90,14 +90,14 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO panel_measurements (
             site_name, measurer_name, measurer_id, measurement_date,
-            car_inside_width, car_inside_depth, car_inside_height,
+            car_inside_width, car_inside_depth, car_inside_height, car_structure,
             material_type, material_thickness, panel_data, transom_data,
             notes, project_type, panel_corners_excluded, transom_excluded,
             elevator_count, ipark_check, production_height, production_height1_11,
             make_panel_data, molding_data, created_at, updated_at, updated_production_settings_at
         ) VALUES (
             :site_name, :measurer_name, :measurer_id, :measurement_date,
-            :car_inside_width, :car_inside_depth, :car_inside_height,
+            :car_inside_width, :car_inside_depth, :car_inside_height, :car_structure,
             :material_type, :material_thickness, :panel_data, :transom_data,
             :notes, :project_type, :panel_corners_excluded, :transom_excluded,
             :elevator_count, :ipark_check, :production_height, :production_height1_11,
@@ -113,6 +113,7 @@ try {
         ':car_inside_width' => $original_data['car_inside_width'],
         ':car_inside_depth' => $original_data['car_inside_depth'],
         ':car_inside_height' => $original_data['car_inside_height'],
+        ':car_structure' => $original_data['car_structure'] ?? '일반형',
         ':material_type' => $original_data['material_type'],
         ':material_thickness' => $original_data['material_thickness'],
         ':panel_data' => $original_data['panel_data'],

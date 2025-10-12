@@ -28,7 +28,7 @@ if (!empty($edit_id)) {
     try {
         $stmt = $pdo->prepare("
             SELECT id, site_name, measurement_date, measurer_name, measurer_id,
-                   car_inside_width, car_inside_depth, car_inside_height,
+                   car_inside_width, car_inside_depth, car_inside_height, car_structure,
                    material_type, material_thickness,
                    panel_data, transom_data, notes, project_type,
                    panel_corners_excluded, transom_excluded, elevator_count, ipark_check,
@@ -93,6 +93,7 @@ $defaultSiteName = $edit_mode ? $edit_data['site_name'] : '';
 $defaultWidth = $edit_mode ? $edit_data['car_inside_width'] : '1600'; // 신규 작성 시 아이파크 표준 가로
 $defaultDepth = $edit_mode ? $edit_data['car_inside_depth'] : '1500'; // 신규 작성 시 아이파크 표준 깊이
 $defaultHeight = $edit_mode ? $edit_data['car_inside_height'] : '2700'; // 신규 작성 시 아이파크 표준 높이
+$defaultCarStructure = $edit_mode ? ($edit_data['car_structure'] ?? '일반형') : '일반형'; // 카 구조: 일반형/관통형
 $defaultMaterialType = $edit_mode ? $edit_data['material_type'] : '';
 $defaultMaterialThickness = $edit_mode ? $edit_data['material_thickness'] : '';
 $defaultElevatorCount = $edit_mode ? $edit_data['elevator_count'] : '1';
@@ -953,8 +954,8 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                             </datalist>
                         </div>
 
-                        <!-- 측정일자/측정자 -->
-                        <div class="responsive-grid responsive-grid-2">
+                        <!-- 측정일자/측정자/카 구조 -->
+                        <div class="responsive-grid responsive-grid-3">
                             <!-- 측정일자 -->
                             <div class="responsive-input-group">
                                 <label for="measurementDate" class="linear-label">
@@ -992,6 +993,23 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                                        class="linear-input responsive-input"
                                        value="<?= htmlspecialchars($defaultMeasurer) ?>"
                                        required>
+                            </div>
+                            
+                            <!-- 카 구조 -->
+                            <div class="responsive-input-group">
+                                <label for="carStructure" class="linear-label">
+                                    카 구조 <span style="color: var(--linear-color-red);">*</span>
+                                </label>
+                                <select id="carStructure"
+                                        name="car_structure"
+                                        class="linear-input responsive-input"
+                                        required>
+                                    <option value="일반형" <?= $defaultCarStructure === '일반형' ? 'selected' : '' ?>>일반형</option>
+                                    <option value="관통형" <?= $defaultCarStructure === '관통형' ? 'selected' : '' ?>>관통형</option>
+                                </select>
+                                <small style="color: var(--linear-text-tertiary); font-size: 0.8rem; display: block; margin-top: 4px;">
+                                    ※ 관통형은 출입구가 2개인 엘리베이터
+                                </small>
                             </div>
                         </div>
 
@@ -1925,6 +1943,10 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
         // 아이파크 자동 실측값 계산 및 적용 함수
         function applyIparkAutoMeasurements(panel39Width, panel6Width) {
+            // 카 구조 확인
+            const carStructure = document.getElementById('carStructure');
+            const isPassThrough = carStructure && carStructure.value === '관통형';
+            
             // 카 내부 치수 자동 설정 (아이파크 표준 치수)
             const carDepthInput = document.getElementById('carInsideDepth');
             const carWidthInput = document.getElementById('carInsideWidth');
@@ -1954,16 +1976,16 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             const carDepth = parseInt(carDepthInput?.value) || 1500;
             const carWidth = parseInt(carWidthInput?.value) || 1600;
 
-            console.log('🔍 카 내부 치수 설정 완료 - 가로:', carWidth, '깊이:', carDepth);
+            console.log('🔍 카 내부 치수 설정 완료 - 가로:', carWidth, '깊이:', carDepth, '카 구조:', isPassThrough ? '관통형' : '일반형');
 
             // D방향 계산 (2,3,4,8,9,10번 패널)
             // 3번과 8번은 각각 같은 폭 (panel39Width는 하나의 폭)
             const remainingDepth = carDepth - panel39Width;
             let panel2_4_8_10_width = Math.round(remainingDepth / 2); // 2,4,8,10번은 동일한 폭
 
-            // W방향 계산 (5,6,7번 패널)
+            // W방향 계산 (5,6,7번 패널 - 일반형일 때만)
             const remainingWidth = carWidth - panel6Width;
-            let panel5_7_width = Math.round(remainingWidth / 2); // 5,7번은 동일한 폭
+            let panel5_7_width = isPassThrough ? 0 : Math.round(remainingWidth / 2); // 관통형일 때는 0
 
             // 유효성 검사 및 자동 조정
             let hasAdjustment = false;
@@ -1976,7 +1998,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 console.log(`⚠️ D방향 조정: 2,4,8,10번 → ${panel2_4_8_10_width}mm (최소값)`);
             }
 
-            if (panel5_7_width <= 0) {
+            if (!isPassThrough && panel5_7_width <= 0) {
                 panel5_7_width = 10;
                 hasAdjustment = true;
                 adjustmentMessage += `W방향: 5,7번 패널폭을 최소값 10mm로 조정\n`;
@@ -1993,9 +2015,9 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 2: panel2_4_8_10_width,   // D방향 좌측 하단
                 3: panel39Width,          // D방향 좌측 상단 (사용자 입력)
                 4: panel2_4_8_10_width,   // D방향 좌측 상단 연결
-                5: panel5_7_width,        // W방향 상단 좌측
-                6: panel6Width,           // W방향 상단 중앙 (사용자 입력)
-                7: panel5_7_width,        // W방향 상단 우측
+                5: panel5_7_width,        // W방향 상단 좌측 (관통형일 때 0)
+                6: panel6Width,           // W방향 상단 중앙 (사용자 입력, 관통형일 때 사용안함)
+                7: panel5_7_width,        // W방향 상단 우측 (관통형일 때 0)
                 8: panel2_4_8_10_width,   // D방향 우측 상단 연결
                 9: panel39Width,          // D방향 우측 상단 (사용자 입력)
                 10: panel2_4_8_10_width   // D방향 우측 하단
@@ -2011,6 +2033,12 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             
             // 각 패널에 width, height, 재질, 두께 값 설정
             for (let panelNum = 2; panelNum <= 10; panelNum++) {
+                // 관통형일 때 5,6,7번 패널은 건너뛰기
+                if (isPassThrough && [5, 6, 7].includes(panelNum)) {
+                    console.log(`⏭️ 관통형: ${panelNum}번 패널 자동계산 건너뛰기`);
+                    continue;
+                }
+                
                 if (!window.panelData[panelNum]) {
                     window.panelData[panelNum] = {};
                 }
@@ -2042,6 +2070,10 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
         // 실제 측정 시각화에 강제 업데이트
         function forceUpdatePanelVisualization(panelWidths) {
+            // 카 구조 확인
+            const carStructure = document.getElementById('carStructure');
+            const isPassThrough = carStructure && carStructure.value === '관통형';
+            
             // 기본 높이 값 가져오기
             const carHeight = parseInt(document.getElementById('carInsideHeight')?.value) || 0;
             const defaultHeight = carHeight > 0 ? carHeight : 2700;
@@ -2052,6 +2084,12 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
             // 각 패널의 width와 height 값을 시각화에 반영
             for (let panelNum = 2; panelNum <= 10; panelNum++) {
+                // 관통형일 때 5,6,7번 패널은 건너뛰기
+                if (isPassThrough && [5, 6, 7].includes(panelNum)) {
+                    console.log(`⏭️ 관통형: ${panelNum}번 패널 시각화 건너뛰기`);
+                    continue;
+                }
+                
                 const width = panelWidths[panelNum];
                 if (!width) continue;
 
@@ -2096,6 +2134,10 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
             // 4. 각 패널의 시각적 상태 업데이트
             for (let panelNum = 2; panelNum <= 10; panelNum++) {
+                // 관통형일 때 5,6,7번 건너뛰기
+                if (isPassThrough && [5, 6, 7].includes(panelNum)) {
+                    continue;
+                }
                 updatePanelVisualState(panelNum);
             }
 
@@ -2104,11 +2146,11 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
             // 6. 이벤트 트리거 (다른 컴포넌트에 알림)
             const updateEvent = new CustomEvent('iparkAutoUpdate', {
-                detail: { panelWidths: panelWidths, timestamp: Date.now() }
+                detail: { panelWidths: panelWidths, timestamp: Date.now(), isPassThrough: isPassThrough }
             });
             document.dispatchEvent(updateEvent);
             
-            console.log('✅ 아이파크 패널 데이터 완전 적용 완료');
+            console.log('✅ 아이파크 패널 데이터 완전 적용 완료 (카 구조:', isPassThrough ? '관통형' : '일반형', ')');
         }
 
         // 패널 정보 업데이트 (시각화 반영)
@@ -2182,8 +2224,18 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
         // 아이파크 자동계산 값 초기화 함수
         function clearIparkAutoMeasurements() {
-            // 2-10번 패널의 자동계산 값 제거
+            // 카 구조 확인
+            const carStructure = document.getElementById('carStructure');
+            const isPassThrough = carStructure && carStructure.value === '관통형';
+            
+            // 2-10번 패널의 자동계산 값 제거 (관통형일 때는 5,6,7번 제외)
             for (let panelNum = 2; panelNum <= 10; panelNum++) {
+                // 관통형일 때는 5,6,7번 건너뛰기 (이미 숨겨져 있음)
+                if (isPassThrough && [5, 6, 7].includes(panelNum)) {
+                    console.log(`⏭️ 관통형: ${panelNum}번 패널 초기화 건너뛰기`);
+                    continue;
+                }
+                
                 // panelData에서 width 값 제거
                 if (window.panelData && window.panelData[panelNum]) {
                     delete window.panelData[panelNum].width;
@@ -2221,7 +2273,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             updatePanelDisplay();
             updateJsonFields();
 
-            console.log('✅ 아이파크 자동계산 값 초기화 완료');
+            console.log('✅ 아이파크 자동계산 값 초기화 완료 (카 구조:', isPassThrough ? '관통형' : '일반형', ')');
         }
 
         // Panel Data Management
@@ -2418,10 +2470,37 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             debugLog(`모드 변경: ${mode}`);
         }
 
+        // 안내 문구 업데이트 함수
+        function updatePanelInfoText() {
+            const panelInfo = document.getElementById('panelInfo');
+            const carStructure = document.getElementById('carStructure');
+            
+            if (!panelInfo || !carStructure) return;
+            
+            const isPassThrough = carStructure.value === '관통형';
+            
+            if (isPassThrough) {
+                panelInfo.innerHTML = `
+                    <i class="bi bi-info-circle"></i>
+                    <strong>관통형 모드:</strong> 출입구가 2개입니다. 패널 5,6,7번은 표시되지 않습니다. W, D 공차는 ±3입니다.
+                `;
+                panelInfo.style.color = '#2563eb';
+                panelInfo.style.fontWeight = '500';
+            } else {
+                panelInfo.innerHTML = `
+                    <i class="bi bi-info-circle"></i>
+                    측정할 판넬을 클릭하세요. 판넬 1-11은 내벽 의장재질 영역입니다. W, D 공차는 ±3입니다.
+                `;
+                panelInfo.style.color = '';
+                panelInfo.style.fontWeight = '';
+            }
+        }
+
         // 패널 표시/숨김 업데이트
         function updatePanelVisibility() {
             const excludePanelCorners = document.getElementById('excludePanelCorners');
             const excludeTransom = document.getElementById('excludeTransom');
+            const carStructure = document.getElementById('carStructure');
             const panelCount = document.getElementById('panelCount');
             
             if (!excludePanelCorners || !excludeTransom || !panelCount) return;
@@ -2429,9 +2508,18 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             const panels = document.querySelectorAll('.panel[data-panel]');
             let visibleCount = 0;
             
+            // 카 구조 확인 (일반형/관통형)
+            const isPassThrough = carStructure && carStructure.value === '관통형';
+            
             panels.forEach(panel => {
                 const panelNumber = panel.getAttribute('data-panel');
                 let shouldShow = true;
+                
+                // 관통형인 경우 5,6,7번 패널 숨김
+                if (isPassThrough && ['5', '6', '7'].includes(panelNumber)) {
+                    shouldShow = false;
+                    console.log(`🔄 관통형 모드: ${panelNumber}번 패널 숨김`);
+                }
                 
                 // 1번, 11번 패널 제외 체크
                 if (excludePanelCorners.checked && (panelNumber === '1' || panelNumber === '11')) {
@@ -2462,7 +2550,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             // 패널 개수 업데이트
             panelCount.textContent = `(${visibleCount}매)`;
             
-            debugLog(`패널 가시성 업데이트: ${visibleCount}개 표시`);
+            debugLog(`패널 가시성 업데이트: ${visibleCount}개 표시 (카 구조: ${isPassThrough ? '관통형' : '일반형'})`);
         }
 
         // Add click event to all panels
@@ -3096,9 +3184,25 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
         function updateJsonFields() {
             const panelJsonData = document.getElementById('panelJsonData');
             const transomJsonData = document.getElementById('transomJsonData');
+            const carStructure = document.getElementById('carStructure');
             
             if (panelJsonData) {
-                panelJsonData.value = JSON.stringify(window.panelData || {});
+                // 카 구조 확인
+                const isPassThrough = carStructure && carStructure.value === '관통형';
+                
+                // panelData 복사본 생성
+                let filteredPanelData = { ...window.panelData };
+                
+                // 관통형일 때 5,6,7번 패널 데이터 제거
+                if (isPassThrough) {
+                    delete filteredPanelData['5'];
+                    delete filteredPanelData['6'];
+                    delete filteredPanelData['7'];
+                    console.log('🗑️ 관통형: 5,6,7번 패널 데이터 저장에서 제외');
+                }
+                
+                panelJsonData.value = JSON.stringify(filteredPanelData);
+                console.log('📦 저장될 panel_data:', filteredPanelData);
             }
             if (transomJsonData) {
                 transomJsonData.value = JSON.stringify(window.transomData || {});
@@ -3148,6 +3252,63 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 });
             }
 
+            // 카 구조 드롭박스 이벤트
+            const carStructure = document.getElementById('carStructure');
+            if (carStructure) {
+                carStructure.addEventListener('change', function() {
+                    const isPassThrough = this.value === '관통형';
+                    console.log(`🔄 카 구조 변경: ${this.value} (관통형: ${isPassThrough})`);
+                    
+                    // 관통형 선택 시 5,6,7번 패널 데이터 초기화
+                    if (isPassThrough) {
+                        if (window.panelData) {
+                            // 5,6,7번 패널 데이터 완전 삭제
+                            delete window.panelData['5'];
+                            delete window.panelData['6'];
+                            delete window.panelData['7'];
+                            console.log('🗑️ 관통형 선택: 5,6,7번 패널 데이터 삭제');
+                        }
+                        
+                        // 시각적 상태도 초기화
+                        [5, 6, 7].forEach(panelNum => {
+                            const panelElement = document.querySelector(`.panel-${panelNum}`);
+                            if (panelElement) {
+                                panelElement.classList.remove('has-info');
+                                panelElement.style.backgroundColor = '';
+                                panelElement.style.color = '';
+                                
+                                const dimensionsElement = panelElement.querySelector('.panel-dimensions');
+                                if (dimensionsElement) {
+                                    dimensionsElement.innerHTML = '';
+                                }
+                            }
+                        });
+                    }
+                    
+                    // 패널 가시성 업데이트
+                    updatePanelVisibility();
+                    
+                    // 안내 문구 업데이트
+                    updatePanelInfoText();
+                    
+                    // JSON 필드 업데이트 (저장 준비)
+                    updateJsonFields();
+                    
+                    // 관통형 선택 시 안내 메시지
+                    if (isPassThrough) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: '관통형 모드',
+                            html: '출입구가 2개인 관통형 엘리베이터입니다.<br>5, 6, 7번 패널이 숨겨지며 데이터가 삭제됩니다.',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'center'
+                        });
+                    }
+                });
+            }
+
             // 체크박스 이벤트
             const excludePanelCorners = document.getElementById('excludePanelCorners');
             const excludeTransom = document.getElementById('excludeTransom');
@@ -3176,6 +3337,9 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             
             updatePanelVisibility();
             
+            // 초기 안내 문구 업데이트
+            updatePanelInfoText();
+            
             // iPark 체크박스 초기 상태 설정
             const iparkCheckInitial = document.getElementById('iparkCheck');
             if (iparkCheckInitial && iparkCheckInitial.checked) {
@@ -3186,7 +3350,8 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             console.log('📋 초기 체크박스 상태:', {
                 panelCornersExcluded: excludePanelCorners?.checked,
                 transomExcluded: excludeTransom?.checked,
-                iparkCheck: iparkCheckInitial?.checked
+                iparkCheck: iparkCheckInitial?.checked,
+                carStructure: carStructure?.value
             });
 
             // Panel modal events
@@ -3419,6 +3584,11 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 // JSON 필드 업데이트
                 updateJsonFields();
 
+                // 카 구조 확인
+                const carStructure = document.getElementById('carStructure');
+                const isPassThrough = carStructure && carStructure.value === '관통형';
+                console.log(`🔍 카 구조: ${carStructure?.value} (관통형: ${isPassThrough})`);
+
                 // 카 내부 치수 가져오기
                 const carInsideWidth = parseInt(document.getElementById('carInsideWidth')?.value) || 0;
                 const carInsideDepth = parseInt(document.getElementById('carInsideDepth')?.value) || 0;
@@ -3436,9 +3606,9 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     return;
                 }
 
-                // 패널 데이터에서 폭 합산 (2-10번만)
+                // 패널 데이터에서 폭 합산 (2-10번, 관통형일 때는 5,6,7번 제외)
                 let leftSideTotal = 0;  // 2,3,4번
-                let backWallTotal = 0;  // 5,6,7번
+                let backWallTotal = 0;  // 5,6,7번 (관통형일 때는 0)
                 let rightSideTotal = 0; // 8,9,10번
 
                 [2, 3, 4].forEach(num => {
@@ -3446,10 +3616,13 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     leftSideTotal += width;
                 });
 
+                // 관통형이 아닐 때만 5,6,7번 패널 합산
+                if (!isPassThrough) {
                 [5, 6, 7].forEach(num => {
                     const width = parseInt(window.panelData[num]?.width) || 0;
                     backWallTotal += width;
                 });
+                }
 
                 [8, 9, 10].forEach(num => {
                     const width = parseInt(window.panelData[num]?.width) || 0;
@@ -3457,7 +3630,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 });
 
                 // 측정된 패널이 있는지 확인
-                if (leftSideTotal === 0 && rightSideTotal === 0 && backWallTotal === 0) {
+                if (leftSideTotal === 0 && rightSideTotal === 0 && (!isPassThrough && backWallTotal === 0)) {
                     Swal.fire({
                         icon: 'warning',
                         title: '검증 불가',
@@ -3478,14 +3651,18 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                 // 합격/불합격 판정
                 const leftSidePass = leftSideDiff <= 3;
                 const rightSidePass = rightSideDiff <= 3;
-                const backWallPass = backWallDiff <= 3;
+                const backWallPass = isPassThrough ? true : (backWallDiff <= 3); // 관통형일 때는 후면벽 검증 제외
 
                 const allPass = leftSidePass && rightSidePass && backWallPass;
                 const passCount = [leftSidePass, rightSidePass, backWallPass].filter(Boolean).length;
 
                 console.log('=== 측면별 검증 결과 ===');
                 console.log('좌측벽:', leftSideTotal, 'vs', carInsideDepth, '차이:', leftSideDiff, '합격:', leftSidePass);
+                if (!isPassThrough) {
                 console.log('후면벽:', backWallTotal, 'vs', carInsideWidth, '차이:', backWallDiff, '합격:', backWallPass);
+                } else {
+                    console.log('후면벽: 관통형으로 검증 제외');
+                }
                 console.log('우측벽:', rightSideTotal, 'vs', carInsideDepth, '차이:', rightSideDiff, '합격:', rightSidePass);
 
                 // 검증 데이터 생성
@@ -3494,7 +3671,8 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     backWall: { total: backWallTotal, diff: backWallDiff, pass: backWallPass, reference: carInsideWidth },
                     rightSide: { total: rightSideTotal, diff: rightSideDiff, pass: rightSidePass, reference: carInsideDepth },
                     allPass: allPass,
-                    passCount: passCount
+                    passCount: passCount,
+                    isPassThrough: isPassThrough
                 };
 
                 showValidationResultModal(validationData);
@@ -3510,15 +3688,84 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                     return;
                 }
 
-                // 상세 검증 결과 HTML 생성
+                // 관통형일 때는 검증 개수 조정 (후면벽 제외)
+                const totalChecks = results.isPassThrough ? 2 : 3;
+                const displayPassCount = results.isPassThrough ? 
+                    (results.leftSide.pass && results.rightSide.pass ? 2 : (results.leftSide.pass || results.rightSide.pass ? 1 : 0)) : 
+                    results.passCount;
+
+                // 후면벽 행 HTML (관통형일 때는 N/A 표시)
+                const backWallRowHtml = results.isPassThrough ? `
+                    <div style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 80px 100px;
+                        gap: 0;
+                        border-bottom: 1px solid var(--linear-border-secondary, #f1f5f9);
+                        font-size: 14px;
+                        align-items: center;
+                        min-height: 45px;
+                        background: var(--linear-bg-tertiary, #f9fafb);
+                        opacity: 0.6;
+                    ">
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); font-weight: 500;">후면벽</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; color: var(--linear-text-tertiary, #9ca3af);">5, 6, 7번</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; font-style: italic; color: var(--linear-text-tertiary, #9ca3af);" colspan="4">관통형으로 검증 제외</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9);"></div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9);"></div>
+                        <div style="padding: 10px 12px; text-align: center;">
+                            <span style="
+                                display: inline-flex;
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                font-weight: 600;
+                                background: #f3f4f6;
+                                color: #6b7280;
+                                border: 1px solid #d1d5db;
+                            ">
+                                N/A
+                            </span>
+                        </div>
+                    </div>
+                ` : `
+                    <div style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 80px 100px;
+                        gap: 0;
+                        border-bottom: 1px solid var(--linear-border-secondary, #f1f5f9);
+                        font-size: 14px;
+                        align-items: center;
+                        min-height: 45px;
+                    ">
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); font-weight: 500;">후면벽</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center;">5, 6, 7번</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; font-weight: 600;">${results.backWall.total}mm</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center;">${results.backWall.reference}mm (W)</div>
+                        <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; font-weight: 600; color: ${results.backWall.pass ? '#059669' : '#dc2626'};">${results.backWall.diff}mm</div>
+                        <div style="padding: 10px 12px; text-align: center;">
+                            <span style="
+                                display: inline-flex;
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                font-weight: 600;
+                                ${results.backWall.pass ? 'background: #dcfce7; color: #059669; border: 1px solid #bbf7d0;' : 'background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;'}
+                            ">
+                                ${results.backWall.pass ? '적합' : '부적합'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                // 전체 HTML 생성
                 const reportHtml = `
                     <div class="linear-alert ${results.allPass ? 'linear-alert-success' : 'linear-alert-warning'}" style="margin-bottom: 24px; border-radius: 8px;">
                         <div class="linear-alert-content">
                             <h4 class="linear-alert-title" style="margin-bottom: 8px; font-size: 16px;">
-                                검증 완료 - ${results.allPass ? '모든 측면이 기준을 충족합니다' : '일부 측면이 기준을 벗어납니다'} (${results.passCount}/3개 측면 적합)
+                                검증 완료 - ${results.allPass ? '모든 측면이 기준을 충족합니다' : '일부 측면이 기준을 벗어납니다'} (${displayPassCount}/${totalChecks}개 측면 적합)
                             </h4>
                             <p class="linear-alert-description" style="margin: 0; font-size: 14px;">
-                                허용 공차: ±3mm
+                                허용 공차: ±3mm ${results.isPassThrough ? '<br><strong>📍 관통형 모드:</strong> 후면벽 검증 제외' : ''}
                             </p>
                         </div>
                     </div>
@@ -3576,33 +3823,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                             </div>
                         </div>
 
-                        <div style="
-                            display: grid;
-                            grid-template-columns: 1fr 1fr 1fr 1fr 80px 100px;
-                            gap: 0;
-                            border-bottom: 1px solid var(--linear-border-secondary, #f1f5f9);
-                            font-size: 14px;
-                            align-items: center;
-                            min-height: 45px;
-                        ">
-                            <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); font-weight: 500;">후면벽</div>
-                            <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center;">5, 6, 7번</div>
-                            <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; font-weight: 600;">${results.backWall.total}mm</div>
-                            <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center;">${results.backWall.reference}mm (W)</div>
-                            <div style="padding: 10px 12px; border-right: 1px solid var(--linear-border-secondary, #f1f5f9); text-align: center; font-weight: 600; color: ${results.backWall.pass ? '#059669' : '#dc2626'};">${results.backWall.diff}mm</div>
-                            <div style="padding: 10px 12px; text-align: center;">
-                                <span style="
-                                    display: inline-flex;
-                                    padding: 4px 12px;
-                                    border-radius: 20px;
-                                    font-size: 12px;
-                                    font-weight: 600;
-                                    ${results.backWall.pass ? 'background: #dcfce7; color: #059669; border: 1px solid #bbf7d0;' : 'background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;'}
-                                ">
-                                    ${results.backWall.pass ? '적합' : '부적합'}
-                                </span>
-                            </div>
-                        </div>
+                        ${backWallRowHtml}
 
                         <div style="
                             display: grid;
