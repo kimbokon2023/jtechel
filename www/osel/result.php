@@ -31,7 +31,7 @@ $selected_measurement = $_GET['measurement_id'] ?? '';
 $debug_search_params = [
     'search_site' => $search_site,
     'search_date_from' => $search_date_from,
-    'search_date_to' => $search_date_to,
+    'search_date_to' => $search_date_to, 
     'search_measurer' => $search_measurer,
     'selected_measurement' => $selected_measurement,
     'all_get_params' => $_GET
@@ -71,7 +71,7 @@ $debug_where_conditions = [
 ];
 
 // 디버깅: 검색 조건에 맞는 모든 레코드 확인
-$debug_all_records_stmt = $pdo->prepare("SELECT id, site_name, measurement_date, created_at FROM panel_measurements " . $where_clause . " ORDER BY created_at DESC");
+$debug_all_records_stmt = $pdo->prepare("SELECT id, site_name, measurement_date, created_at FROM panel_measurements " . $where_clause . " ORDER BY measurement_date DESC, id DESC");
 $debug_all_records_stmt->execute($params);
 $debug_all_records = $debug_all_records_stmt->fetchAll();
 error_log("DEBUG: 검색 조건에 맞는 모든 레코드 수: " . count($debug_all_records));
@@ -124,9 +124,10 @@ try {
                panel_corners_excluded, transom_excluded,
                molding_included, production_height, production_height1_11,
                panel_data, transom_data, notes, created_at, updated_at,
-               elevator_count
+               elevator_count, ipark_check
         FROM panel_measurements
         $where_clause
+        ORDER BY measurement_date DESC, id DESC
     ";
 
     // 디버그: 쿼리와 파라미터를 JavaScript로 출력
@@ -210,9 +211,9 @@ try {
                            panel_corners_excluded, transom_excluded,
                            molding_included, production_height, production_height1_11,
                            panel_data, transom_data, notes, created_at, updated_at,
-                           elevator_count
+                           elevator_count, ipark_check
                     FROM panel_measurements
-                    ORDER BY measurement_date DESC
+                    ORDER BY measurement_date DESC, id DESC
                     LIMIT 10
                 ");
                 $fallback_stmt->execute();
@@ -251,7 +252,7 @@ try {
                        panel_corners_excluded, transom_excluded,
                        molding_included, production_height, production_height1_11,
                        panel_data, make_panel_data, transom_data, notes, created_at, updated_at,
-                       elevator_count
+                       elevator_count, ipark_check
                 FROM panel_measurements
                 WHERE id = ?
             ");
@@ -3276,10 +3277,10 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                     <i class="bi bi-diagram-3" style="color: var(--linear-brand-primary); margin-right: 5px;"></i>
                                     카구조:
                                 </label>
-                                <span style="padding: 8px 12px; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-radius-md); 
-                                            background-color: var(--linear-bg-secondary); color: var(--linear-text-primary); 
+                                <span style="padding: 8px 12px; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-radius-md);
+                                            background-color: var(--linear-bg-secondary); color: var(--linear-text-primary);
                                             font-size: 0.9rem; min-width: 120px; display: inline-block; text-align: center;
-                                            <?php 
+                                            <?php
                                             $car_structure = $selected_data['car_structure'] ?? '일반형';
                                             if ($car_structure === '관통형') {
                                                 echo 'background-color: var(--linear-color-warning-light); border-color: var(--linear-color-warning);';
@@ -3289,6 +3290,28 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                             ?>">
                                     <?= htmlspecialchars($car_structure) ?>
                                 </span>
+                            </div>
+
+                            <!-- 아이파크 체크 정보 표시 (읽기 전용) -->
+                            <div style="margin-left: 20px; display: flex; align-items: center; gap: 10px;">
+                                <label style="color: var(--linear-text-primary); font-size: 0.9rem; white-space: nowrap;">
+                                    <i class="bi bi-building-check" style="color: var(--linear-brand-primary); margin-right: 5px;"></i>
+                                    아이파크 체크:
+                                </label>
+                                <?php
+                                $ipark_check = $selected_data['ipark_check'] ?? 0;
+                                ?>
+                                <div style="padding: 8px 12px; border: 1px solid var(--linear-border-primary); border-radius: var(--linear-radius-md);
+                                            background-color: var(--linear-bg-secondary); color: var(--linear-text-primary);
+                                            font-size: 0.9rem; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <input type="checkbox"
+                                           <?= $ipark_check ? 'checked' : '' ?>
+                                           disabled
+                                           style="width: 18px; height: 18px; accent-color: var(--linear-brand-primary); cursor: not-allowed;">
+                                    <span style="font-size: 0.85rem; color: var(--linear-text-secondary);">
+                                        <?= $ipark_check ? 'Y' : 'N' ?>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -3363,8 +3386,22 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                 제작 높이 (H) - 2~10번 패널
                             </label>
                             <?php
-                            // 제작 높이: 저장된 값이 있으면 사용, 없으면 카 내부 높이 사용
-                            $production_height = $selected_data['production_height'] ?? $selected_data['car_inside_height'];
+                            // 제작 높이 계산 로직:
+                            // 1. production_height 값이 있으면 그 값 사용
+                            // 2. production_height 값이 없고 ipark_check가 true이면 car_inside_height - 120
+                            // 3. 그 외의 경우 car_inside_height 사용
+                            $ipark_check_value = $selected_data['ipark_check'] ?? 0;
+
+                            if (!empty($selected_data['production_height'])) {
+                                // 저장된 제작 높이가 있으면 사용
+                                $production_height = $selected_data['production_height'];
+                            } elseif ($ipark_check_value) {
+                                // 저장된 값이 없고 아이파크 체크가 true이면 기본 높이에서 120을 뺀 값
+                                $production_height = $selected_data['car_inside_height'] - 120;
+                            } else {
+                                // 그 외의 경우 카 내부 높이 사용
+                                $production_height = $selected_data['car_inside_height'];
+                            }
                             ?>
                             <div class="height-input-group compact-input">
                                 <input type="number" id="productionHeight" name="production_height"
@@ -3383,8 +3420,14 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                 제작 높이 (H) - 1,11번 패널
                             </label>
                             <?php
-                            // 1,11번 패널 제작 높이: 저장된 값이 있으면 사용, 없으면 일반 제작 높이 사용
-                            $production_height1_11 = $selected_data['production_height1_11'] ?? $production_height;
+                            // 1,11번 패널 제작 높이 계산 로직:
+                            // 1. production_height1_11 값이 있으면 그 값 사용
+                            // 2. production_height1_11 값이 없으면 위에서 계산된 production_height 사용
+                            if (!empty($selected_data['production_height1_11'])) {
+                                $production_height1_11 = $selected_data['production_height1_11'];
+                            } else {
+                                $production_height1_11 = $production_height;
+                            }
                             ?>
                             <div class="height-input-group compact-input">
                                 <input type="number" id="productionHeight1_11" name="production_height1_11"
@@ -5012,7 +5055,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     type: 'R엔딩몰딩',
                     size: carWidth - 2,
                     count: 1,
-                    elevatorCount: elevatorCount,
+                    elevatorCount: elevatorCount, 
                     totalCount: 1 * elevatorCount,
                     description: '후면 하부 가로'
                 });

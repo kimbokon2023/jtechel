@@ -153,7 +153,7 @@ try {
                 updated_at
             FROM panel_measurements
             $where_clause
-            ORDER BY created_at DESC
+            ORDER BY measurement_date DESC, id DESC
             LIMIT ? OFFSET ?
         ";
 
