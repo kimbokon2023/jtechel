@@ -571,7 +571,168 @@ W방향:
 
 ## 버전 정보
 
-- **마지막 업데이트**: 2025-10-01
-- **주요 변경**: 아이파크 신규 프로젝트 기능 완성, 타공 정보 표시 개선
+- **마지막 업데이트**: 2025-10-18
+- **주요 변경**: 아이파크 프로젝트 타공 사이즈 계산 로직 수정
 - **다음 마일스톤**: 서버 저장 로직 검증 및 안정화
+
+---
+
+### 2025-10-18
+
+#### 16. 아이파크 프로젝트 타공 사이즈 계산 로직 수정
+
+##### 배경 및 문제점
+- **증상**: 아이파크 프로젝트에서 실측 타공 사이즈를 제작 사이즈로 변환하는 로직이 제대로 작동하지 않음
+  - Width 900mm 패널 (3번, 6번, 9번)에서 실측 가로 700mm가 제작 가로 630mm (700-70)로 변환되지 않음
+  - Width 800mm, 1000mm 패널은 정상 작동
+  - 바닥높이 표시 버그: H7526으로 표시 (7522+6의 결과가 아닌 문자열 연결 "7526")
+
+##### 근본 원인 분석
+1. **아이파크 프로젝트 감지 로직 문제**
+   - 기존: `site_name.includes('아이파크')` 문자열 검색 방식 사용
+   - 문제점: 현장명이 정확히 "아이파크"를 포함하지 않거나 데이터 불일치 시 감지 실패
+   - 해결: 데이터베이스의 `ipark_check` 필드 사용으로 변경
+
+2. **JavaScript 타입 변환 문제**
+   - 기존: `data.drilling_from_floor + 6` 연산 시 문자열 연결 발생
+   - 문제점: drilling 데이터가 문자열로 저장되어 "7522" + 6 = "75226"으로 계산
+   - 해결: `parseInt()`로 명시적 숫자 변환 후 계산
+
+##### 수정 내역
+
+###### 1. result.php (Lines 6474-6503)
+**웹 화면 표시 및 '설정 적용' 버튼 로직 수정**
+
+```javascript
+// 아이파크 프로젝트 확인 (ipark_check 필드 사용)
+const isIparkProject = window.currentSelectedData &&
+    (window.currentSelectedData.ipark_check == 1 || window.currentSelectedData.ipark_check === true);
+
+if (isIparkProject) {
+    // 제작가로 = 실측가로 - 70
+    displayWidth = parseInt(data.drilling_width) - 70;
+    // 제작세로 = 실측세로 - 13
+    displayHeight = parseInt(data.drilling_height) - 13;
+    // 제작바닥높이 = 실측바닥높이 + 6
+    if (data.drilling_from_floor) {
+        displayFromFloor = parseInt(data.drilling_from_floor) + 6;
+    }
+}
+```
+
+**변경 사항**:
+- ❌ 변경 전: `site_name.includes('아이파크')` 문자열 검색
+- ✅ 변경 후: `ipark_check` 필드 사용 (1 또는 true)
+- ❌ 변경 전: `data.drilling_from_floor + 6` (문자열 연결)
+- ✅ 변경 후: `parseInt(data.drilling_from_floor) + 6` (숫자 계산)
+- 모든 drilling 계산에 `parseInt()` 적용하여 일관성 확보
+
+###### 2. export_production_results.php (Lines 501-506)
+**단일 현장 엑셀 내보내기 로직 수정**
+
+```php
+// 아이파크 프로젝트 확인 (ipark_check 필드 사용)
+$is_ipark_project = false;
+if (isset($selected_data['ipark_check']) && ($selected_data['ipark_check'] == 1 || $selected_data['ipark_check'] === true)) {
+    $is_ipark_project = true;
+    error_log("아이파크 프로젝트 감지됨 (ipark_check: " . $selected_data['ipark_check'] . ")");
+}
+```
+
+**변경 사항**:
+- ❌ 변경 전: `strpos($selected_data['site_name'], '아이파크') !== false`
+- ✅ 변경 후: `$selected_data['ipark_check'] == 1 || $selected_data['ipark_check'] === true`
+- 디버깅을 위한 error_log 추가
+
+###### 3. export_group_production_data.php (3곳 수정)
+**그룹 현장 엑셀 내보내기 로직 수정**
+
+**3-1. Lines 204-208 (현장기초정보 시트)**
+```php
+// 아이파크 체크 여부 확인 (ipark_check 필드 사용)
+$ipark_check = 'N';
+if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
+    $ipark_check = 'Y';
+}
+```
+
+**3-2. Lines 390-394 (제작산출결과 시트 - 표시용)**
+```php
+// 아이파크 체크 여부 확인 (ipark_check 필드 사용)
+$ipark_check = 'N';
+if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
+    $ipark_check = 'Y';
+}
+```
+
+**3-3. Lines 457-461 (제작산출결과 시트 - 계산용)**
+```php
+// 아이파크 프로젝트 확인 (ipark_check 필드 사용)
+$is_ipark_project = false;
+if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
+    $is_ipark_project = true;
+}
+```
+
+**변경 사항**:
+- 3개 위치 모두 `site_name` 문자열 검색 → `ipark_check` 필드 검사로 변경
+- 화면 표시용('Y'/'N')과 실제 계산용(`$is_ipark_project`) 로직 통일
+- 타공 계산: `$hole_width - 70`, `$hole_height - 13`, `$hole_floor_height + 6`
+
+###### 4. export_merged_production_data.php (Lines 350-355)
+**병합 엑셀 내보내기 로직 수정**
+
+```php
+// 아이파크 프로젝트 확인 (ipark_check 필드 사용)
+$is_ipark_project = false;
+if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
+    $is_ipark_project = true;
+    error_log("아이파크 프로젝트 감지됨 (ipark_check: " . $measurement['ipark_check'] . ")");
+}
+```
+
+**변경 사항**:
+- ❌ 변경 전: `strpos($measurement['site_name'], '아이파크') !== false`
+- ✅ 변경 후: `$measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true`
+
+##### 아이파크 제작 사이즈 변환 규칙
+```
+아이파크 프로젝트 (ipark_check == 1):
+  제작 가로 = 실측 가로 - 70mm
+  제작 세로 = 실측 세로 - 13mm
+  제작 바닥높이 = 실측 바닥높이 + 6mm
+  제작 출입구거리 = (생산폭 - 제작가로) / 2
+
+일반 프로젝트:
+  제작 사이즈 = 실측 사이즈 (변환 없음)
+```
+
+##### 적용 범위
+- ✅ **웹 화면**: result.php의 '설정 적용' 버튼 클릭 시
+- ✅ **단일 엑셀**: export_production_results.php (개별 현장 내보내기)
+- ✅ **그룹 엑셀**: export_group_production_data.php (현장 그룹 내보내기)
+- ✅ **병합 엑셀**: export_merged_production_data.php (병합 내보내기)
+
+##### 예상 효과
+1. **정확한 프로젝트 감지**: 현장명에 의존하지 않고 DB 필드로 판단
+2. **타입 안정성**: parseInt()로 숫자 계산 보장
+3. **일관된 동작**: 웹/엑셀 모든 출력에서 동일한 변환 적용
+4. **유지보수성**: 단일 필드(ipark_check) 기반으로 로직 통일
+
+##### 테스트 체크리스트
+- [ ] Width 900mm 패널에서 700→630 변환 확인
+- [ ] H7526 버그 수정 확인 (7522+6=7528 정상 표시)
+- [ ] Width 800mm, 1000mm 패널 정상 작동 확인
+- [ ] 단일 현장 엑셀 내보내기 제작 사이즈 확인
+- [ ] 그룹 현장 엑셀 내보내기 제작 사이즈 확인
+- [ ] 병합 엑셀 내보내기 제작 사이즈 확인
+- [ ] 일반 프로젝트(ipark_check=0)에서 실측=제작 확인
+
+##### 관련 파일
+- `result.php`: 웹 화면 표시 및 설정 적용 로직
+- `export_production_results.php`: 단일 현장 엑셀 내보내기
+- `export_group_production_data.php`: 그룹 현장 엑셀 내보내기
+- `export_merged_production_data.php`: 병합 엑셀 내보내기
+
+---
 

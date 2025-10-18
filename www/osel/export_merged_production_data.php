@@ -347,11 +347,11 @@ try {
                 $hole_floor_height = '';
                 $hole_entrance_distance = '';
 
-                // 아이파크 프로젝트 확인
+                // 아이파크 프로젝트 확인 (ipark_check 필드 사용)
                 $is_ipark_project = false;
-                if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+                if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
                     $is_ipark_project = true;
-                    error_log("아이파크 프로젝트 감지됨: " . $measurement['site_name']);
+                    error_log("아이파크 프로젝트 감지됨 (ipark_check: " . $measurement['ipark_check'] . ")");
                 }
 
                 // 1. drilling_ 접두사 속성이 있는 경우 (실제 데이터 구조)
@@ -563,7 +563,7 @@ try {
 
         $moldingData = [
             [
-                'type' => '엔딩몰딩',
+                'type' => 'ㄷ자 몰딩',
                 'size' => $productionHeight,
                 'count' => 2,
                 'elevatorCount' => $elevatorCount,
@@ -571,7 +571,7 @@ try {
                 'description' => '2번, 10번 패널용'
             ],
             [
-                'type' => '센터몰딩',
+                'type' => 'ㄴ자 몰딩',
                 'size' => $productionHeight,
                 'count' => 6,
                 'elevatorCount' => $elevatorCount,
@@ -587,7 +587,7 @@ try {
                 'description' => '5번, 6번 패널용'
             ],
             [
-                'type' => 'S엔딩몰딩',
+                'type' => 'S ㄷ자 하부몰딩',
                 'size' => $carDepth - 5,
                 'count' => 2,
                 'elevatorCount' => $elevatorCount,
@@ -595,7 +595,7 @@ try {
                 'description' => '측면 하부 가로'
             ],
             [
-                'type' => 'R엔딩몰딩',
+                'type' => 'R ㄷ자 하부몰딩',
                 'size' => $carWidth - 2,
                 'count' => 1,
                 'elevatorCount' => $elevatorCount,

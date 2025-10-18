@@ -2543,7 +2543,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transform: translateX(-75px);
         }
 
-        /* 엔딩몰딩 스타일 - 'ㄷ' 형태 (2번, 10번 패널용) */
+        /* ㄷ자 몰딩 스타일 - 'ㄷ' 형태 (2번, 10번 패널용) */
         .ending-molding {
             position: absolute;
             border: 3.5px solid #dc3545; /* 빨간색 3.5px 두께 (30% 감소) */
@@ -2553,7 +2553,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transition: transform 0.3s ease;
         }
 
-        /* 엔딩몰딩 hover 애니메이션 효과 */
+        /* ㄷ자 몰딩 hover 애니메이션 효과 */
         .ending-molding:hover {
             transform: scale(1.05) rotate(1deg);
             animation: molding-shake 0.6s ease-in-out;
@@ -2566,7 +2566,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             75% { transform: scale(1.08) rotate(-0.5deg); }
         }
 
-        /* 2번 패널 엔딩몰딩 - 좌측 세로 패널 끝에 붙음 */
+        /* 2번 패널 ㄷ자 몰딩 - 좌측 세로 패널 끝에 붙음 */
         .ending-molding-2 {
             top: 82%; /* 2번 패널 하단 부분에 위치 */
             left: calc(8% - 33px); /* 왼쪽으로 35px 이동 */
@@ -2579,7 +2579,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 0 0 2px 2px;
         }
 
-        /* 10번 패널 엔딩몰딩 - 우측 세로 패널 끝에 붙음 */
+        /* 10번 패널 ㄷ자 몰딩 - 우측 세로 패널 끝에 붙음 */
         .ending-molding-10 {
             top: 82%; /* 10번 패널 하단 부분에 위치 */
             left: calc(90.5% + 45px); /* 우측으로 35px 이동 */
@@ -2592,7 +2592,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 0 0 2px 2px;
         }
 
-        /* 4번 패널 엔딩몰딩 - 관통형용 좌측 상단 */
+        /* 4번 패널 ㄷ자 몰딩 - 관통형용 좌측 상단 */
         .ending-molding-4 {
             top: 10%; /* 4번 패널 상단 가로 라인과 정확히 맞도록 추가 조정 */
             left: calc(8% - 33px); /* 왼쪽으로 35px 이동 */
@@ -2605,7 +2605,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 2px 2px 0 0;
         }
 
-        /* 8번 패널 엔딩몰딩 - 관통형용 우측 상단 */
+        /* 8번 패널 ㄷ자 몰딩 - 관통형용 우측 상단 */
         .ending-molding-8 {
             top: 10%; /* 8번 패널 상단 가로 라인과 정확히 맞도록 추가 조정 */
             left: calc(90.5% + 45px); /* 우측으로 35px 이동 */
@@ -2618,7 +2618,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 2px 2px 0 0;
         }
 
-        /* 센터몰딩 스타일 - 'ㄴ' 형태 (좌측 패널용 - 시계방향 90도 회전) */
+        /* ㄴ자 몰딩 스타일 - 'ㄴ' 형태 (좌측 패널용 - 시계방향 90도 회전) */
         .center-molding-left {
             position: absolute;
             background: transparent;
@@ -2627,7 +2627,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transition: transform 0.3s ease;
         }
 
-        /* 센터몰딩 hover 애니메이션 효과 */
+        /* ㄴ자 몰딩 hover 애니메이션 효과 */
         .center-molding-left:hover {
             transform: scale(1.08) rotate(-1deg);
             animation: center-molding-shake 0.5s ease-in-out;
@@ -2640,10 +2640,10 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             75% { transform: scale(1.12) rotate(0.5deg); }
         }
 
-        /* 2번과 3번 사이 센터몰딩 - 좌측 'ㄴ' 형태 (시계방향 90도 회전) */
+        /* 2번과 3번 사이 ㄴ자 몰딩 - 좌측 'ㄴ' 형태 (시계방향 90도 회전) */
         .center-molding-2-3 {
             top: calc(60% - 15px); /* 2번과 3번 패널 사이 (5px 아래로) */
-            left: calc(8% - 30px); /* 엔딩몰딩과 같은 left 위치 */
+            left: calc(8% - 30px); /* ㄷ자 몰딩과 같은 left 위치 */
             width: 1%; /* 가로 길이 (짧은 선) */
             height: 5%; /* 세로 길이 (긴 선 - 2.5배) */
             border-bottom: 3.5px solid #dc3545; /* 위쪽 수평선 (짧음) */
@@ -2651,10 +2651,10 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 2px 0 0 0;
         }
 
-        /* 3번과 4번 사이 센터몰딩 - 좌측 'ㄴ' 형태 (시계방향 90도 회전) */
+        /* 3번과 4번 사이 ㄴ자 몰딩 - 좌측 'ㄴ' 형태 (시계방향 90도 회전) */
         .center-molding-3-4 {
             top: calc(35% + 5px); /* 3번과 4번 패널 사이 (5px 아래로) */
-            left: calc(8% - 30px); /* 엔딩몰딩과 같은 left 위치 */
+            left: calc(8% - 30px); /* ㄷ자 몰딩과 같은 left 위치 */
             width: 1%; /* 가로 길이 (짧은 선) */
             height: 5%; /* 세로 길이 (긴 선 - 2.5배) */
             border-top: 3.5px solid #dc3545; /* 위쪽 수평선 (짧음) */
@@ -2662,7 +2662,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 2px 0 0 0;
         }
 
-        /* 센터몰딩 스타일 - 'ㄱ' 형태 (우측 패널용 - 좌측 대칭) */
+        /* ㄴ자 몰딩 스타일 - 'ㄱ' 형태 (우측 패널용 - 좌측 대칭) */
         .center-molding-right {
             position: absolute;
             background: transparent;
@@ -2671,7 +2671,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transition: transform 0.3s ease;
         }
 
-        /* 센터몰딩 우측 hover 애니메이션 효과 */
+        /* ㄴ자 몰딩 우측 hover 애니메이션 효과 */
         .center-molding-right:hover {
             transform: scale(1.08) rotate(1deg);
             animation: center-molding-right-shake 0.5s ease-in-out;
@@ -2684,7 +2684,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             75% { transform: scale(1.12) rotate(-0.5deg); }
         }
 
-        /* 8번과 9번 사이 센터몰딩 - 우측 'ㄱ' 형태 (좌측 대칭) */
+        /* 8번과 9번 사이 ㄴ자 몰딩 - 우측 'ㄱ' 형태 (좌측 대칭) */
         .center-molding-8-9 {
             top: calc(35% + 5px); /* 8번과 9번 패널 사이 (10px 아래로) */
             left: calc(90.5% + 45px); /* 오른쪽으로 20px 더 이동 (30px + 10px) */
@@ -2695,7 +2695,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 0 2px 0 0;
         }
 
-        /* 9번과 10번 사이 센터몰딩 - 우측 'ㄱ' 형태 (좌측 대칭) */
+        /* 9번과 10번 사이 ㄴ자 몰딩 - 우측 'ㄱ' 형태 (좌측 대칭) */
         .center-molding-9-10 {
             top: calc(60% - 15px); /* 9번과 10번 패널 사이  */
             left: calc(90.5% + 45px); /* 오른쪽으로 20px 더 이동 (30px + 10px) */
@@ -2706,7 +2706,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 0 2px 0 0;
         }
 
-        /* rear(상단) 센터몰딩 스타일 - 'ㄱ' 형태 90도 회전 (가로 길고 세로 짧음) */
+        /* rear(상단) ㄴ자 몰딩 스타일 - 'ㄱ' 형태 90도 회전 (가로 길고 세로 짧음) */
         .center-molding-rear {
             position: absolute;
             background: transparent;
@@ -2715,7 +2715,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             transition: transform 0.3s ease;
         }
 
-        /* 센터몰딩 상단 hover 애니메이션 효과 */
+        /* ㄴ자 몰딩 상단 hover 애니메이션 효과 */
         .center-molding-rear:hover {
             transform: scale(1.1) rotate(-0.5deg);
             animation: center-molding-rear-shake 0.4s ease-in-out;
@@ -2728,7 +2728,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             75% { transform: scale(1.15) rotate(0.3deg); }
         }
 
-        /* 5번과 6번 사이 센터몰딩 - rear 'ㄴ' 형태 (180도 회전) */
+        /* 5번과 6번 사이 ㄴ자 몰딩 - rear 'ㄴ' 형태 (180도 회전) */
         .center-molding-5-6 {
             top: calc(2% + 15px); /* 상단 패널 아래쪽 (10px 아래로) */
             left: 34%; /* 5번과 6번 패널 사이 */
@@ -2739,7 +2739,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             border-radius: 0 2px 0 0;
         }
 
-        /* 6번과 7번 사이 센터몰딩 - rear 'ㄴ' 형태 (180도 회전) */
+        /* 6번과 7번 사이 ㄴ자 몰딩 - rear 'ㄴ' 형태 (180도 회전) */
         .center-molding-6-7 {
             top: calc(2% + 15px); /* 상단 패널 아래쪽 (10px 아래로) */
             left: 62%; /* 6번과 7번 패널 사이 */
@@ -2852,7 +2852,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             height: 100%;
         }
 
-        /* S엔딩몰딩 (Side Ending Molding) - 측면 하부 */
+        /* Sㄷ자 하부몰딩 (Side Ending Molding) - 측면 하부 */
         .s-ending-molding {
             position: absolute;
             background-color:rgb(185, 61, 61); /* 적색 */
@@ -2861,21 +2861,21 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
             z-index: 8;
         }
 
-        /* 좌측 S엔딩몰딩 */
+        /* 좌측 Sㄷ자 하부몰딩 */
         .s-ending-molding-left {
             left: 4.5%; /* 좌측 패널들 내부 쪽으로 */
             bottom: 14%; /* 하부 위치 */
             height: 75%; /* 세로 길이 */
         }
 
-        /* 우측 S엔딩몰딩 */
+        /* 우측 Sㄷ자 하부몰딩 */
         .s-ending-molding-right {
             right: 3%; /* 우측 패널들 내부 쪽으로 */
             bottom: 14%; /* 하부 위치 */
             height: 75%; /* 세로 길이 */
         }
 
-        /* R엔딩몰딩 (Rear Ending Molding) - 후면 상단 하부 */
+        /* Rㄷ자 하부몰딩 (Rear Ending Molding) - 후면 상단 하부 */
         .r-ending-molding {
             position: absolute;
             background-color:rgb(207, 75, 75); /* 적색 */
@@ -3409,6 +3409,12 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                                        value="<?= $production_height ?>">
                                 <span class="unit">mm</span>
                             </div>
+                            <?php if ($ipark_check_value): ?>
+                            <div style="margin-top: 5px; font-size: 0.75rem; color: var(--linear-text-secondary); font-style: italic;">
+                                <i class="bi bi-info-circle" style="font-size: 0.7rem;"></i>
+                                아이파크 체크 시 실측 높이에서 -120mm 적용
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -3485,31 +3491,31 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         <div class="panel panel-11" data-panel="11" title="판넬 11">11</div>
                         <div class="panel panel-12 transom-panel" data-panel="12" title="Transom 12">T</div>
 
-                        <!-- 엔딩몰딩 요소들 (2번, 10번 패널용) -->
+                        <!-- ㄷ자 몰딩 요소들 (2번, 10번 패널용) -->
                         <div class="ending-molding ending-molding-2" id="endingMolding2" style="display: none;"
-                             data-tooltip="엔딩몰딩 2번 (좌측 하단)"></div>
+                             data-tooltip="ㄷ자 몰딩 2번 (좌측 하단)"></div>
                         <div class="ending-molding ending-molding-10" id="endingMolding10" style="display: none;"
-                             data-tooltip="엔딩몰딩 10번 (우측 하단)"></div>
+                             data-tooltip="ㄷ자 몰딩 10번 (우측 하단)"></div>
 
-                        <!-- 관통형용 엔딩몰딩 요소들 (4번, 8번 패널 상단용) -->
+                        <!-- 관통형용 ㄷ자 몰딩 요소들 (4번, 8번 패널 상단용) -->
                         <div class="ending-molding ending-molding-4" id="endingMolding4" style="display: none;"
-                             data-tooltip="엔딩몰딩 4번 (관통형용 - 좌측 상단)"></div>
+                             data-tooltip="ㄷ자 몰딩 4번 (관통형용 - 좌측 상단)"></div>
                         <div class="ending-molding ending-molding-8" id="endingMolding8" style="display: none;"
-                             data-tooltip="엔딩몰딩 8번 (관통형용 - 우측 상단)"></div>
+                             data-tooltip="ㄷ자 몰딩 8번 (관통형용 - 우측 상단)"></div>
 
-                        <!-- 센터몰딩 요소들 (패널 사이 연결용) -->
+                        <!-- ㄴ자 몰딩 요소들 (패널 사이 연결용) -->
                         <div class="center-molding-left center-molding-2-3" id="centerMolding2_3" style="display: none;"
-                             data-tooltip="센터몰딩 2-3번 연결 (좌측)"></div>
+                             data-tooltip="ㄴ자 몰딩 2-3번 연결 (좌측)"></div>
                         <div class="center-molding-left center-molding-3-4" id="centerMolding3_4" style="display: none;"
-                             data-tooltip="센터몰딩 3-4번 연결 (좌측)"></div>
+                             data-tooltip="ㄴ자 몰딩 3-4번 연결 (좌측)"></div>
                         <div class="center-molding-right center-molding-8-9" id="centerMolding8_9" style="display: none;"
-                             data-tooltip="센터몰딩 8-9번 연결 (우측)"></div>
+                             data-tooltip="ㄴ자 몰딩 8-9번 연결 (우측)"></div>
                         <div class="center-molding-right center-molding-9-10" id="centerMolding9_10" style="display: none;"
-                             data-tooltip="센터몰딩 9-10번 연결 (우측)"></div>
+                             data-tooltip="ㄴ자 몰딩 9-10번 연결 (우측)"></div>
                         <div class="center-molding-rear center-molding-5-6" id="centerMolding5_6" style="display: none;"
-                             data-tooltip="센터몰딩 5-6번 연결 (상단)"></div>
+                             data-tooltip="ㄴ자 몰딩 5-6번 연결 (상단)"></div>
                         <div class="center-molding-rear center-molding-6-7" id="centerMolding6_7" style="display: none;"
-                             data-tooltip="센터몰딩 6-7번 연결 (상단)"></div>
+                             data-tooltip="ㄴ자 몰딩 6-7번 연결 (상단)"></div>
 
                         <!-- 코너몰딩 요소들 (SVG 기반) -->
                         <div class="corner-molding corner-molding-4-5" id="cornerMolding4_5" style="display: none;"
@@ -3687,11 +3693,11 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                             </svg>
                         </div>
 
-                        <!-- S엔딩몰딩 (Side Ending Molding) - 측면 하부 3px 라인 -->
+                        <!-- Sㄷ자 하부몰딩 (Side Ending Molding) - 측면 하부 3px 라인 -->
                         <div class="s-ending-molding s-ending-molding-left" id="sEndingMoldingLeft" style="display: none;"></div>
                         <div class="s-ending-molding s-ending-molding-right" id="sEndingMoldingRight" style="display: none;"></div>
 
-                        <!-- R엔딩몰딩 (Rear Ending Molding) - 후면 상단 하부 3px 라인 -->
+                        <!-- Rㄷ자 하부몰딩 (Rear Ending Molding) - 후면 상단 하부 3px 라인 -->
                         <div class="r-ending-molding" id="rEndingMolding" style="display: none;"></div>
                     </div>
                 </div>
@@ -5015,7 +5021,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
             const result = [
                 {
-                    type: '엔딩몰딩',
+                    type: 'ㄷ자 몰딩',
                     size: productionHeight,
                     count: isPassThrough ? 4 : 2, // 관통형일 때 4개 (2, 4, 8, 10번), 일반형일 때 2개 (2, 10번)
                     elevatorCount: elevatorCount,
@@ -5023,15 +5029,15 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     description: isPassThrough ? '2번, 4번, 8번, 10번 패널용 (관통형)' : '2번, 10번 패널용'
                 },
                 {
-                    type: '센터몰딩',
+                    type: 'ㄴ자 몰딩',
                     size: productionHeight,
-                    count: isPassThrough ? 4 : 6, // 관통형일 때 5-6, 6-7번 센터몰딩 제외
+                    count: isPassThrough ? 4 : 6, // 관통형일 때 5-6, 6-7번 ㄴ자 몰딩 제외
                     elevatorCount: elevatorCount,
                     totalCount: (isPassThrough ? 4 : 6) * elevatorCount,
                     description: isPassThrough ? '2-3, 3-4, 8-9, 9-10번 연결용' : '패널 사이 연결용'
                 },
                 {
-                    type: 'S엔딩몰딩',
+                    type: 'Sㄷ자 하부몰딩',
                     size: carDepth - 5,
                     count: 2,
                     elevatorCount: elevatorCount,
@@ -5040,8 +5046,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 }
             ];
 
-            // 관통형일 때는 별도 엔딩몰딩 항목 추가하지 않음 (기존 엔딩몰딩에 통합)
-            // 일반형일 때만 코너몰딩과 R엔딩몰딩 추가
+            // 관통형일 때는 별도 ㄷ자 몰딩 항목 추가하지 않음 (기존 ㄷ자 몰딩에 통합)
+            // 일반형일 때만 코너몰딩과 Rㄷ자 하부몰딩 추가
             if (!isPassThrough) {
                 result.push({
                     type: '코너몰딩',
@@ -5052,7 +5058,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     description: '4-5, 7-8번 연결용'
                 });
                 result.push({
-                    type: 'R엔딩몰딩',
+                    type: 'Rㄷ자 하부몰딩',
                     size: carWidth - 2,
                     count: 1,
                     elevatorCount: elevatorCount, 
@@ -5116,7 +5122,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 // 새로운 엘리베이터 대수로 몰딩 데이터 직접 계산
                 const moldingData = [
                     {
-                        type: '엔딩몰딩',
+                        type: 'ㄷ자 몰딩',
                         size: productionHeight,
                         count: 2,
                         elevatorCount: newElevatorCount,
@@ -5124,7 +5130,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '2번, 10번 패널용'
                     },
                     {
-                        type: '센터몰딩',
+                        type: 'ㄴ자 몰딩',
                         size: productionHeight,
                         count: 6,
                         elevatorCount: newElevatorCount,
@@ -5140,7 +5146,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '5번, 6번 패널용'
                     },
                     {
-                        type: 'S엔딩몰딩',
+                        type: 'Sㄷ자 하부몰딩',
                         size: carWidth,
                         count: 2,
                         elevatorCount: newElevatorCount,
@@ -5148,7 +5154,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '측면 하부 가로'
                     },
                     {
-                        type: 'R엔딩몰딩',
+                        type: 'Rㄷ자 하부몰딩',
                         size: carWidth - 2,
                         count: 1,
                         elevatorCount: newElevatorCount,
@@ -5285,13 +5291,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 const selectedData = window.currentSelectedData || <?= json_encode($selected_data) ?>;
                 const isPassThrough = selectedData && selectedData.car_structure === '관통형';
 
-                // 엔딩몰딩 요소들
+                // ㄷ자 몰딩 요소들
                 const endingMolding2 = document.getElementById('endingMolding2');
                 const endingMolding10 = document.getElementById('endingMolding10');
                 const endingMolding4 = document.getElementById('endingMolding4');
                 const endingMolding8 = document.getElementById('endingMolding8');
 
-                // 센터몰딩 요소들
+                // ㄴ자 몰딩 요소들
                 const centerMolding2_3 = document.getElementById('centerMolding2_3');
                 const centerMolding3_4 = document.getElementById('centerMolding3_4');
                 const centerMolding8_9 = document.getElementById('centerMolding8_9');
@@ -5307,35 +5313,35 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 const cornerMolding2Start = document.getElementById('cornerMolding2Start');
                 const cornerMolding10End = document.getElementById('cornerMolding10End');
 
-                // S엔딩몰딩 및 R엔딩몰딩 요소들
+                // Sㄷ자 하부몰딩 및 Rㄷ자 하부몰딩 요소들
                 const sEndingMoldingLeft = document.getElementById('sEndingMoldingLeft');
                 const sEndingMoldingRight = document.getElementById('sEndingMoldingRight');
                 const rEndingMolding = document.getElementById('rEndingMolding');
 
                 if (moldingIncluded) {
-                    // 엔딩몰딩 표시
+                    // ㄷ자 몰딩 표시
                     if (isPassThrough) {
-                        // 관통형: 2번, 10번 하단 엔딩몰딩 + 4번, 8번 상단 엔딩몰딩 모두 표시
+                        // 관통형: 2번, 10번 하단 ㄷ자 몰딩 + 4번, 8번 상단 ㄷ자 몰딩 모두 표시
                         if (endingMolding2) endingMolding2.style.display = 'block';
                         if (endingMolding10) endingMolding10.style.display = 'block';
                         if (endingMolding4) endingMolding4.style.display = 'block';
                         if (endingMolding8) endingMolding8.style.display = 'block';
                     } else {
-                        // 일반형: 2번, 10번 하단 엔딩몰딩만 표시
+                        // 일반형: 2번, 10번 하단 ㄷ자 몰딩만 표시
                         if (endingMolding2) endingMolding2.style.display = 'block';
                         if (endingMolding10) endingMolding10.style.display = 'block';
-                        // 4번, 8번 상단 엔딩몰딩 숨김
+                        // 4번, 8번 상단 ㄷ자 몰딩 숨김
                         if (endingMolding4) endingMolding4.style.display = 'none';
                         if (endingMolding8) endingMolding8.style.display = 'none';
                     }
 
-                    // 센터몰딩 표시
+                    // ㄴ자 몰딩 표시
                     if (centerMolding2_3) centerMolding2_3.style.display = 'block';
                     if (centerMolding3_4) centerMolding3_4.style.display = 'block';
                     if (centerMolding8_9) centerMolding8_9.style.display = 'block';
                     if (centerMolding9_10) centerMolding9_10.style.display = 'block';
                     
-                    // 관통형인 경우 5, 6, 7번 패널 관련 센터몰딩 숨김
+                    // 관통형인 경우 5, 6, 7번 패널 관련 ㄴ자 몰딩 숨김
                     if (isPassThrough) {
                         if (centerMolding5_6) centerMolding5_6.style.display = 'none';
                         if (centerMolding6_7) centerMolding6_7.style.display = 'none';
@@ -5367,11 +5373,11 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         console.log('✅ 일반형: 코너몰딩 설정 완료');
                     }
 
-                    // S엔딩몰딩 및 R엔딩몰딩 표시
+                    // Sㄷ자 하부몰딩 및 Rㄷ자 하부몰딩 표시
                     if (sEndingMoldingLeft) sEndingMoldingLeft.style.display = 'block';
                     if (sEndingMoldingRight) sEndingMoldingRight.style.display = 'block';
                     
-                    // R엔딩몰딩 처리 (관통형일 때는 숨김)
+                    // Rㄷ자 하부몰딩 처리 (관통형일 때는 숨김)
                     if (isPassThrough) {
                         if (rEndingMolding) rEndingMolding.style.display = 'none';
                     } else {
@@ -5379,13 +5385,13 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     }
 
                 } else {
-                    // 엔딩몰딩 숨김
+                    // ㄷ자 몰딩 숨김
                     if (endingMolding2) endingMolding2.style.display = 'none';
                     if (endingMolding10) endingMolding10.style.display = 'none';
                     if (endingMolding4) endingMolding4.style.display = 'none';
                     if (endingMolding8) endingMolding8.style.display = 'none';
 
-                    // 센터몰딩 숨김
+                    // ㄴ자 몰딩 숨김
                     if (centerMolding2_3) centerMolding2_3.style.display = 'none';
                     if (centerMolding3_4) centerMolding3_4.style.display = 'none';
                     if (centerMolding8_9) centerMolding8_9.style.display = 'none';
@@ -5399,7 +5405,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     if (cornerMolding2Start) cornerMolding2Start.style.display = 'none';
                     if (cornerMolding10End) cornerMolding10End.style.display = 'none';
 
-                    // S엔딩몰딩 및 R엔딩몰딩 숨김
+                    // Sㄷ자 하부몰딩 및 Rㄷ자 하부몰딩 숨김
                     if (sEndingMoldingLeft) sEndingMoldingLeft.style.display = 'none';
                     if (sEndingMoldingRight) sEndingMoldingRight.style.display = 'none';
                     if (rEndingMolding) rEndingMolding.style.display = 'none';
@@ -5468,7 +5474,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
                 const result = [
                     {
-                        type: '엔딩몰딩',
+                        type: 'ㄷ자 몰딩',
                         size: productionHeight,
                         count: isPassThrough ? 4 : 2, // 관통형일 때 4개 (2, 4, 8, 10번), 일반형일 때 2개 (2, 10번)
                         elevatorCount: elevatorCount,
@@ -5476,15 +5482,15 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: isPassThrough ? '2번, 4번, 8번, 10번 패널용 (관통형)' : '2번, 10번 패널용'
                     },
                     {
-                        type: '센터몰딩',
+                        type: 'ㄴ자 몰딩',
                         size: productionHeight,
-                        count: isPassThrough ? 4 : 6, // 관통형일 때 5-6, 6-7번 센터몰딩 제외
+                        count: isPassThrough ? 4 : 6, // 관통형일 때 5-6, 6-7번 ㄴ자 몰딩 제외
                         elevatorCount: elevatorCount,
                         totalCount: (isPassThrough ? 4 : 6) * elevatorCount,
                         description: isPassThrough ? '2-3, 3-4, 8-9, 9-10번 연결용' : '패널 사이 연결용'
                     },
                     {
-                        type: 'S엔딩몰딩',
+                        type: 'Sㄷ자 하부몰딩',
                         size: carDepth - 5,
                         count: 2,
                         elevatorCount: elevatorCount,
@@ -5493,8 +5499,8 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                     }
                 ];
 
-                // 관통형일 때는 별도 엔딩몰딩 항목 추가하지 않음 (기존 엔딩몰딩에 통합)
-                // 일반형일 때만 코너몰딩과 R엔딩몰딩 추가
+                // 관통형일 때는 별도 ㄷ자 몰딩 항목 추가하지 않음 (기존 ㄷ자 몰딩에 통합)
+                // 일반형일 때만 코너몰딩과 Rㄷ자 하부몰딩 추가
                 if (!isPassThrough) {
                     result.push({
                         type: '코너몰딩',
@@ -5505,7 +5511,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '4-5, 7-8번 연결용'
                     });
                     result.push({
-                        type: 'R엔딩몰딩',
+                        type: 'Rㄷ자 하부몰딩',
                         size: carWidth - 2,
                         count: 1,
                         elevatorCount: elevatorCount,
@@ -6465,32 +6471,39 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
 
             // Drilling information
             if (data.has_drilling && data.drilling_width && data.drilling_height) {
-                // 아이파크 프로젝트 확인 (site_name에 "아이파크"가 포함되어 있는지 확인)
-                const isIparkProject = window.currentSelectedData && 
-                    window.currentSelectedData.site_name && 
-                    window.currentSelectedData.site_name.includes('아이파크');
-                
+                // 아이파크 프로젝트 확인 (ipark_check 필드 사용)
+                const isIparkProject = window.currentSelectedData &&
+                    (window.currentSelectedData.ipark_check == 1 || window.currentSelectedData.ipark_check === true);
+
+                // 디버깅: 아이파크 체크 상태 확인
+                console.log(`[패널 ${panelNumber}] 아이파크 체크: ${isIparkProject}, ipark_check 값: ${window.currentSelectedData?.ipark_check}`);
+
                 let displayWidth = data.drilling_width;
                 let displayHeight = data.drilling_height;
                 let displayFromFloor = data.drilling_from_floor;
                 let displayFromEntrance = data.drilling_from_entrance;
-                
+
+                // 디버깅: 패널 번호와 width, drilling_width 값 확인
+                if (panelNumber === '3' || panelNumber === '6' || panelNumber === '9') {
+                    console.log(`[패널 ${panelNumber}] width: ${data.width}, 실측 drilling_width: ${data.drilling_width}, type: ${typeof data.drilling_width}`);
+                }
+
                 // 아이파크 프로젝트인 경우 제작치수 적용
                 if (isIparkProject) {
                     // 제작가로 = 실측가로 - 70
-                    displayWidth = data.drilling_width - 70;
-                    
+                    displayWidth = parseInt(data.drilling_width) - 70;
+
                     // 제작세로 = 실측세로 - 13
-                    displayHeight = data.drilling_height - 13;
-                    
+                    displayHeight = parseInt(data.drilling_height) - 13;
+
                     // 제작바닥높이 = 실측바닥높이 + 6
                     if (data.drilling_from_floor) {
-                        displayFromFloor = data.drilling_from_floor + 6;
+                        displayFromFloor = parseInt(data.drilling_from_floor) + 6;
                     }
-                    
+
                     // 제작출입구위치 = (제작패널전체폭 - 제작가로크기확정) / 2
                     if (data.drilling_from_entrance && data.width) {
-                        const productionWidth = data.width; // 제작패널전체폭
+                        const productionWidth = parseInt(data.width); // 제작패널전체폭
                         const productionDrillingWidth = displayWidth; // 제작가로크기확정
                         displayFromEntrance = (productionWidth - productionDrillingWidth) / 2;
                     }
@@ -6812,7 +6825,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                 // 몰딩 데이터 생성
                 const moldingData = [
                     {
-                        type: '엔딩몰딩',
+                        type: 'ㄷ자 몰딩',
                         size: productionHeight,
                         count: 2,
                         elevatorCount: currentElevatorCount,
@@ -6820,7 +6833,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '2번, 10번 패널용'
                     },
                     {
-                        type: '센터몰딩',
+                        type: 'ㄴ자 몰딩',
                         size: productionHeight,
                         count: 6,
                         elevatorCount: currentElevatorCount,
@@ -6836,7 +6849,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '5번, 6번 패널용'
                     },
                     {
-                        type: 'S엔딩몰딩',
+                        type: 'Sㄷ자 하부몰딩',
                         size: carWidth,
                         count: 2,
                         elevatorCount: currentElevatorCount,
@@ -6844,7 +6857,7 @@ function calculateProductionResults($panel_data, $transom_data, $measurement_dat
                         description: '측면 하부 가로'
                     },
                     {
-                        type: 'R엔딩몰딩',
+                        type: 'Rㄷ자 하부몰딩',
                         size: carWidth - 2,
                         count: 1,
                         elevatorCount: currentElevatorCount,

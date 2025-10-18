@@ -201,9 +201,9 @@ try {
         $production_height = $measurement['production_height'] ?? $measurement['car_inside_height'];
         $production_height1_11 = $measurement['production_height1_11'] ?? $measurement['car_inside_height'];
 
-        // 아이파크 체크 여부 확인
+        // 아이파크 체크 여부 확인 (ipark_check 필드 사용)
         $ipark_check = 'N';
-        if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+        if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
             $ipark_check = 'Y';
         }
 
@@ -387,9 +387,9 @@ try {
                     continue;
                 }
 
-                // 아이파크 체크 여부 확인
+                // 아이파크 체크 여부 확인 (ipark_check 필드 사용)
                 $ipark_check = 'N';
-                if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+                if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
                     $ipark_check = 'Y';
                 }
 
@@ -454,9 +454,9 @@ try {
                 $hole_floor_height = '';
                 $hole_entrance_distance = '';
 
-                // 아이파크 프로젝트 확인
+                // 아이파크 프로젝트 확인 (ipark_check 필드 사용)
                 $is_ipark_project = false;
-                if (isset($measurement['site_name']) && strpos($measurement['site_name'], '아이파크') !== false) {
+                if (isset($measurement['ipark_check']) && ($measurement['ipark_check'] == 1 || $measurement['ipark_check'] === true)) {
                     $is_ipark_project = true;
                 }
 
@@ -608,7 +608,7 @@ try {
         
         $moldingData = [
             [
-                'type' => '엔딩몰딩',
+                'type' => 'ㄷ자 몰딩',
                 'size' => $productionHeight,
                 'count' => $is_pass_through ? 4 : 2, // 관통형일 때 4개 (2, 4, 8, 10번), 일반형일 때 2개 (2, 10번)
                 'elevatorCount' => $elevatorCount,
@@ -616,15 +616,15 @@ try {
                 'description' => $is_pass_through ? '2번, 10번, 4번, 8번 패널용 (관통형)' : '2번, 10번 패널용'
             ],
             [
-                'type' => '센터몰딩',
+                'type' => 'ㄴ자 몰딩',
                 'size' => $productionHeight,
-                'count' => $is_pass_through ? 4 : 6, // 관통형일 때 5-6, 6-7번 센터몰딩 제외
+                'count' => $is_pass_through ? 4 : 6, // 관통형일 때 5-6, 6-7번 ㄴ자 몰딩 제외
                 'elevatorCount' => $elevatorCount,
                 'totalCount' => ($is_pass_through ? 4 : 6) * $elevatorCount,
                 'description' => $is_pass_through ? '2-3, 3-4, 8-9, 9-10번 연결용' : '패널 사이 연결용'
             ],
             [
-                'type' => 'S엔딩몰딩',
+                'type' => 'Sㄷ자 하부몰딩',
                 'size' => $carDepth - 5,
                 'count' => 2,
                 'elevatorCount' => $elevatorCount,
@@ -633,7 +633,7 @@ try {
             ]
         ];
         
-        // 일반형일 때만 코너몰딩과 R엔딩몰딩 추가
+        // 일반형일 때만 코너몰딩과 Rㄷ자 하부몰딩 추가
         if (!$is_pass_through) {
             $moldingData[] = [
                 'type' => '코너몰딩',
@@ -644,7 +644,7 @@ try {
                 'description' => '4-5, 7-8번 연결용'
             ];
             $moldingData[] = [
-                'type' => 'R엔딩몰딩',
+                'type' => 'Rㄷ자 하부몰딩',
                 'size' => $carWidth - 2,
                 'count' => 1,
                 'elevatorCount' => $elevatorCount,
@@ -661,11 +661,11 @@ try {
 
     // 몰딩 데이터를 종류별로 정렬
     $moldingTypeOrder = [
-        '엔딩몰딩' => 1,
-        '센터몰딩' => 2, 
-        'S엔딩몰딩' => 3,
+        'ㄷ자 몰딩' => 1,
+        'ㄴ자 몰딩' => 2, 
+        'Sㄷ자 하부몰딩' => 3,
         '코너몰딩' => 4,
-        'R엔딩몰딩' => 5
+        'Rㄷ자 하부몰딩' => 5
     ];
     
     usort($allMoldingData, function($a, $b) use ($moldingTypeOrder) {

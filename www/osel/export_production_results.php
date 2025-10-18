@@ -498,11 +498,11 @@ try {
             $hole_floor_height = '';
             $hole_entrance_distance = '';
 
-            // 아이파크 프로젝트 확인
+            // 아이파크 프로젝트 확인 (ipark_check 필드 사용)
             $is_ipark_project = false;
-            if (isset($selected_data['site_name']) && strpos($selected_data['site_name'], '아이파크') !== false) {
+            if (isset($selected_data['ipark_check']) && ($selected_data['ipark_check'] == 1 || $selected_data['ipark_check'] === true)) {
                 $is_ipark_project = true;
-                error_log("아이파크 프로젝트 감지됨: " . $selected_data['site_name']);
+                error_log("아이파크 프로젝트 감지됨 (ipark_check: " . $selected_data['ipark_check'] . ")");
             }
 
             // 1. drilling_ 접두사 속성이 있는 경우 (실제 데이터 구조)
@@ -982,7 +982,7 @@ try {
     
     $moldingData = [
             [
-                'type' => '엔딩몰딩',
+                'type' => 'ㄷ자 몰딩',
                 'size' => $productionHeight,
                 'count' => $is_pass_through ? 4 : 2, // 관통형일 때 4개 (2, 10, 4, 8번), 일반형일 때 2개 (2, 10번)
                 'elevatorCount' => $elevatorCount,
@@ -990,15 +990,15 @@ try {
                 'description' => $is_pass_through ? '2번, 10번, 4번, 8번 패널용 (관통형)' : '2번, 10번 패널용'
             ],
             [
-                'type' => '센터몰딩',
+                'type' => 'ㄴ자 몰딩',
                 'size' => $productionHeight,
-                'count' => $is_pass_through ? 4 : 6, // 관통형일 때 5-6, 6-7번 센터몰딩 제외
+                'count' => $is_pass_through ? 4 : 6, // 관통형일 때 5-6, 6-7번 ㄴ자 몰딩 제외
                 'elevatorCount' => $elevatorCount,
                 'totalCount' => ($is_pass_through ? 4 : 6) * $elevatorCount,
                 'description' => $is_pass_through ? '2-3, 3-4, 8-9, 9-10번 연결용' : '패널 사이 연결용'
             ],
             [
-                'type' => 'S엔딩몰딩',
+                'type' => 'Sㄷ자 하부몰딩',
                 'size' => $carDepth - 5,
                 'count' => 2,
                 'elevatorCount' => $elevatorCount,
@@ -1007,7 +1007,7 @@ try {
             ]
     ];
     
-    // 일반형일 때만 코너몰딩과 R엔딩몰딩 추가
+    // 일반형일 때만 코너몰딩과 Rㄷ자 하부몰딩 추가
     if (!$is_pass_through) {
         $moldingData[] = [
             'type' => '코너몰딩',
@@ -1018,7 +1018,7 @@ try {
             'description' => '4-5, 7-8번 연결용'
         ];
         $moldingData[] = [
-            'type' => 'R엔딩몰딩',
+            'type' => 'Rㄷ자 하부몰딩',
             'size' => $carWidth - 2,
             'count' => 1,
             'elevatorCount' => $elevatorCount,
