@@ -43,9 +43,9 @@ $pdo = db_connect();
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="description" content="JK-테크(JK-TECH)" >    
+<meta name="description" content="오성이엘(OSEL)" >    
 <!-- theme meta -->
-<meta name="theme-name" content="JK-테크(JK-TECH)" />
+<meta name="theme-name" content="오성이엘(OSEL)" />
 <html>
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

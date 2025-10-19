@@ -285,115 +285,12 @@ $objPHPExcel->setActiveSheetIndex(0)->mergeCells('B41:H41')->setCellValue('B41',
 $objPHPExcel->setActiveSheetIndex(0)->mergeCells('B42:H42')->setCellValue('B42', '');
 $objPHPExcel->setActiveSheetIndex(0)->mergeCells('B43:H43')->setCellValue('B43', '');
 
-// for ($i=0;$i<23;$i++)
-  // $objPHPExcel->setActiveSheetIndex(0)->getRowDimension(15+$i)->setRowHeight(13.5);
-
-// for ($i=0;$i<6;$i++)
-  // $objPHPExcel->setActiveSheetIndex(0)->getRowDimension(38+$i)->setRowHeight(18);
-
-// $objPHPExcel->getActiveSheet()->getStyle("A3")->getFont()->setName('Dotum')->setSize(15);	
-// $objPHPExcel -> setActiveSheetIndex(0)-> setCellValue("A3", "㈜미래기업 貴中");
-// $objPHPExcel -> getActiveSheet() -> getStyle("A3") -> getFont() -> setBold(true);
-
-// $styleArray = array(
-  // 'font' => array(
-    // 'underline' => PHPExcel_Style_Font::UNDERLINE_SINGLE
-  // )
-// );
-
-// $objPHPExcel->getActiveSheet()->getStyle('A3')->applyFromArray($styleArray);   // 밑줄치는 것
-
-// // $objPHPExcel -> setActiveSheetIndex(0) -> setCellValue("B5", date("Y-m-d", time()));  // 날짜형식으로 보이기
-
-
-
-
-// $objPHPExcel -> getActiveSheet() -> getStyle("A5:C9") -> getFont() -> setBold(true);
-
-// $objPHPExcel->getActiveSheet()->getStyle ( "A5:G10" )->getAlignment ()->setHorizontal ( PHPExcel_Style_Alignment::HORIZONTAL_CENTER );  // 가로 가운데 정렬
-// $objPHPExcel->getActiveSheet()->getStyle ( "A5:G10" )->getAlignment ()->setVertical (PHPExcel_Style_Alignment::VERTICAL_CENTER );  // 세로 가운데 정렬
-
-// // 셀의 테두리 지정 (바깥쪽 테두리 - 진하게) 4각 테두리
-// $objPHPExcel->getActiveSheet()->getStyle ( "A5:C9" )->getBorders ()->getInside () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_THIN );
-// $objPHPExcel->getActiveSheet()->getStyle ( "A5:C9" )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_THICK );
-
-// 테두리 두께 관련 기타 옵션
-// PHPExcel_Style_Border::BORDER_MEDIUM : 일반 두께
-// PHPExcel_Style_Border::BORDER_THIN : 얅은 두께
-// 셀 테두리 종류 관련 옵션
-// 바깥쪽 테두리 : 예제의 소스와 동일  ->getOutline()->
-// 셀 전체 (바깥 + 안쪽) :  ->getAllBorders()->
-// 안쪽 : ->getInside()->
-// 세로선 : ->getVertical()->
-// 가로선 : ->getHorizontal()->
-
-
-// $objPHPExcel -> getActiveSheet() -> getStyle("E5:G10") -> getFont() -> setBold(true);
-
-// 글씨 크기 넘어가는 것 자동조절
-// $objPHPExcel->getActiveSheet()->getStyle("E8:F8")->getFont()->setName('Dotum')->setSize(7);	
-
-
-// $objPHPExcel -> setActiveSheetIndex(0)-> setCellValue("A13", "=F40");
-// $objPHPExcel -> setActiveSheetIndex(0)-> setCellValue("B13", "원)-VAT.별도");
-// $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C13:G13')->setCellValue('C13',"*현장별 잠설치공사 막판유/막판무/쪽잠 구분 청구");
-// $objPHPExcel -> getActiveSheet() -> getStyle("C13") -> getFill() -> setFillType(PHPExcel_Style_Fill::FILL_SOLID) -> getStartColor() -> setRGB("FFFF00");
- // // 폰트색상 변경
-// $objPHPExcel ->getActiveSheet()->getStyle ( "C13" )->getFont ()->getColor ()->setRGB ( 'FF0000' );  // 빨간색
-// $objPHPExcel->getActiveSheet()->getStyle("C13")->getFont()->setName('Dotum')->setSize(11);	
-// $objPHPExcel -> getActiveSheet() -> getStyle("C13") -> getFont() -> setBold(true);
-
-// 셀의 테두리 지정 (바깥쪽 테두리 - 진하게) 4각 테두리
-
 $objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A1:H200" )->getAlignment ()->setVertical (PHPExcel_Style_Alignment::VERTICAL_CENTER );  // 세로 가운데 정렬
 // 가로정렬이 다른 경우만 가져온다.
 $objPHPExcel->setActiveSheetIndex(0)->getStyle("A3:A9")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT); 
 $objPHPExcel->setActiveSheetIndex(0)->getStyle("A34")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT); 
 
 $objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A10:H36" )->getBorders ()->getInside () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_DOTTED);
-$objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A10:H36" )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-
-
-// $objPHPExcel->getActiveSheet()->getStyle ( "A2:C6" )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-
-// $objPHPExcel->getActiveSheet()->getStyle ( "D2:H6" )->getBorders ()->getInside () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_THIN );
-// $objPHPExcel->getActiveSheet()->getStyle ( "D2:H6" )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-//$objPHPExcel->getActiveSheet()->getStyle ( "A12:H34" )->getBorders ()->getInside () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_THIN );
-//$objPHPExcel->getActiveSheet()->getStyle ( "A12:H34" )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-
-//$objPHPExcel->getActiveSheet()->getStyle ( "A27:J34"  )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-//$objPHPExcel->getActiveSheet()->getStyle ( "A36:J46"  )->getBorders ()->getOutline () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM );
-
-
-// // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-// $objPHPExcel->setActiveSheetIndex(0);
-// // Set the page layout view as page layout
-// $objPHPExcel->getActiveSheet()->getSheetView()->setView(PHPExcel_Worksheet_SheetView::SHEETVIEW_PAGE_LAYOUT);
-
-// $objPHPExcel->getActiveSheet()->getStyle ( "B15:D40" )->getAlignment ()->setHorizontal ( PHPExcel_Style_Alignment::HORIZONTAL_CENTER );  // 가로 가운데 정렬
-
-// // $objPHPExcel -> getActiveSheet() -> getStyle(sprintf("A1:D%s", $count)) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-// // $objPHPExcel -> getActiveSheet() -> getStyle(sprintf("A1:D%s", $count)) -> getBorders() -> getAllBorders() -> setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-// // $objPHPExcel -> getActiveSheet() -> getStyle("A1:D1") -> getFont() -> setBold(true);
-// // $objPHPExcel -> getActiveSheet() -> getStyle("A1:D1") -> getFill() -> setFillType(PHPExcel_Style_Fill::FILL_SOLID) -> getStartColor() -> setRGB("CECBCA");
-// // $objPHPExcel -> getActiveSheet() -> getStyle(sprintf("A2:D%s", $count)) -> getFill() -> setFillType(PHPExcel_Style_Fill::FILL_SOLID) -> getStartColor() -> setRGB("F4F4F4");
-
-// $objPHPExcel -> setActiveSheetIndex(0)-> setCellValue("A40", "합  계");
-// $objPHPExcel->getActiveSheet()->getStyle ( "A40" )->getAlignment ()->setHorizontal ( PHPExcel_Style_Alignment::HORIZONTAL_CENTER );  // 가로 가운데 정렬
-// $objPHPExcel->getActiveSheet()->getStyle("A40")->getFont()->setName('Dotum')->setSize(13);	
-// $objPHPExcel->getActiveSheet()->getStyle("B40:G40")->getFont()->setName('Dotum')->setSize(8);	
-// $objPHPExcel -> getActiveSheet() -> getStyle("A40:A41") -> getFont() -> setBold(true);
-// $objPHPExcel -> setActiveSheetIndex(0)-> setCellValue("A41", "* 특기사항");
-
-// $objPHPExcel->getActiveSheet()->getStyle("A13")->getFont()->setName('Dotum')->setSize(14);	
-// $objPHPExcel -> getActiveSheet() -> getStyle("A13") -> getFont() -> setBold(true);
-
-// // getNumberFormat(), setFormatCode() 함수를 사용한다.
-// // setFormatCode() 함수에 앞자리 0이 출력되게끔 문자열의 자리수 만큼 0을 입력한다.
-// // $objPHPExcel -> getActiveSheet() -> getStyle(sprintf("A2:A%s", $count)) -> getNumberFormat() -> setFormatCode("00000");
-
-// $objPHPExcel->getActiveSheet()->getStyle("A15:A39")->getFont()->setName('Dotum')->setSize(7);	
-
 // $objPHPExcel->setActiveSheetIndex(0)->getStyle("A1:H200")->getFont()->setName('Dotum');	 // 
 $objPHPExcel-> setActiveSheetIndex(0)->getStyle("A2")->getFont()->setName('Dotum')->setSize(10);	
 $objPHPExcel-> setActiveSheetIndex(0)->getStyle("A3")->getFont()->setName('Dotum')->setSize(14);	
@@ -425,8 +322,6 @@ $objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A36:h37" )->getBorders ()-> ge
 
 // 비고란 테두리
 $objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A37:H43" )->getBorders ()-> getVertical() ->setBorderStyle ( PHPExcel_Style_Border::BORDER_DOTTED);
-$objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A37:H43" )->getBorders ()-> getOutline() ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM);
-
 
 $objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A9:H9" )->getBorders ()->getAllBorders() ->setBorderStyle ( PHPExcel_Style_Border::BORDER_MEDIUM);
 //$objPHPExcel->setActiveSheetIndex(0)->getStyle ( "A10:H10" )->getBorders ()->getInside () ->setBorderStyle ( PHPExcel_Style_Border::BORDER_THIN);
@@ -439,9 +334,9 @@ $objPHPExcel -> getActiveSheet() -> getStyle("A9:H9") -> getFill() -> setFillTyp
 
 $companyName = $et_itemname;
 
-$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " JK-테크 견적서");
+$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " 오성이엘 견적서");
 $objPHPExcel -> setActiveSheetIndex(0);
-$filename = iconv("UTF-8", "EUC-KR", "JK-테크 견적서(" . $companyName . ") ");
+$filename = iconv("UTF-8", "EUC-KR", "오성이엘 견적서(" . $companyName . ") ");
 
 header("Content-Type:application/vnd.ms-excel");
 header("Content-Disposition: attachment;filename=".$filename.".xls");

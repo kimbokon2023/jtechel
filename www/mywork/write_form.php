@@ -249,7 +249,7 @@ if(!in_array($worker, $worker_arr))   // 배열값에 없으면 넣어준다
 </head>
 
 <body>
-<title> JK-테크 수주내역 </title>
+<title> 오성이엘 수주내역 </title>
 
 <style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css");

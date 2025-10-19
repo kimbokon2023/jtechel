@@ -19,12 +19,17 @@ try {
     die("데이터베이스 연결에 실패했습니다.");
 }
 
-// Check if in edit mode
+// Check if in edit or view mode
 $edit_mode = false;
+$view_mode = false;
 $edit_data = null;
 $edit_id = $_GET['edit'] ?? ''; 
+$view_id = $_GET['view'] ?? ''; 
 
-if (!empty($edit_id)) {
+// Determine which ID to use and set mode
+$load_id = !empty($edit_id) ? $edit_id : (!empty($view_id) ? $view_id : '');
+
+if (!empty($load_id)) {
     try {
         $stmt = $pdo->prepare("
             SELECT id, site_name, measurement_date, measurer_name, measurer_id,
@@ -36,11 +41,15 @@ if (!empty($edit_id)) {
             FROM panel_measurements
             WHERE id = ?
         ");
-        $stmt->execute([$edit_id]);
+        $stmt->execute([$load_id]);
         $edit_data = $stmt->fetch();
 
         if ($edit_data) {
-            $edit_mode = true;
+            if (!empty($edit_id)) {
+                $edit_mode = true;
+            } elseif (!empty($view_id)) {
+                $view_mode = true;
+            }
 
             // Parse JSON data
             $edit_panel_data = [];
@@ -111,7 +120,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title><?= $edit_mode ? '카 판넬 측정 (편집)' : '카 판넬 측정' ?></title>
+    <title><?= $view_mode ? '카 판넬 측정 (보기)' : ($edit_mode ? '카 판넬 측정 (편집)' : '카 판넬 측정') ?></title>
 
     <!-- SweetAlert2 CSS/JS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
@@ -895,7 +904,7 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             <div class="responsive-card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <h1 class="responsive-card-title">
                     <i class="bi bi-rulers"></i>
-                    <?= $edit_mode ? '카 판넬 측정 (편집)' : '카 판넬 측정' ?>
+                    <?= $view_mode ? '카 판넬 측정 (보기)' : ($edit_mode ? '카 판넬 측정 (편집)' : '카 판넬 측정') ?>
                 </h1>
                 
                 <?php if ($edit_mode): ?>
@@ -909,6 +918,12 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
                         <i class="bi bi-trash"></i> 삭제
                     </button>
                 </div>
+                <?php elseif ($view_mode): ?>
+                <div class="title-actions" style="display: flex; gap: var(--linear-spacing-sm);">
+                    <span style="color: var(--linear-text-secondary); font-size: var(--linear-text-base); font-weight: 400;">
+                        <i class="bi bi-eye"></i> 읽기 전용 모드
+                    </span>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -918,6 +933,9 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
             <form id="measurementForm" action="save_panel_measurement.php" method="POST">
                 <?php if ($edit_mode): ?>
                     <input type="hidden" name="edit_id" value="<?= $edit_id ?>">
+                <?php endif; ?>
+                <?php if ($view_mode): ?>
+                    <input type="hidden" name="view_mode" value="1">
                 <?php endif; ?>
 
                 <!-- 현장 정보 입력 -->
@@ -1203,12 +1221,18 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
                 <!-- Action Buttons -->
                 <div class="button-group">
+                    <?php if (!$view_mode): ?>
                     <button type="button" id="validateBtn" class="linear-btn linear-btn-secondary">
                         <i class="bi bi-check-circle"></i> 측정값 검증
                     </button>
                     <button type="submit" id="saveBtn" class="linear-btn linear-btn-primary">
                         <i class="bi bi-save"></i> 측정 저장
                     </button>
+                    <?php else: ?>
+                    <button type="button" id="editBtn" class="linear-btn linear-btn-primary" onclick="location.href='panel_measurement.php?edit=<?= $view_id ?>'">
+                        <i class="bi bi-pencil-square"></i> 수정하기
+                    </button>
+                    <?php endif; ?>
                     <button type="button" id="backBtn" class="linear-btn linear-btn-secondary">
                         <i class="bi bi-arrow-left"></i> 돌아가기
                     </button>
@@ -3211,6 +3235,34 @@ $defaultProjectType = $edit_mode ? ($edit_data['project_type'] ?? '신규') : '�
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // 보기 모드일 때 모든 입력 필드 비활성화
+            <?php if ($view_mode): ?>
+            const viewModeForm = document.getElementById('measurementForm');
+            if (viewModeForm) {
+                // 모든 input, select, textarea 비활성화
+                const inputs = viewModeForm.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                    input.style.backgroundColor = '#f5f5f5';
+                    input.style.cursor = 'not-allowed';
+                });
+                
+                // 모든 버튼 비활성화 (돌아가기, 수정하기 제외)
+                const buttons = viewModeForm.querySelectorAll('button:not(#backBtn):not(#editBtn)');
+                buttons.forEach(button => {
+                    button.disabled = true;
+                    button.style.cursor = 'not-allowed';
+                });
+                
+                // 패널 클릭 이벤트 비활성화
+                const panels = document.querySelectorAll('.panel-item');
+                panels.forEach(panel => {
+                    panel.style.cursor = 'not-allowed';
+                    panel.onclick = null;
+                });
+            }
+            <?php endif; ?>
+            
             // 현장명 자동생성 버튼
             const generateBtn = document.getElementById('generateSiteNameBtn');
             if (generateBtn) {

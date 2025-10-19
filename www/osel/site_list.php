@@ -1284,12 +1284,15 @@ require_once '../components/LinearNavigation.php';
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="panel_measurement.php?edit=<?= $site['latest_id'] ?>" class="action-button edit">
-                                        <i class="bi bi-eye"></i> 보기
+                                    <a href="panel_measurement.php?view=<?= $site['latest_id'] ?>" class="action-button view" title="보기">
+                                        <i class="bi bi-eye"></i> 
                                     </a>
-                                    <button type="button" class="action-button delete"
+                                    <a href="panel_measurement.php?edit=<?= $site['latest_id'] ?>" class="action-button edit" title="수정">
+                                        <i class="bi bi-pencil-square"></i> 
+                                    </a>
+                                    <button type="button" class="action-button delete" title="삭제"
                                             onclick="deleteSite('<?= htmlspecialchars($site['site_name'], ENT_QUOTES, 'UTF-8') ?>')">
-                                        <i class="bi bi-trash"></i> 삭제
+                                        <i class="bi bi-trash"></i> 
                                     </button>
                                 </div>
                             </td>
@@ -1368,10 +1371,13 @@ require_once '../components/LinearNavigation.php';
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <a href="panel_measurement.php?edit=<?= $site['latest_id'] ?>" class="action-button edit">
+                                <a href="panel_measurement.php?view=<?= $site['latest_id'] ?>" class="action-button view" title="보기">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <button type="button" class="action-button delete"
+                                <a href="panel_measurement.php?edit=<?= $site['latest_id'] ?>" class="action-button edit" title="수정">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <button type="button" class="action-button delete" title="삭제"
                                         onclick="deleteSite('<?= htmlspecialchars($site['site_name'], ENT_QUOTES, 'UTF-8') ?>')">
                                     <i class="bi bi-trash"></i>
                                 </button>

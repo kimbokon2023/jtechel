@@ -235,9 +235,9 @@ if (intval($num) > 0) {
 
 	$companyName = mb_substr($workplacename, 0, 15, 'UTF-8');
 
-	$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " JK-테크 현장 사진대지");
+	$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " 오성이엘 현장 사진대지");
 	$objPHPExcel -> setActiveSheetIndex(0);
-	$filename = iconv("UTF-8", "EUC-KR", "JK-테크 사진대지(" . $companyName . ") ");
+	$filename = iconv("UTF-8", "EUC-KR", "오성이엘 사진대지(" . $companyName . ") ");
 
 	header("Content-Type:application/vnd.ms-excel");
 	header("Content-Disposition: attachment;filename=".$filename.".xls");

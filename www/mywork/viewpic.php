@@ -9,7 +9,7 @@ include 'load.php'
 
 
 <body>
-<title> JK-테크 시공 사진대장  </title>
+<title> 오성이엘 시공 사진대장  </title>
 <style>
 
 

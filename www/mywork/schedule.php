@@ -27,7 +27,7 @@ if( $choiceitem == '1')
 </head>
 
 <body>
-<title> JK-테크 작업일정표 </title>
+<title> 오성이엘 작업일정표 </title>
 
 <? include 'navbarsub.php'; ?>
 

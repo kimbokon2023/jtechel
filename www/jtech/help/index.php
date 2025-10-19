@@ -130,7 +130,8 @@ line-height:220%
             <div class="list-cell list-cell--80 text-center">시공팀</div>
             <div class="list-cell list-cell--200 text-secondary text-center">세부발주내역</div>
           </li>	  			  
-	<?php  
+	<?php
+		  try {  
 		  if ($page<=1)  
 			$start_num=$total_row;    // 페이지당 표시되는 첫번째 글순번
 		  else 

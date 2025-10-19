@@ -396,9 +396,9 @@ $objPHPExcel->getActiveSheet()->getStyle("F4")->getFont()->setName('Dotum')->set
 $objPHPExcel->getActiveSheet()->getStyle("F6")->getFont()->setName('Dotum')->setSize(10);	
 
 
-$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " JK-테크 견적서");
+$objPHPExcel -> getActiveSheet() -> setTitle($companyName . " 오성이엘 견적서");
 $objPHPExcel -> setActiveSheetIndex(0);
-$filename = iconv("UTF-8", "EUC-KR", "JK-테크 견적서(" . $companyName . ") ");
+$filename = iconv("UTF-8", "EUC-KR", "오성이엘 견적서(" . $companyName . ") ");
 
 
 // pdf는 여기부분이 excel과 다름

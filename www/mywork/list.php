@@ -5,7 +5,7 @@ require_once '../config/environment.php';
 include 'load.php' 
 ?>
 
-<title> JK-테크 수주 리스트 </title>
+<title> 오성이엘 수주 리스트 </title>
 <style>
   
 body{
